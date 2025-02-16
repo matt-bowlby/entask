@@ -1,4 +1,4 @@
-import { IDHandler } from "@classes/calendar/IDHandler";
+import { IdHandler } from "@/classes/calendar/IdHandler";
 import { Event, Task } from "@classes/thing/Thing";
 import { ThingList } from "@classes/thing/ThingList";
 
@@ -28,30 +28,30 @@ class Calendar {
 	 * @param name - The name of the Calendar.
 	 */
 	constructor(name: string) {
-		this.id = IDHandler.requestId();
+		this.id = IdHandler.requestId();
 		this.name = name;
 
 		this.active = new ThingList();
 		this.completed = new ThingList();
 	}
 
-	addTask(task: Task): void {
+	public addTask(task: Task): void {
 		this.active.addThing(task);
 	}
 
-	addEvent(event: Event): void {
+	public addEvent(event: Event): void {
 		this.active.addThing(event);
 	}
 
-	removeTask(task: Task): void {
+	public removeTask(task: Task): void {
 		this.active.removeThing(task);
 	}
 
-	getActiveThings(): ThingList {
+	public getActiveThings(): ThingList {
 		return this.active.duplicate();
 	}
 
-	getCompletedThings(): ThingList {
+	public getCompletedThings(): ThingList {
 		return this.completed.duplicate();
 	}
 

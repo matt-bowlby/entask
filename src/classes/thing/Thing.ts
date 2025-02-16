@@ -1,4 +1,4 @@
-import { IDHandler } from "@classes/calendar/IDHandler";
+import { IdHandler } from "@/classes/calendar/IdHandler";
 import Calendar from "@classes/calendar/Calendar";
 
 /**
@@ -45,7 +45,7 @@ class Thing {
 	 * @param name - The name of the Thing.
 	 */
 	constructor(name: string, calendar: Calendar) {
-		this.id = IDHandler.requestId();
+		this.id = IdHandler.requestId();
 		this.name = name;
 		this.calendar = calendar;
 	}

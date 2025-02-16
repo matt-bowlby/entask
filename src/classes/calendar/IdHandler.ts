@@ -1,4 +1,4 @@
-class IDHandler {
+class IdHandler {
 	/**
 	 * Array of all used IDs.
 	 */
@@ -10,10 +10,10 @@ class IDHandler {
 	 */
 	static requestId(): number {
 		let id: number = 0;
-		while (IDHandler.ids.includes(id)) {
+		while (IdHandler.ids.includes(id)) {
 			id++;
 		}
-		IDHandler.ids.push(id);
+		IdHandler.ids.push(id);
 		return id;
 	}
 
@@ -22,8 +22,8 @@ class IDHandler {
 	 * @param id ID to release.
 	 */
 	static releaseId(id: number): void {
-		IDHandler.ids = IDHandler.ids.filter((value) => value !== id);
+		IdHandler.ids = IdHandler.ids.filter((value) => value !== id);
 	}
 }
 
-export { IDHandler };
+export { IdHandler };
