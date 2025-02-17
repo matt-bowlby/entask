@@ -25,7 +25,7 @@ describe("Testing Event Class", () => {
 
 	test("Test Event Duplication", () => {
 		const testEvent = new Event("Test Event", 20);
-		testEvent.calendar = new Calendar("Test Calendar");
+		testEvent.setCalendar(new Calendar("Test Calendar"));
 		testEvent.description = "Test Description";
 		testEvent.startTime = 10;
 		testEvent.completed = true;
@@ -36,6 +36,6 @@ describe("Testing Event Class", () => {
 		expect(testEvent2.startTime).toBe(10);
 		expect(testEvent2.duration).toBe(20);
 		expect(testEvent2.id).not.toBe(testEvent.id);
-		expect(testEvent2.calendar).toBe(testEvent.calendar);
+		expect(testEvent2.getCalendar()).toBe(testEvent.getCalendar());
 	});
 });

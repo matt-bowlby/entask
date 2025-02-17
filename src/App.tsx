@@ -8,13 +8,13 @@ function App() {
   const [thingList, setThingList] = React.useState(calendar.current.getActiveThings());
 
   const handleAddEvent = () => {
-    calendar.current.addEvent(new Event("My Event", 0));
+    calendar.current.addThing(new Event("My Event", 0));
     setThingList(calendar.current.getActiveThings());
   };
 
   const handleAddTask = () => {
     const task = new Task("My Task", 0);
-    calendar.current.addTask(task);
+    calendar.current.addThing(task);
     setThingList(calendar.current.getActiveThings());
   };
 
