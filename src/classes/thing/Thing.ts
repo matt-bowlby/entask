@@ -1,10 +1,10 @@
-import { IdHandler } from "@/classes/calendar/IdHandler";
+import { IdHandler } from "@classes/calendar/IdHandler";
 import Calendar from "@classes/calendar/Calendar";
 
 /**
  * Represents a Thing with a name, completion status, description, start time, duration, and a unique identifier.
  */
-class Thing {
+abstract class Thing {
 	/**
 	 * The name of the Thing.
 	 */
@@ -23,7 +23,7 @@ class Thing {
 	/**
 	 * The start time of the Thing in Unix time (seconds since January 1, 1970).
 	 */
-	public start_time: number = 0;
+	public startTime: number = 0;
 
 	/**
 	 * The duration of the Thing in seconds.
@@ -33,7 +33,7 @@ class Thing {
 	/**
 	 * The calendar associated with the Thing.
 	 */
-	public calendar: Calendar;
+	private calendar: Calendar | undefined;
 
 	/**
 	 * The unique identifier of the Thing.
@@ -44,36 +44,55 @@ class Thing {
 	 * Creates an instance of Thing.
 	 * @param name - The name of the Thing.
 	 */
-	constructor(name: string, calendar: Calendar) {
+	constructor(name: string,  duration: number = 0) {
 		this.id = IdHandler.requestId();
 		this.name = name;
-		this.calendar = calendar;
+		this.duration = duration;
 	}
 
 	/**
 	 * Returns the end time of the Thing in Unix time.
 	 * @returns The end time in Unix time.
 	 */
-	getEndTime(): number {
-		return this.start_time + this.duration;
+	public getEndTime(): number {
+		return this.startTime + this.duration;
 	}
 
 	/**
-	 * Schedules the Thing with a start time and calendar.
-	 * @param start_time - The start time in Unix time.
-	 * @param calendar - The calendar associated with the Thing.
+	 * Returns the calendar associated with the Thing. If unset, returns undefined.
+	 * @returns The calendar associated with the Thing.
 	 */
-	schedule(start_time: number, calendar: Calendar): void {
-		this.start_time = start_time;
+	public getCalendar(): Calendar | undefined {
+		return this.calendar;
+	}
+
+	/**
+	 * Sets the calendar associated with the Thing.
+	 * @param calendar - The calendar to associate with the Thing.
+	 */
+	public setCalendar(calendar: Calendar | undefined): void {
 		this.calendar = calendar;
 	}
+
+	/**
+	 * Abstract method to get the priority of the Thing.
+	 * @returns The priority of the Thing.
+	 */
+	public abstract getPriority(): number;
+
+	/**
+	 * Duplicates the Thing; the new instance will have the same properties as the original,
+	 * save for the ID.
+	 * @returns A new instance of the Thing with the same properties.
+	 */
+	public abstract duplicate(): Thing;
 
 	/**
 	 * Converts a Date object to Unix time (seconds since January 1, 1970).
 	 * @param date - The Date object to convert.
 	 * @returns The Unix time corresponding to the given Date object.
 	 */
-	static dateToUnix(date: Date): number {
+	public static dateToUnix(date: Date): number {
 		return Math.floor(date.getTime() / 1000);
 	}
 
@@ -82,30 +101,51 @@ class Thing {
 	 * @param unixTime - The Unix time to convert.
 	 * @returns The Date object corresponding to the given Unix time.
 	 */
-	static unixToDate(unixTime: number): Date {
+	public static unixToDate(unixTime: number): Date {
 		return new Date(unixTime * 1000);
 	}
 }
 
-class Event extends Thing { }
+class Event extends Thing {
+	public getPriority(): number {
+		return 0;
+	}
+
+	public duplicate(): Event {
+		const newEvent = new Event(this.name, this.duration);
+		newEvent.completed = this.completed;
+		newEvent.description = this.description;
+		newEvent.startTime = this.startTime;
+		if (this.getCalendar() !== undefined) {
+			newEvent.setCalendar(this.getCalendar() as Calendar);
+		}
+
+		return newEvent;
+	}
+}
 
 class Task extends Thing {
 	/**
 	 * The due date of the Task in Unix time (seconds since January 1, 1970).
 	 */
-	public due_date: number = 0;
+	public dueDate: number = 0;
 
 	/**
 	 * The actual duration of the Task in seconds.
 	 */
-	private actual_duration: number = 0;
+	private actualDuration: number = 0;
+
+	constructor(name: string, duration: number, dueDate: number = 0) {
+		super(name, duration);
+		this.dueDate = dueDate;
+	}
 
 	/**
 	 * Sets the actual duration of the Task and marks it as completed.
 	 * @param duration - The actual duration in seconds.
 	 */
-	setActualDuration(duration: number): void {
-		this.actual_duration = duration;
+	public setActualDuration(duration: number): void {
+		this.actualDuration = duration;
 		this.completed = true;
 	}
 
@@ -113,8 +153,44 @@ class Task extends Thing {
 	 * Returns the actual duration of the Task. If it hasn't been set, it returns 0.
 	 * @returns The actual duration in seconds.
 	 */
-	getActualDuration(): number {
-		return this.actual_duration;
+	public getActualDuration(): number {
+		return this.actualDuration;
+	}
+
+	/**
+	 * Returns the time remaining until the Task is due.
+	 * @returns The time remaining in seconds.
+	 */
+	public getTimeUntilDue(): number {
+		return this.dueDate - Math.floor(Date.now() / 1000);
+	}
+
+	/**
+	 * Returns the priority of the Task based on its duration and time until due.
+	 * @returns The priority of the Task.
+	 */
+	public getPriority(): number {
+		// If completed, return 0 priority
+		if (this.completed) return 0;
+		// Calculate time until due date
+		const timeUntilDue = this.dueDate - Math.floor(Date.now() / 1000);
+		// Convert to seconds
+		const duration = this.duration * 60 * 60;
+		// If the due date is in the past, return max value
+		if (timeUntilDue <= 1) return Number.MAX_VALUE;
+		return duration / timeUntilDue; // Calculate priority based on time until due and duration
+	}
+
+	public duplicate(): Task {
+		const newTask = new Task(this.name, this.duration, this.dueDate);
+		newTask.completed = this.completed;
+		newTask.description = this.description;
+		newTask.startTime = this.startTime;
+		newTask.actualDuration = this.actualDuration;
+		if (this.getCalendar() !== undefined) {
+			newTask.setCalendar(this.getCalendar() as Calendar);
+		}
+		return newTask;
 	}
 
 }

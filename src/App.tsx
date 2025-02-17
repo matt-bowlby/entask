@@ -8,20 +8,20 @@ function App() {
   const [thingList, setThingList] = React.useState(calendar.current.getActiveThings());
 
   const handleAddEvent = () => {
-    calendar.current.addEvent(new Event("My Event", calendar.current));
+    calendar.current.addEvent(new Event("My Event", 0));
     setThingList(calendar.current.getActiveThings());
   };
 
   const handleAddTask = () => {
-    const task = new Task("My Task", calendar.current);
+    const task = new Task("My Task", 0);
     calendar.current.addTask(task);
     setThingList(calendar.current.getActiveThings());
   };
 
   return (
     <>
-      <button className="regular_button" onClick={handleAddEvent}>Add Event</button>
-      <button className="regular_button" onClick={handleAddTask}>Add Task</button>
+      <button className="regular-button" onClick={handleAddEvent}>Add Event</button>
+      <button className="regular-button" onClick={handleAddTask}>Add Task</button>
       <p>{thingList.length()} items active</p>
     </>
   );

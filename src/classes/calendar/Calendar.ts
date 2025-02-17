@@ -1,5 +1,5 @@
 import { IdHandler } from "@/classes/calendar/IdHandler";
-import { Event, Task } from "@classes/thing/Thing";
+import Thing from "@classes/thing/Thing";
 import { ThingList } from "@classes/thing/ThingList";
 
 class Calendar {
@@ -35,22 +35,56 @@ class Calendar {
 		this.completed = new ThingList();
 	}
 
-	public addTask(task: Task): void {
-		this.active.addThing(task);
+	/**
+	 * Adds a Thing to the Calendar.
+	 * @param thing - The Thing to add.
+	 */
+	public addThing(thing: Thing): void {
+		this.active.addThing(thing);
+		thing.setCalendar(this);
 	}
 
-	public addEvent(event: Event): void {
-		this.active.addThing(event);
+	/**
+	 * Removes a Thing from the Calendar.
+	 * @param thing - The Thing to remove.
+	 */
+	public removeThing(thing: Thing): void {
+		this.active.removeThing(thing);
+		this.completed.removeThing(thing);
 	}
 
-	public removeTask(task: Task): void {
-		this.active.removeThing(task);
+	/**
+	 * Sets a thing to "Complete."
+	 * @param thing - The Thing to complete.
+	 */
+	public completeThing(thing: Thing): void {
+		this.active.removeThing(thing);
+		this.completed.addThing(thing);
+		thing.completed = true;
 	}
 
+	/**
+	 * Sets a Thing to be "Active."
+	 * @param thing - The Thing to uncomplete.
+	 */
+	public uncompleteThing(thing: Thing): void {
+		this.completed.removeThing(thing);
+		this.active.addThing(thing);
+		thing.completed = false;
+	}
+
+	/**
+	 * Returns a duplicate of the list of active Things.
+	 * @returns A duplicate of the active Things.
+	 */
 	public getActiveThings(): ThingList {
 		return this.active.duplicate();
 	}
 
+	/**
+	 * Returns a duplicate of the list of completed Things.
+	 * @returns A duplicate of the completed Things.
+	 */
 	public getCompletedThings(): ThingList {
 		return this.completed.duplicate();
 	}
