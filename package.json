@@ -13,8 +13,10 @@
     "coverage": "npm test --coverage --watchAll --collectCoverageFrom='src/components/**/*.{ts,tsx}'"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tailwindcss": "^4.0.7",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
