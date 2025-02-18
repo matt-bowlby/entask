@@ -75,12 +75,6 @@ abstract class Thing {
 	}
 
 	/**
-	 * Abstract method to get the priority of the Thing.
-	 * @returns The priority of the Thing.
-	 */
-	public abstract getPriority(): number;
-
-	/**
 	 * Duplicates the Thing; the new instance will have the same properties as the original,
 	 * save for the ID.
 	 * @returns A new instance of the Thing with the same properties.
@@ -107,10 +101,6 @@ abstract class Thing {
 }
 
 class Event extends Thing {
-	public getPriority(): number {
-		return 0;
-	}
-
 	public duplicate(): Event {
 		const newEvent = new Event(this.name, this.duration);
 		newEvent.completed = this.completed;
@@ -163,22 +153,6 @@ class Task extends Thing {
 	 */
 	public getTimeUntilDue(): number {
 		return this.dueDate - Math.floor(Date.now() / 1000);
-	}
-
-	/**
-	 * Returns the priority of the Task based on its duration and time until due.
-	 * @returns The priority of the Task.
-	 */
-	public getPriority(): number {
-		// If completed, return 0 priority
-		if (this.completed) return 0;
-		// Calculate time until due date
-		const timeUntilDue = this.dueDate - Math.floor(Date.now() / 1000);
-		// Convert to seconds
-		const duration = this.duration * 60 * 60;
-		// If the due date is in the past, return max value
-		if (timeUntilDue <= 1) return Number.MAX_VALUE;
-		return duration / timeUntilDue; // Calculate priority based on time until due and duration
 	}
 
 	public duplicate(): Task {
