@@ -21,12 +21,12 @@ abstract class Thing {
 	public description: string = "";
 
 	/**
-	 * The start time of the Thing in Unix time (seconds since January 1, 1970).
+	 * The start time of the Thing in Unix time (milliseconds since January 1, 1970).
 	 */
 	public startTime: number = 0;
 
 	/**
-	 * The duration of the Thing in seconds.
+	 * The duration of the Thing in milliseconds.
 	 */
 	public duration: number = 0;
 
@@ -51,8 +51,8 @@ abstract class Thing {
 	}
 
 	/**
-	 * Returns the end time of the Thing in Unix time.
-	 * @returns The end time in Unix time.
+	 * Returns the end time of the Thing in Unix time (milliseconds).
+	 * @returns The end time in Unix time (milliseconds).
 	 */
 	public getEndTime(): number {
 		return this.startTime + this.duration;
@@ -82,21 +82,21 @@ abstract class Thing {
 	public abstract duplicate(): Thing;
 
 	/**
-	 * Converts a Date object to Unix time (seconds since January 1, 1970).
+	 * Converts a Date object to Unix time (milliseconds since January 1, 1970).
 	 * @param date - The Date object to convert.
 	 * @returns The Unix time corresponding to the given Date object.
 	 */
 	public static dateToUnix(date: Date): number {
-		return Math.floor(date.getTime() / 1000);
+		return date.getTime();
 	}
 
 	/**
 	 * Converts Unix time to a Date object.
-	 * @param unixTime - The Unix time to convert.
+	 * @param unixTime - The Unix time to convert, in milliseconds.
 	 * @returns The Date object corresponding to the given Unix time.
 	 */
 	public static unixToDate(unixTime: number): Date {
-		return new Date(unixTime * 1000);
+		return new Date(unixTime);
 	}
 }
 
@@ -116,12 +116,12 @@ class Event extends Thing {
 
 class Task extends Thing {
 	/**
-	 * The due date of the Task in Unix time (seconds since January 1, 1970).
+	 * The due date of the Task in Unix time (milliseconds since January 1, 1970).
 	 */
 	public dueDate: number = 0;
 
 	/**
-	 * The actual duration of the Task in seconds.
+	 * The actual duration of the Task in milliseconds.
 	 */
 	private actualDuration: number = 0;
 
@@ -132,7 +132,7 @@ class Task extends Thing {
 
 	/**
 	 * Sets the actual duration of the Task and marks it as completed.
-	 * @param duration - The actual duration in seconds.
+	 * @param duration - The actual duration in milliseconds.
 	 */
 	public setActualDuration(duration: number): void {
 		this.actualDuration = duration;
@@ -141,7 +141,7 @@ class Task extends Thing {
 
 	/**
 	 * Returns the actual duration of the Task. If it hasn't been set, it returns 0.
-	 * @returns The actual duration in seconds.
+	 * @returns The actual duration in milliseconds.
 	 */
 	public getActualDuration(): number {
 		return this.actualDuration;
@@ -149,10 +149,10 @@ class Task extends Thing {
 
 	/**
 	 * Returns the time remaining until the Task is due.
-	 * @returns The time remaining in seconds.
+	 * @returns The time remaining in milliseconds.
 	 */
 	public getTimeUntilDue(): number {
-		return this.dueDate - Math.floor(Date.now() / 1000);
+		return this.dueDate - Date.now();
 	}
 
 	public duplicate(): Task {
