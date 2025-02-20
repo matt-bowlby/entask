@@ -13,6 +13,7 @@ export default {
 	  "^@classes/(.*)$": "<rootDir>/src/classes/$1",
 	  "^@assets/(.*)$": "<rootDir>/src/assets/$1",
 	  "^@components/(.*)$": "<rootDir>/src/components/$1",
+	  "^@database/(.*)$": "<rootDir>/src/database/%1"
 	},
 
 	setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],

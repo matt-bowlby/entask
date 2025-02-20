@@ -13,6 +13,7 @@ export default defineConfig({
       "@classes": path.resolve(__dirname, "./src/classes"),
       "@assets": path.resolve(__dirname, "./src/assets"),
       "@components": path.resolve(__dirname, "./src/components"),
+      "@database": path.resolve(__dirname,"./src/database"),
     },
   },
   plugins: [

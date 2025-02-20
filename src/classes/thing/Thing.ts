@@ -166,7 +166,7 @@ class Task extends Thing {
         }
         return newTask;
     }
-
+    
 }
 
 
