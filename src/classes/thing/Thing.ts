@@ -158,7 +158,7 @@ class Task extends Thing {
         newTask.actualDuration = this.actualDuration;
         return newTask;
     }
-
+    
 }
 
 
