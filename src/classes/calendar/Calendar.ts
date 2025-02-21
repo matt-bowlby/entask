@@ -41,7 +41,6 @@ class Calendar {
      */
     public addThing(thing: Thing): void {
         this.active.addThing(thing);
-        thing.setCalendar(this);
     }
 
     /**

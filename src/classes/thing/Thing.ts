@@ -1,5 +1,4 @@
 import { IdHandler } from "@classes/calendar/IdHandler";
-import Calendar from "@classes/calendar/Calendar";
 
 /**
  * Represents a Thing with a name, completion status, description, start time, duration, and a unique identifier.
@@ -31,11 +30,6 @@ abstract class Thing {
     public duration: number = 0;
 
     /**
-     * The calendar associated with the Thing.
-     */
-    private calendar: Calendar | undefined;
-
-    /**
      * The unique identifier of the Thing.
      */
     readonly id: number = 0;
@@ -56,22 +50,6 @@ abstract class Thing {
      */
     public getEndTime(): number {
         return this.startTime + this.duration;
-    }
-
-    /**
-     * Returns the calendar associated with the Thing. If unset, returns undefined.
-     * @returns The calendar associated with the Thing.
-     */
-    public getCalendar(): Calendar | undefined {
-        return this.calendar;
-    }
-
-    /**
-     * Sets the calendar associated with the Thing.
-     * @param calendar - The calendar to associate with the Thing.
-     */
-    public setCalendar(calendar: Calendar | undefined): void {
-        this.calendar = calendar;
     }
 
     /**
@@ -106,9 +84,6 @@ class Event extends Thing {
         newEvent.completed = this.completed;
         newEvent.description = this.description;
         newEvent.startTime = this.startTime;
-        if (this.getCalendar() !== undefined) {
-            newEvent.setCalendar(this.getCalendar() as Calendar);
-        }
 
         return newEvent;
     }
@@ -161,9 +136,6 @@ class Task extends Thing {
         newTask.description = this.description;
         newTask.startTime = this.startTime;
         newTask.actualDuration = this.actualDuration;
-        if (this.getCalendar() !== undefined) {
-            newTask.setCalendar(this.getCalendar() as Calendar);
-        }
         return newTask;
     }
 

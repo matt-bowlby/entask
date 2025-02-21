@@ -1,12 +1,10 @@
 import { Event, Task } from "@classes/thing/Thing";
-import Calendar from "@classes/calendar/Calendar";
 
 describe("Testing Event Class", () => {
     test("Event Creation", () => {
         const testEvent = new Event("Test Event", 0);
         expect(testEvent.name).toBe("Test Event");
         expect(testEvent.completed).toBe(false);
-        console.log("ID: ", testEvent.id);
     });
     test("Event Scheduling", () => {
         const testEvent = new Event("Test Event", 20);
@@ -25,7 +23,6 @@ describe("Testing Event Class", () => {
 
     test("Event Duplication", () => {
         const testEvent = new Event("Test Event", 20);
-        testEvent.setCalendar(new Calendar("Test Calendar"));
         testEvent.description = "Test Description";
         testEvent.startTime = 10;
         testEvent.completed = true;
@@ -36,7 +33,6 @@ describe("Testing Event Class", () => {
         expect(testEvent2.startTime).toBe(10);
         expect(testEvent2.duration).toBe(20);
         expect(testEvent2.id).not.toBe(testEvent.id);
-        expect(testEvent2.getCalendar()).toBe(testEvent.getCalendar());
         // IMPORTANT: We do not want duplicate event IDs
         expect(testEvent2.id).not.toBe(testEvent.id);
     });
