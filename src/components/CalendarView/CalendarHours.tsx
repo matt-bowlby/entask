@@ -1,3 +1,4 @@
+import Event from "@components/CalendarView/Event.tsx";
 export default function CalendarHours() {
     return (
         <>
@@ -14,7 +15,8 @@ export default function CalendarHours() {
                             className="absolute flex ml-4 left-0 right-0 items-center text-amber-600 gap-x-3"
                             style={{ top: `${25 * k}vh` }}
                         >
-                            {/* There might be issues here of the contents being so tall that it actually misaligns the events in the calendar */}
+                            {/* There might be issues here of the contents being so tall that it 
+                            actually misaligns the events in the calendar */}
                             <span>{k + 1}</span>
                             <div className="h-[2px] w-full bg-amber-600"></div>
                         </div>
@@ -26,8 +28,14 @@ export default function CalendarHours() {
                     <div
                         key={k}
                         id={`items-col-${k}`}
-                        className="border-r-2 h-[600vh] z-10"
-                    ></div>
+                        className="relative border-x-2 h-[600vh] z-10 mx-2"
+                    >
+                        <Event
+                            title="All you can eat meat"
+                            startTime={1}
+                            duration={2}
+                        ></Event>
+                    </div>
                 ))}
             </div>
         </>
