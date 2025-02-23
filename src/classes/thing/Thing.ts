@@ -27,7 +27,7 @@ abstract class Thing {
     /**
      * The duration of the Thing in milliseconds.
      */
-    public duration: number = 0;
+    private duration: number = 0;
 
     /**
      * The unique identifier of the Thing.
@@ -38,10 +38,10 @@ abstract class Thing {
      * Creates an instance of Thing.
      * @param name - The name of the Thing.
      */
-    constructor(name: string,  duration: number = 0) {
+    constructor(name: string, duration: number = 0) {
         this.id = IdHandler.requestId();
         this.name = name;
-        this.duration = duration;
+        this.setDuration(duration);
     }
 
     /**
@@ -49,8 +49,28 @@ abstract class Thing {
      * @returns The end time in Unix time (milliseconds).
      */
     public getEndTime(): number {
-        return this.startTime + this.duration;
+        return this.startTime + this.getDuration();
     }
+
+
+    /**
+     * Returns the duration of the Thing in Unix time (milliseconds).
+     * @returns The duration in Unix time (milliseconds).
+     */
+    public getDuration(): number {
+        return this.duration;
+    }
+
+
+    /**
+     * Sets the duration of the Thing.
+     * @param duration - The duration in milliseconds.
+     */
+    public setDuration(duration: number): void {
+        if (duration < 0) this.duration = 0; // Set to 0 if negative
+        else this.duration = duration;
+    }
+
 
     /**
      * Duplicates the Thing; the new instance will have the same properties as the original,
@@ -80,7 +100,7 @@ abstract class Thing {
 
 class Event extends Thing {
     public duplicate(): Event {
-        const newEvent = new Event(this.name, this.duration);
+        const newEvent = new Event(this.name, this.getDuration());
         newEvent.completed = this.completed;
         newEvent.description = this.description;
         newEvent.startTime = this.startTime;
@@ -131,7 +151,7 @@ class Task extends Thing {
     }
 
     public duplicate(): Task {
-        const newTask = new Task(this.name, this.duration, this.dueDate);
+        const newTask = new Task(this.name, this.getDuration(), this.dueDate);
         newTask.completed = this.completed;
         newTask.description = this.description;
         newTask.startTime = this.startTime;

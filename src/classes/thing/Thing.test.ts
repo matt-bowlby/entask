@@ -10,7 +10,7 @@ describe("Testing Event Class", () => {
         const testEvent = new Event("Test Event", 20);
         testEvent.startTime = 10;
         expect(testEvent.startTime).toBe(10);
-        expect(testEvent.duration).toBe(20);
+        expect(testEvent.getDuration()).toBe(20);
         expect(testEvent.getEndTime()).toBe(30);
     });
 
@@ -31,7 +31,7 @@ describe("Testing Event Class", () => {
         expect(testEvent2.description).toBe(testEvent.description);
         expect(testEvent2.completed).toBe(true);
         expect(testEvent2.startTime).toBe(10);
-        expect(testEvent2.duration).toBe(20);
+        expect(testEvent2.getDuration()).toBe(20);
         expect(testEvent2.id).not.toBe(testEvent.id);
         // IMPORTANT: We do not want duplicate event IDs
         expect(testEvent2.id).not.toBe(testEvent.id);
@@ -46,14 +46,14 @@ describe("Testing Task Class", () => {
         expect(testTask.name).toBe("Test Task");
         expect(testTask.completed).toBe(false);
         expect(testTask.startTime).toBe(0);
-        expect(testTask.duration).toBe(10);
+        expect(testTask.getDuration()).toBe(10);
         expect(testTask.dueDate).toBe(dueDate);
     });
     test("Task Scheduling", () => {
         const testTask = new Task("Test Task", 10, 30);
         testTask.startTime = 20;
         expect(testTask.startTime).toBe(20);
-        expect(testTask.duration).toBe(10);
+        expect(testTask.getDuration()).toBe(10);
         expect(testTask.getEndTime()).toBe(30);
     });
     test("Task Completion", () => {
@@ -71,7 +71,7 @@ describe("Testing Task Class", () => {
         expect(testTask2.name).toBe("Test Task");
         expect(testTask2.completed).toBe(false);
         expect(testTask2.startTime).toBe(0);
-        expect(testTask2.duration).toBe(10);
+        expect(testTask2.getDuration()).toBe(10);
         expect(testTask2.dueDate).toBe(30);
         expect(testTask2.id).not.toBe(testTask.id);
     });
