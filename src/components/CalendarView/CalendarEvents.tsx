@@ -65,6 +65,7 @@ export default function CalendarEvents() {
                 id="calendar"
                 className="grid grid-cols-[64px_repeat(7,1fr)] overflow-y-scroll h-[90vh] relative bg-gray-300"
             >
+                {/* Hour Text */}
                 <div className="h-full bg-blue-100 flex-col relative">
                     <div className="h-[10vh]"></div>
                     {Array.from({ length: 24 }).map((_, i) => (
@@ -76,6 +77,7 @@ export default function CalendarEvents() {
                         </p>
                     ))}
                 </div>
+                {/* Week Days at top */}
                 {weekDays.map((day, i) => (
                     <div // one column
                         className="h-[298vh] flex-col bg-blue-200 relative" // add ten vh to height since Day is 10vh tall
@@ -83,6 +85,7 @@ export default function CalendarEvents() {
                     >
                         <Day num={day.num} name={day.name}></Day>
 
+                        {/* Hour Markers */}
                         {/* Nested loop to create 24 hour long blocks */}
                         {Array.from({ length: 24 }).map(() =>
                             Array.from(Array(4)).map((_, i) =>
@@ -96,6 +99,7 @@ export default function CalendarEvents() {
                             )
                         )}
 
+                        {/* Displaying Events */}
                         {events.map((event) =>
                             weekDays[i].num ===
                             new Date(event.startTime).getDate() ? (
