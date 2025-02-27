@@ -3,46 +3,37 @@ import Event from "@components/CalendarView/Event";
 import { useState } from "react";
 
 export default function CalendarEvents() {
+    const today = new Date();
+    today.setMinutes(0);
+    const tmw = new Date(today.setDate(today.getDay() + 1));
+    tmw.setMinutes(0);
+
+    // example events, setEvents not used since they're just examples
     const [events, setEvents] = useState([
         {
             name: "Morning Run",
             completed: false,
             description: "A refreshing 5K run in the park.",
-            startTime: 1708857600000,
+            startTime: today.setHours(6),
             duration: 3600000,
         },
         {
             name: "Team Meeting",
             completed: true,
             description: "Weekly sync-up with the development team.",
-            startTime: 1708864800000,
+            startTime: today.setHours(10),
             duration: 5400000,
         },
         {
             name: "Lunch with Sarah",
             completed: false,
             description: "Catching up over sushi.",
-            startTime: 1708872000000,
+            startTime: today.setHours(12),
             duration: 3600000,
-        },
-        {
-            name: "Project Work",
-            completed: false,
-            description: "Working on the new feature implementation.",
-            startTime: 1708882800000,
-            duration: 7200000,
-        },
-        {
-            name: "Evening Yoga",
-            completed: true,
-            description: "Relaxing yoga session to unwind.",
-            startTime: 1708893600000,
-            duration: 4500000,
         },
     ]);
 
     const dayNames = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-    const today = new Date();
 
     const weekDays = Array.from({ length: 7 }, (_, i) => {
         const date = new Date();
@@ -71,7 +62,7 @@ export default function CalendarEvents() {
                     {Array.from({ length: 24 }).map((_, i) => (
                         <p
                             className="absolute right-3 text-xs text-slate-500"
-                            style={{ top: `${10 + 12 * (i + 1)}vh` }}
+                            style={{ top: `${10 + 12 * i}vh` }}
                         >
                             {timeSlots[i]}
                         </p>
@@ -89,9 +80,9 @@ export default function CalendarEvents() {
                         {/* Nested loop to create 24 hour long blocks */}
                         {Array.from({ length: 24 }).map(() =>
                             Array.from(Array(4)).map((_, i) =>
-                                i === 3 ? ( // add an hour line if it's the last one in an hour long block
+                                i === 0 ? ( // add an hour line if it's the last one in an hour long block
                                     <div
-                                        className="h-[3vh] border-b-2 border-gray-400" // Each hour has a height of 12vh, so each 15 minute block is 3vh height
+                                        className="h-[3vh] border-t-2 border-gray-400" // Each hour has a height of 12vh, so each 15 minute block is 3vh height
                                     ></div>
                                 ) : (
                                     <div className="h-[3vh]"></div>
