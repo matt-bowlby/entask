@@ -1,4 +1,5 @@
-import { IdHandler } from "@classes/calendar/IdHandler";
+import { IdHandler } from "../calendar/IdHandler";
+import Calendar from "@classes/calendar/Calendar";
 
 /**
  * Represents a Thing with a name, completion status, description, start time, duration, and a unique identifier.
