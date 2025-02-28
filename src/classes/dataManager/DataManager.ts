@@ -66,7 +66,7 @@ class DataManager {
     }
 
     public loadEvents(thing_list: ThingList): void {
-        
+        ////////////change
     }
 
     ///////////////// Tasks /////////////////
