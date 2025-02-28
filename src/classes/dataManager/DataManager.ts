@@ -2,29 +2,20 @@ import { Event, Task } from "@classes/thing/Thing";
 import Calendar from '../calendar/Calendar';
 import * as fs from 'fs';
 import * as path from 'path';
-
-type EventType = {
-    id: number,
-    summary: string,
-    start: {
-        date: Date
-    },
-    end: {
-        date: Date
-    }
-};
+import { EventType, TaskType } from "./data-manager-types";
+import { ThingList } from "../thing/ThingList";
 
 class DataManager {
-    private file_name: string = 'database.json';
-    private file_path = path.join('src/database', this.file_name);
+    //event database json
+    private event_file_name: string = 'event-database.json';
+    private event_file_path = path.join('src/database', this.event_file_name);
+    //task database json
+    private task_file_name: string = 'task-database.json';
+    private task_file_path = path.join('src/database', this.task_file_name);
 
-    public test(): void {
-        fs.writeFileSync(this.file_path, "TEST WORKED");
-    }
 
-
-	///////////////// Calender /////////////////
-	public getDatabase(): Calendar { //TODO: read database and load Events and Tasks into calender type.
+	///////////////// Load Calender /////////////////
+	public loadDatabase(): Calendar { //TODO: read database and load Events and Tasks into calender type.
 		const dataCalender = new Calendar("test string");
 		return (dataCalender);
 	}
@@ -32,7 +23,7 @@ class DataManager {
 	///////////////// Events /////////////////
     public saveEvent(event_instance:Event): void{
         try {
-            const json_string = fs.readFileSync(this.file_path, 'utf8');
+            const json_string = fs.readFileSync(this.event_file_path, 'utf8');
 
             let events: EventType[];
             try {
@@ -40,24 +31,20 @@ class DataManager {
             } catch (error) {
                 events = [];
             }
-
-            const start_date = new Date(event_instance.startTime);
-            const end_date = new Date(event_instance.startTime + event_instance.duration);
+            
             const new_event: EventType = {
-                "id": event_instance.id,
-                "summary": event_instance.name,
-                "start": {
-                    "date": start_date
-                },
-                "end": {
-                    "date": end_date
-                }
-            }
+                "name": event_instance.name,
+                "completed": event_instance.completed,
+                "description": event_instance.description,
+                "startTime": event_instance.startTime,
+                "duration": event_instance.duration,
+                "id": event_instance.id
+            };
 
             events.push(new_event);
             const json_data = JSON.stringify(events, null, 2);
 
-            fs.writeFileSync(this.file_path, json_data);
+            fs.writeFileSync(this.event_file_path, json_data);
 
         } catch (error) {
             console.error("Error adding event:", error);
@@ -66,26 +53,52 @@ class DataManager {
 
     public deleteEvent(event_instance:Event): void {
         try {
-            const json_string = fs.readFileSync(this.file_path, 'utf8');
+            const json_string = fs.readFileSync(this.event_file_path, 'utf8');
             const events: EventType[] = JSON.parse(json_string);
 
             const new_events = events.filter(event => event.id !== event_instance.id);
 
             const json_data = JSON.stringify(new_events, null, 2);
-            fs.writeFileSync(this.file_path, json_data);
+            fs.writeFileSync(this.event_file_path, json_data);
         } catch (error) {
             console.error("Error deleting event:", error);
         }
     }
 
-    public loadEvent(): void {
-
+    public loadEvents(thing_list: ThingList): void {
+        
     }
 
     ///////////////// Tasks /////////////////
 
-	public saveTask(eventInstance: Task): void {
+	public saveTask(task_instance: Task): void {
+    try {
+            const json_string = fs.readFileSync(this.event_file_path, 'utf8');
 
+            let events: EventType[];
+            try {
+                events = JSON.parse(json_string);
+            } catch (error) {
+                events = [];
+            }
+
+            const new_event: EventType = {
+                "name": task_instance.name,
+                "completed": task_instance.completed,
+                "description": task_instance.description,
+                "startTime": task_instance.startTime,
+                "duration": task_instance.duration,
+                "id": task_instance.id
+            };
+
+            events.push(new_event);
+            const json_data = JSON.stringify(events, null, 2);
+
+            fs.writeFileSync(this.event_file_path, json_data);
+
+        } catch (error) {
+            console.error("Error adding event:", error);
+        }
     }
 
 	public deleteTask(): void {

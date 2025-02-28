@@ -1,12 +1,11 @@
 [
   {
-    "id": 1,
-    "summary": "testname2",
-    "start": {
-      "date": "1970-01-01T00:00:00.000Z"
-    },
-    "end": {
-      "date": "1970-01-01T00:00:00.010Z"
-    }
+    "name": "testname",
+    "completed": false,
+    "description": "",
+    "startTime": 1740705188516,
+    "duration": 100000,
+    "calendar": {},
+    "id": 0
   }
 ]

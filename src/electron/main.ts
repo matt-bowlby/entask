@@ -78,13 +78,6 @@ const testEvent = new Event("testname", 10);
 testEvent.startTime = 1740705188516;
 testEvent.duration = 100*1000;
 
-const testEvent2 = new Event("testname2", 10);
-testEvent.startTime = 1740705188516;
-testEvent.duration = 100*1000;
-
 const myTestDataBase = new DataManager;
 
 myTestDataBase.saveEvent(testEvent);
-myTestDataBase.saveEvent(testEvent2);  
-
-myTestDataBase.deleteEvent(testEvent);
