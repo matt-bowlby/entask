@@ -76,7 +76,7 @@ app.whenReady().then(createWindow);
 
 const testEvent = new Event("testname", 10);
 testEvent.startTime = 1740705188516;
-testEvent.duration = 100*1000;
+testEvent.setDuration(100*1000);
 
 const myTestDataBase = new DataManager;
 

@@ -1,5 +1,6 @@
 import { IdHandler } from "../calendar/IdHandler";
 import Thing from "../thing/Thing";
+import { Task, Event } from "../thing/Thing";
 import { ThingList } from "../thing/ThingList";
 
 class Calendar {

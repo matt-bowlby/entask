@@ -37,7 +37,7 @@ class DataManager {
                 "completed": event_instance.completed,
                 "description": event_instance.description,
                 "startTime": event_instance.startTime,
-                "duration": event_instance.duration,
+                "duration": event_instance.getDuration(),
                 "id": event_instance.id
             };
 
@@ -87,7 +87,7 @@ class DataManager {
                 "completed": task_instance.completed,
                 "description": task_instance.description,
                 "startTime": task_instance.startTime,
-                "duration": task_instance.duration,
+                "duration": task_instance.getDuration(),
                 "id": task_instance.id
             };
 
