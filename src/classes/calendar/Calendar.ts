@@ -1,6 +1,6 @@
-import { IdHandler } from "@classes/calendar/IdHandler";
-import Thing, { Task, Event } from "@classes/thing/Thing";
-import { ThingList } from "@classes/thing/ThingList";
+import { IdHandler } from "../calendar/IdHandler";
+import Thing from "../thing/Thing";
+import { ThingList } from "../thing/ThingList";
 
 class Calendar {
     /**
