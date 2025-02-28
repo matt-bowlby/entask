@@ -80,4 +80,7 @@ testEvent.duration = 100*1000;
 
 const myTestDataBase = new DataManager;
 
+myTestDataBase.saveEvent(testEvent);
 myTestDataBase.saveEvent(testEvent);  
+
+myTestDataBase.deleteEvent("testname");
