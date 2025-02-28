@@ -1,4 +1,5 @@
 import { Event, Task } from "@classes/thing/Thing";
+import Calendar from '../calendar/Calendar';
 import * as fs from 'fs';
 import { endianness } from 'os';
 import * as path from 'path';
@@ -21,6 +22,14 @@ class DataManager {
         fs.writeFileSync(this.file_path, "TEST WORKED");
     }
 
+
+	///////////////// Calender /////////////////
+	public getDatabase(): Calendar { //TODO: read database and load Events and Tasks into calender type.
+		const dataCalender = new Calendar("test string");
+		return (dataCalender);
+	}
+
+	///////////////// Events /////////////////
     public saveEvent(eventInstance:Event): void{
         const json_string = fs.readFileSync(this.file_path, 'utf8');
 
@@ -70,15 +79,15 @@ class DataManager {
 
     ///////////////// Tasks /////////////////
 
-    public taskSave(eventInstance:Task): void{
+	public saveTask(eventInstance: Task): void {
 
     }
 
-    public taskDelete(): void {
+	public deleteTask(): void {
 
     }
 
-    public taskLoad(): void {
+	public loadTask(): void {
 
     }
 
