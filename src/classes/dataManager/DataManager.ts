@@ -1,4 +1,4 @@
-import { Event,Task } from "@classes/thing/Thing";
+import { Event, Task } from "@classes/thing/Thing";
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -11,7 +11,21 @@ class DataManager {
     }
 
     public saveEvent(eventInstance:Event): void{
-        fs.writeFileSync(this.file_path, "Discription: " + eventInstance.name);
+        const start_date = new Date(eventInstance.startTime);
+        const end_date = new Date(eventInstance.startTime + eventInstance.duration);
+        const event = {
+            "summary": eventInstance.name,
+            "start": {
+                "date": start_date
+            },
+            "end": {
+                "date": end_date
+            }
+        }
+
+        const json_data = JSON.stringify(event, null, 2);
+
+        fs.writeFileSync(this.file_path, json_data);
     }
 
     public deleteEvent(): void {
@@ -24,7 +38,7 @@ class DataManager {
 
     ///////////////// Tasks /////////////////
 
-    public taskSave(): void{
+    public taskSave(eventInstance:Task): void{
 
     }
 
