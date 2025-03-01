@@ -38,12 +38,12 @@ class Calendar {
      * Creates an instance of Calendar.
      * @param name - The name of the Calendar.
      */
-    constructor(name: string) {
+    constructor(name: string, active_thing_list: ThingList = new ThingList, completed_thing_list: ThingList = new ThingList) {
         this.id = IdHandler.requestId();
         this.name = name;
 
-        this.active = new ThingList();
-        this.completed = new ThingList();
+        this.active = active_thing_list;
+        this.completed = completed_thing_list;
     }
 
     /**

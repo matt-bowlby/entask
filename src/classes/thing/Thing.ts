@@ -39,9 +39,11 @@ abstract class Thing {
      * Creates an instance of Thing.
      * @param name - The name of the Thing.
      */
-    constructor(name: string, duration: number = 0) {
-        this.id = IdHandler.requestId();
+    constructor(name: string, duration:number = 0, completed: boolean = false, description: string = "", startTime: number = 0, id: number = IdHandler.requestId()) {
+        this.id = id
         this.name = name;
+        this.completed = completed;
+        this.startTime = startTime;
         this.setDuration(duration);
     }
 
@@ -121,8 +123,8 @@ class Task extends Thing {
      */
     private actualDuration: number = 0;
 
-    constructor(name: string, duration: number, dueDate: number = 0) {
-        super(name, duration);
+    constructor(name: string, duration: number = 0, dueDate: number = 0, completed: boolean = false, description: string = "", startTime: number = 0, id: number = IdHandler.requestId()) {
+        super(name, duration, completed, description, startTime, id);
         this.dueDate = dueDate;
     }
 

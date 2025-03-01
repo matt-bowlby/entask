@@ -1,4 +1,4 @@
-import Thing, { Task, Event } from "@classes/thing/Thing";
+import Thing, { Task, Event } from "../thing/Thing";
 
 class ThingList {
     /**

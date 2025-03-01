@@ -14,6 +14,7 @@ type TaskType = {
     startTime: number,
     duration: number,
     id: number
+    dueDate: number
 };
 
 export type {EventType, TaskType};
