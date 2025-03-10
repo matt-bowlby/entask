@@ -76,26 +76,38 @@ app.on("activate", () => {
 
 app.whenReady().then(createWindow);
 
-const testEvent = new Event("testname");
-
 const myTestDataBase = new DataManager;
 
+const testEvent = new Event("EventTestName");
+testEvent.completed = false;
 myTestDataBase.saveEvent(testEvent);
 
-const testTask = new Task("TaskTestName,",50);
 
+const testTask = new Task("TaskTestName,",50);
+testTask.completed = true;
 myTestDataBase.saveTask(testTask);
 
 const myCalendar = myTestDataBase.loadDatabase("myCalendar");
 
 console.log(myCalendar.name);
-const myThingList = myCalendar.getActiveThings();
-const events = myThingList.getEvents();
-const tasks = myThingList.getTasks();
+let myThingList = myCalendar.getActiveThings();
+let events = myThingList.getEvents();
+let tasks = myThingList.getTasks();
 
-for (let i = 0; i < events.length; i++){
+for (let i = 0; i < events.length; i++) {
     console.log(events[i].name, "\n");
 }
-for (let i = 0; i < tasks.length; i++){
+for (let i = 0; i < tasks.length; i++) {
+    console.log(tasks[i].name, "\n");
+}
+
+myThingList = myCalendar.getCompletedThings();
+events = myThingList.getEvents();
+tasks = myThingList.getTasks();
+
+for (let i = 0; i < events.length; i++) {
+    console.log(events[i].name, "\n");
+}
+for (let i = 0; i < tasks.length; i++) {
     console.log(tasks[i].name, "\n");
 }
