@@ -5,6 +5,14 @@ class IdHandler {
     private static ids: Array<number> = [];
 
     /**
+     * Constructor.
+     * @param current_ids load ids into IdHandler
+     */
+    constructor(current_ids: Array<number>) {
+        IdHandler.ids = current_ids;
+    }
+
+    /**
      * Returns a new unique ID.
      * @returns A new unique ID.
      */
@@ -23,6 +31,14 @@ class IdHandler {
      */
     static releaseId(id: number): void {
         IdHandler.ids = IdHandler.ids.filter((value) => value !== id);
+    }
+
+    /**
+     * Return ID list.
+     * @returns ID list.
+     */
+    public getIds(): Array<number> {
+        return IdHandler.ids;
     }
 }
 

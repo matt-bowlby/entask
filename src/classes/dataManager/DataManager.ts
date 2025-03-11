@@ -15,6 +15,8 @@ class DataManager {
     private event_act_file_path = path.join('src/database', this.event_act_file_name);
     private task_act_file_name: string = 'task-active-database.json';
     private task_act_file_path = path.join('src/database', this.task_act_file_name);
+    private ids_name: string = 'ids.json';
+    private ids_file_path = path.join('src/database', this.ids_name);
 
 
 	///////////////// Load Calender /////////////////
@@ -237,6 +239,35 @@ class DataManager {
         } catch (error) {
             console.error("Error loading tasks:", error);
         }
+    }
+
+    ///////////////// ID's /////////////////
+
+    public saveIds(ids: Array<number>) {
+        try {
+            const json_data = JSON.stringify(ids);
+            fs.writeFileSync(this.ids_file_path, json_data);
+        } catch (error) {
+            console.error("Error saving ids:", error);
+        }
+    }
+
+    public loadIds(): Array<number> {
+        try {
+            const json_string = fs.readFileSync(this.ids_file_path, 'utf8');
+            let ids: Array<number>;
+
+            try {
+                ids = JSON.parse(json_string);
+            } catch (error) {
+                ids = [];
+            }
+
+            return ids;
+        } catch (error) {
+            console.error("Error saving ids:", error);
+        }
+        return [];
     }
 }
 

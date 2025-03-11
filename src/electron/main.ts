@@ -3,8 +3,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import DataManager from "../classes/dataManager/DataManager";
 import { Event, Task} from "../classes/thing/Thing";
-import { ThingList } from "../classes/thing/ThingList"
-import Calendar from "../classes/calendar/Calendar"
+import { IdHandler } from "../classes/calendar/IdHandler";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -76,7 +75,11 @@ app.on("activate", () => {
 
 app.whenReady().then(createWindow);
 
+//// For testing database ////
+
 const myTestDataBase = new DataManager;
+
+const myIDhandler = new IdHandler(myTestDataBase.loadIds());
 
 const testEvent = new Event("EventTestName");
 testEvent.completed = false;
@@ -111,3 +114,7 @@ for (let i = 0; i < events.length; i++) {
 for (let i = 0; i < tasks.length; i++) {
     console.log(tasks[i].name, "\n");
 }
+
+myTestDataBase.saveIds(myIDhandler.getIds());
+
+console.log(myIDhandler.getIds());
