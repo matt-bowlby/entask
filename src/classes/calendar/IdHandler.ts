@@ -5,6 +5,11 @@ class IdHandler {
     private static ids: Array<number> = [];
 
     /**
+     * Map of IDs to instances.
+     */
+    private static idMap: Map<number, Object> = new Map();
+
+    /**
      * Constructor.
      * @param current_ids load ids into IdHandler
      */
@@ -16,14 +21,25 @@ class IdHandler {
      * Returns a new unique ID.
      * @returns A new unique ID.
      */
-    static requestId(): number {
+    static requestId(instance: Object): number {
         let id: number = 0;
         while (IdHandler.ids.includes(id)) {
             id++;
         }
         IdHandler.ids.push(id);
+        IdHandler.idMap.set(id, instance); // Store the instance with the ID
         return id;
     }
+
+    /**
+     * Returns the instance associated with the given ID.
+     * @param id ID to retrieve.
+     * @returns The instance associated with the ID, or undefined if not found.
+     */
+    static getInstance(id: number): Object | undefined {
+        return IdHandler.idMap.get(id);
+    }
+
 
     /**
      * Releases an ID.

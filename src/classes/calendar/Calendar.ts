@@ -39,7 +39,7 @@ class Calendar {
      * @param name - The name of the Calendar.
      */
     constructor(name: string, active_thing_list: ThingList = new ThingList, completed_thing_list: ThingList = new ThingList) {
-        this.id = IdHandler.requestId();
+        this.id = IdHandler.requestId(this);
         this.name = name;
 
         this.active = active_thing_list;

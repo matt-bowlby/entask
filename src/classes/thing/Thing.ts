@@ -1,5 +1,4 @@
 import { IdHandler } from "../calendar/IdHandler";
-import Calendar from "@classes/calendar/Calendar";
 
 /**
  * Represents a Thing with a name, completion status, description, start time, duration, and a unique identifier.
@@ -39,11 +38,9 @@ abstract class Thing {
      * Creates an instance of Thing.
      * @param name - The name of the Thing.
      */
-    constructor(name: string, duration:number = 0, completed: boolean = false, description: string = "", startTime: number = 0, id: number = IdHandler.requestId()) {
-        this.id = id
+    constructor(name: string, duration: number = 0) {
+        this.id = IdHandler.requestId(this);
         this.name = name;
-        this.completed = completed;
-        this.startTime = startTime;
         this.setDuration(duration);
     }
 
@@ -123,8 +120,8 @@ class Task extends Thing {
      */
     private actualDuration: number = 0;
 
-    constructor(name: string, duration: number = 0, dueDate: number = 0, completed: boolean = false, description: string = "", startTime: number = 0, id: number = IdHandler.requestId()) {
-        super(name, duration, completed, description, startTime, id);
+    constructor(name: string, duration: number = 0, dueDate: number = 0) {
+        super(name, duration);
         this.dueDate = dueDate;
     }
 
@@ -161,7 +158,7 @@ class Task extends Thing {
         newTask.actualDuration = this.actualDuration;
         return newTask;
     }
-    
+
 }
 
 
