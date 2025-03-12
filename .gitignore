@@ -24,3 +24,6 @@ dist-electron
 *.njsproj
 *.sln
 *.sw?
+
+# Custom
+database
