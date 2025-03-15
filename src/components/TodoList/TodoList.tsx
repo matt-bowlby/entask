@@ -1,5 +1,5 @@
 import TodoTask from "@/components/TodoList/TodoTask";
-import TodoEvent from "@/components/TodoList/TodoEvent";
+// import TodoEvent from "@/components/TodoList/TodoEvent";
 export default function TodoList() {
     return (
         <section className="bg-[#F0F0F0] grow flex flex-col rounded-3xl m-4 overflow-hidden gap-1">
@@ -13,7 +13,6 @@ export default function TodoList() {
             <TodoTask></TodoTask>
             <TodoTask></TodoTask>
             <TodoTask></TodoTask>
-            <TodoEvent></TodoEvent>
         </section>
     );
 }
