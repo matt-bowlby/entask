@@ -1,17 +1,16 @@
 export default function TodoTask() {
     return (
-        <div className="bg-slate-200 w-full flex gap-2 p-3">
-            <div className="items-center flex">
-                <input
-                    title="done"
-                    type="checkbox"
-                    className="drop-shadow-lg"
-                ></input>
+        <div className="bg-white drop-shadow-md max-w-full m-4 p-2 h-28 flex rounded-3xl gap-4 relative">
+            <div className="tag-bar w-2 m-2 h- rounded-full overflow-hidden flex flex-col">
+                <div className="w-full h-full bg-red-200"></div>
+                <div className="w-full h-full bg-blue-200"></div>
             </div>
             <div>
-                <h1>TodoTask</h1>
-                <p>100 hours</p>
-                <p>Due Date</p>
+                <h3 className="font-bold text-xl">
+                    Test Task with a Long Name
+                </h3>
+                <p className="">2 hours</p>
+                <p>Due in 10 hours at 11:59pm</p>
             </div>
         </div>
     );

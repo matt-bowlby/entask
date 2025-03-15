@@ -4,7 +4,7 @@ import CalendarView from "@components/CalendarView/CalendarView";
 
 function App() {
     return (
-        <main className="flex h-[100vh] overflow-hidden">
+        <main className="flex h-[100vh] bg-[#323339] overflow-hidden">
             <TodoList></TodoList>
             <CalendarView></CalendarView>
         </main>
