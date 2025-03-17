@@ -1,6 +1,6 @@
 import "./App.css";
 import TodoList from "@components/TodoList/TodoList";
-import CalendarView from "@components/CalendarView/CalendarView";
+import CalendarView from "@/components/Calendar/Calendar";
 
 function App() {
     return (

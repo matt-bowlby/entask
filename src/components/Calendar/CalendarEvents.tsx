@@ -1,5 +1,5 @@
-import Day from "@components/CalendarView/Day";
-import Event from "@components/CalendarView/Event";
+import Day from "@/components/Calendar/Day";
+import Event from "@/components/Calendar/Event";
 import { useState } from "react";
 
 export default function CalendarEvents() {

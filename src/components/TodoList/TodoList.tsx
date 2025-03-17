@@ -1,4 +1,4 @@
-import TodoTask from "@/components/TodoList/TodoTask";
+import Task from "@/components/TodoList/Task";
 // import TodoEvent from "@/components/TodoList/TodoEvent";
 export default function TodoList() {
     return (
@@ -10,9 +10,9 @@ export default function TodoList() {
                     Thu
                 </h2>
             </div>
-            <TodoTask></TodoTask>
-            <TodoTask></TodoTask>
-            <TodoTask></TodoTask>
+            <Task></Task>
+            <Task></Task>
+            <Task></Task>
         </section>
     );
 }
