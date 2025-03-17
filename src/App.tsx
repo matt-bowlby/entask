@@ -1,13 +1,17 @@
 import "./App.css";
 import TodoList from "@components/TodoList/TodoList";
 import CalendarView from "@/components/Calendar/Calendar";
+import TitleBar from "./components/layout/TitleBar";
 
 function App() {
     return (
-        <main className="flex h-[100vh] bg-[#323339] overflow-hidden">
-            <TodoList></TodoList>
-            <CalendarView></CalendarView>
-        </main>
+        <>
+            <TitleBar />
+            <main className="flex max-h-[100vh] bg-dark overflow-hidden">
+                <TodoList />
+                <CalendarView />
+            </main>
+        </>
     );
 }
 

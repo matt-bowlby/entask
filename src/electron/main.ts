@@ -33,6 +33,17 @@ function createWindow() {
             preload: path.join(__dirname, "preload.mjs"),
         },
         autoHideMenuBar: true,
+        titleBarStyle: "hidden",
+        // expose window controlls in Windows/Linux
+        ...(process.platform !== "darwin"
+            ? {
+                  titleBarOverlay: {
+                      color: "#323339",
+                      symbolColor: "white",
+                      height: 40,
+                  },
+              }
+            : {}),
     });
 
     // Test active push message to Renderer-process.
