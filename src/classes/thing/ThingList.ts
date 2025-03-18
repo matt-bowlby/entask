@@ -60,15 +60,6 @@ class ThingList {
         return this.things.filter(thing => thing instanceof Event);
     }
 
-    /**
-     * Searches for a Thing by its ID.
-     * @param id - The ID of the Thing to search for.
-     * @returns The Thing with the given ID, or undefined if not found.
-     */
-    public getThingById(id: number): Thing | undefined {
-        return this.things.find(thing => thing.id === id);
-    }
-
 }
 
 export { ThingList };
