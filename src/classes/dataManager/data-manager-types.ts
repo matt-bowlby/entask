@@ -17,4 +17,11 @@ type TaskType = {
     dueDate: number
 };
 
-export type {EventType, TaskType};
+type TagType = {
+    name: string,
+    description: string,
+    color: string,
+    id: number
+}
+
+export type {EventType, TaskType, TagType};

@@ -2,21 +2,24 @@ import { Event, Task } from "../thing/Thing";
 import Calendar from '../calendar/Calendar';
 import * as fs from 'fs';
 import * as path from 'path';
-import { EventType, TaskType } from "./data-manager-types";
+import { EventType, TaskType, TagType } from "./data-manager-types";
 import { ThingList } from "../thing/ThingList";
+import Tag from "../tag/Tag";
 
 class DataManager {
     //File paths & names
     private event_comp_file_name: string = 'event-completed-database.json';
-    private event_comp_file_path = path.join('src/database', this.event_comp_file_name);
+    private event_comp_file_path = path.join('database', this.event_comp_file_name);
     private task_comp_file_name: string = 'task-completed-database.json';
-    private task_comp_file_path = path.join('src/database', this.task_comp_file_name);
+    private task_comp_file_path = path.join('database', this.task_comp_file_name);
     private event_act_file_name: string = 'event-active-database.json';
-    private event_act_file_path = path.join('src/database', this.event_act_file_name);
+    private event_act_file_path = path.join('database', this.event_act_file_name);
     private task_act_file_name: string = 'task-active-database.json';
-    private task_act_file_path = path.join('src/database', this.task_act_file_name);
+    private task_act_file_path = path.join('database', this.task_act_file_name);
     private ids_name: string = 'ids.json';
-    private ids_file_path = path.join('src/database', this.ids_name);
+    private ids_file_path = path.join('database', this.ids_name);
+    private tags_name: string = 'tags.json';
+    private tags_file_path = path.join('database', this.tags_name);
 
 
 	///////////////// Load Calender /////////////////
@@ -272,6 +275,32 @@ class DataManager {
             console.error("Error saving ids:", error);
         }
         return [];
+    }
+
+    ///////////////// Tags /////////////////
+
+    public saveTags(tags: Array<Tag>) {
+        try {
+            let tag_objs: TagType[] = [];
+
+            for (let i = 0; i < tags.length; i++) {
+                const new_tag: TagType = {
+                    "name": tags[i].getName(),
+                    "description": tags[i].getDescription(),
+                    "color": tags[i].getColor(),
+                    "id": tags[i].id,
+                };
+
+                tag_objs.push(new_tag);
+            }
+
+            const json_data = JSON.stringify(tag_objs, null, 2);
+
+            fs.writeFileSync(this.tags_file_path, json_data);
+
+        } catch (error) {
+            console.error("Error adding tags:", error);
+        }
     }
 }
 
