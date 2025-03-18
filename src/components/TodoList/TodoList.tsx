@@ -3,7 +3,7 @@ import Task from "@/components/TodoList/Task";
 export default function TodoList() {
     return (
         <section className="bg-dark p-4 h-[95vh]">
-            <div className="relative bg-[#f0f0f0] w-[400px] h-full flex flex-col rounded-3xl overflow-auto gap-1">
+            <div className="relative bg-off-white w-[400px] h-full flex flex-col rounded-3xl overflow-auto gap-1">
                 <div className="sticky top-0 z-10 todo-header flex flex-row justify-between items-center h-16 p-8 rounded-2xl bg-white drop-shadow-md">
                     <h1 className="font-bold text-2xl">To-Do</h1>
                     <h2 className="text-lg">
