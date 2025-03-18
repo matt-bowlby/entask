@@ -1,50 +1,55 @@
-import { IdHandler } from "../calendar/IdHandler";
-import Thing from "../thing/Thing";
-import { Task, Event } from "../thing/Thing";
+import IdHandler from "./IdHandler";
 import { ThingList } from "../thing/ThingList";
+import Thing, { Task, Event } from "../thing/Thing";
 
 class Calendar {
+
+//#region Properties
+
     /**
      * The name of the Calendar.
      */
-    public name: string = "";
+    protected name: string = "";
 
     /**
      * The list of Things that have not been completed yet.
      */
-    private active: ThingList;
+    protected active: ThingList;
 
     /**
      * The list of Things that have been completed.
      */
-    private completed: ThingList;
-
-    /**
-     * The time of day that the ToDo list starts from (in milliseconds).
-     */
-    private dayStart: number = 0;
-
-    /**
-     * The duration of the "working" day (in milliseconds).
-     */
-    private dayLength: number = 86400000; // Almost 24 hours in milliseconds
+    protected completed: ThingList;
 
     /**
      * The unique identifier of the Calendar.
      */
-    readonly id: number = 0;
+    readonly id: number;
+
+//#endregion
+
+//#region Constructor
 
     /**
      * Creates an instance of Calendar.
      * @param name - The name of the Calendar.
      */
-    constructor(name: string, active_thing_list: ThingList = new ThingList, completed_thing_list: ThingList = new ThingList) {
-        this.id = IdHandler.requestId(this);
+    constructor(
+        name: string,
+        active_thing_list: ThingList = new ThingList,
+        completed_thing_list: ThingList = new ThingList,
+        customId: number = -1
+    ) {
         this.name = name;
-
         this.active = active_thing_list;
         this.completed = completed_thing_list;
+        this.id = customId !== -1 ? customId : IdHandler.requestId(this);
+        if (customId !== -1) IdHandler.registerId(this.id);
     }
+
+//#endregion
+
+//#region Public Methods
 
     /**
      * Adds a Thing to the Calendar.
@@ -71,7 +76,7 @@ class Calendar {
     public completeThing(thing: Thing): void {
         this.active.removeThing(thing);
         this.completed.addThing(thing);
-        thing.completed = true;
+        thing.setCompleted(true);
     }
 
     /**
@@ -81,58 +86,7 @@ class Calendar {
     public uncompleteThing(thing: Thing): void {
         this.completed.removeThing(thing);
         this.active.addThing(thing);
-        thing.completed = false;
-    }
-
-    /**
-     * Returns a duplicate of the list of active Things.
-     * @returns A duplicate of the active Things.
-     */
-    public getActiveThings(): ThingList {
-        return this.active.duplicate();
-    }
-
-    /**
-     * Returns a duplicate of the list of completed Things.
-     * @returns A duplicate of the completed Things.
-     */
-    public getCompletedThings(): ThingList {
-        return this.completed.duplicate();
-    }
-
-    /**
-     * Sets the start of the "working" day.
-     * @param dayStart - The start of the day (in milliseconds).
-     */
-    public setDayStart(dayStart: number): void {
-        // console.log(dayStart, 86400000 - this.dayLength)
-        // console.log(Math.max(dayStart, 0))
-        // console.log(Math.min(Math.max(dayStart, 0), 86400000 - this.dayLength))
-        this.dayStart = Math.min(Math.max(dayStart, 0), 86400000 - this.dayLength);
-    }
-
-    /**
-     * Returns the time of day that the ToDo list starts from.
-     * @returns The time of day that the ToDo list starts from (in milliseconds).
-     */
-    public getDayStart(): number {
-        return this.dayStart;
-    }
-
-    /**
-     * Sets the length of the day.
-     * @param dayLength - The length of the day in milliseconds.
-     */
-    public setDayLength(dayLength: number): void {
-        this.dayLength = Math.min(Math.max(dayLength, 0), 86400000 - this.dayStart);
-    }
-
-    /**
-     * Returns the length of the day.
-     * @returns The length of the day in milliseconds.
-     */
-    public getDayLength(): number {
-        return this.dayLength;
+        thing.setCompleted(false);
     }
 
     /**
@@ -149,8 +103,8 @@ class Calendar {
         // Sort tasks by priority.
         taskList.sort(
             (taskA: Task, taskB: Task): number => {
-                const timeLeftA: number = taskA.dueDate - relativeTo;
-                const timeLeftB: number = taskB.dueDate - relativeTo;
+                const timeLeftA: number = taskA.getDueDate() - relativeTo;
+                const timeLeftB: number = taskB.getDueDate() - relativeTo;
 
                 // Sort by time left first
                 if (timeLeftA < timeLeftB) return -1;
@@ -165,8 +119,8 @@ class Calendar {
         // Sort Events by start time.
         eventList.sort(
             (eventA: Event, eventB: Event): number => {
-                const timeLeftA: number = eventA.startTime - relativeTo;
-                const timeLeftB: number = eventB.startTime - relativeTo;
+                const timeLeftA: number = eventA.getStartTime() - relativeTo;
+                const timeLeftB: number = eventB.getStartTime() - relativeTo;
 
                 // Handle overdue tasks first
                 if (timeLeftA <= 0 || timeLeftB <= 0) {
@@ -186,7 +140,7 @@ class Calendar {
         // Combine sorted tasks and events
         let periodStart: number = relativeTo;
         while (taskList.length > 0 || eventList.length > 0) {
-            const freeTime: number = eventList.length > 0 ? eventList[0].startTime - periodStart : Infinity;
+            const freeTime: number = eventList.length > 0 ? eventList[0].getStartTime() - periodStart : Infinity;
             if (taskList.length > 0 && freeTime - taskList[0].getDuration() >= 0) {
                 // If the next task can be completed before the next event
                 newThingList.addThing(taskList[0]);
@@ -222,6 +176,47 @@ class Calendar {
         }
         return tasks;
     }
+
+//#endregion
+
+//#region Setters and Getters
+
+    /**
+     * Returns the name of the Calendar.
+     * @returns The name of the Calendar.
+     */
+    public getName(): string {
+        return this.name;
+    }
+
+    /**
+     * Sets the name of the Calendar.
+     * @param name - The new name of the Calendar.
+     */
+
+    public setName(name: string): void {
+        this.name = name;
+    }
+
+    /**
+     * Returns a duplicate of the list of active Things.
+     * @returns A duplicate of the active Things.
+     */
+    public getActiveThings(): ThingList {
+        return this.active.duplicate();
+    }
+
+    /**
+     * Returns a duplicate of the list of completed Things.
+     * @returns A duplicate of the completed Things.
+     */
+    public getCompletedThings(): ThingList {
+        return this.completed.duplicate();
+    }
+
+//#endregion
+
+//#region Json
 
 }
 

@@ -35,7 +35,7 @@ class DataManager {
     public saveEvent(event_instance:Event): void{
         try {
             let file_path;
-            if (event_instance.completed) {
+            if (event_instance.isCompleted()) {
                 file_path = this.event_comp_file_path;
             }
             else {
@@ -43,7 +43,7 @@ class DataManager {
             }
 
             const json_string = fs.readFileSync(file_path, 'utf8');
-            
+
             let events: EventType[];
             try {
                 events = JSON.parse(json_string);
@@ -52,12 +52,12 @@ class DataManager {
             }
 
             const new_event: EventType = {
-                "name": event_instance.name,
-                "completed": event_instance.completed,
-                "description": event_instance.description,
-                "startTime": event_instance.startTime,
+                "name": event_instance.getName(),
+                "completed": event_instance.isCompleted(),
+                "description": event_instance.getDescription(),
+                "startTime": event_instance.getStartTime(),
                 "duration": event_instance.getDuration(),
-                "id": event_instance.id
+                "id": event_instance.id,
             };
 
             events.push(new_event);
@@ -73,7 +73,7 @@ class DataManager {
     public deleteEvent(event_instance:Event): void {
         try {
             let file_path;
-            if (event_instance.completed) {
+            if (event_instance.isCompleted()) {
                 file_path = this.event_comp_file_path;
             }
             else {
@@ -98,16 +98,17 @@ class DataManager {
 
             for (let i = 0; i < event_objs.length; i++) {
                 let loaded_event = new Event(
-                    event_objs[i].name, 
+                    event_objs[i].name,
                     event_objs[i].duration,
-                    event_objs[i].completed,
-                    event_objs[i].description,
                     event_objs[i].startTime,
+                    event_objs[i].description,
+                    [], // TODO: Add tag loading system
+                    event_objs[i].completed,
                     event_objs[i].id
                 );
                 thing_list.addThing(loaded_event);
             }
-        } 
+        }
         catch (error) {
             console.error("Error loading events:", error);
         }
@@ -120,16 +121,17 @@ class DataManager {
 
             for (let i = 0; i < event_objs.length; i++) {
                 let loaded_event = new Event(
-                    event_objs[i].name, 
+                    event_objs[i].name,
                     event_objs[i].duration,
-                    event_objs[i].completed,
-                    event_objs[i].description,
                     event_objs[i].startTime,
+                    event_objs[i].description,
+                    [], // TODO: Add tag loading system
+                    event_objs[i].completed,
                     event_objs[i].id
                 );
                 thing_list.addThing(loaded_event);
             }
-        } 
+        }
         catch (error) {
             console.error("Error loading events:", error);
         }
@@ -140,7 +142,7 @@ class DataManager {
     public saveTask(task_instance: Task): void {
         try {
             let file_path;
-            if (task_instance.completed) {
+            if (task_instance.isCompleted()) {
                 file_path = this.task_comp_file_path;
             }
             else {
@@ -157,13 +159,13 @@ class DataManager {
             }
 
             const new_task: TaskType = {
-                "name": task_instance.name,
-                "completed": task_instance.completed,
-                "description": task_instance.description,
-                "startTime": task_instance.startTime,
+                "name": task_instance.getName(),
+                "completed": task_instance.isCompleted(),
+                "description": task_instance.getDescription(),
+                "startTime": task_instance.getStartTime(),
                 "duration": task_instance.getDuration(),
                 "id": task_instance.id,
-                "dueDate": task_instance.dueDate,
+                "dueDate": task_instance.getDueDate(),
             };
 
             tasks.push(new_task);
@@ -179,7 +181,7 @@ class DataManager {
     public deleteTask(task_instance:Task): void {
         try {
             let file_path;
-            if (task_instance.completed) {
+            if (task_instance.isCompleted()) {
                 file_path = this.task_comp_file_path;
             }
             else {
@@ -204,12 +206,13 @@ class DataManager {
 
             for (let i = 0; i < task_objs.length; i++) {
                 let loaded_task = new Task(
-                    task_objs[i].name, 
+                    task_objs[i].name,
                     task_objs[i].duration,
                     task_objs[i].dueDate,
-                    task_objs[i].completed,
-                    task_objs[i].description,
                     task_objs[i].startTime,
+                    task_objs[i].description,
+                    [], // TODO: Add tag loading system
+                    task_objs[i].completed,
                     task_objs[i].id,
                 );
                 thing_list.addThing(loaded_task);
@@ -226,12 +229,13 @@ class DataManager {
 
             for (let i = 0; i < task_objs.length; i++) {
                 let loaded_task = new Task(
-                    task_objs[i].name, 
+                    task_objs[i].name,
                     task_objs[i].duration,
                     task_objs[i].dueDate,
-                    task_objs[i].completed,
-                    task_objs[i].description,
                     task_objs[i].startTime,
+                    task_objs[i].description,
+                    [], // TODO: Add tag loading system
+                    task_objs[i].completed,
                     task_objs[i].id,
                 );
                 thing_list.addThing(loaded_task);

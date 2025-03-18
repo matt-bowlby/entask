@@ -22,7 +22,7 @@ class IdHandler {
      * @param id ID to register.
      * @throws Error if the ID is already registered.
      */
-    public static registerID(id: number): void {
+    public static registerId(id: number): void {
         if (!IdHandler.ids.includes(id)) {
             IdHandler.ids.push(id);
         } else {

@@ -8,83 +8,11 @@ describe('Calendar', () => {
     test('Creating Calendar Instance', () => {
         calendar = new Calendar('Test Calendar');
         expect(calendar).toBeInstanceOf(Calendar);
-        expect(calendar.name).toBe('Test Calendar');
+        expect(calendar.getName()).toBe('Test Calendar');
     });
 
     beforeEach(() => {
         calendar = new Calendar('Test Calendar');
-    });
-
-    describe("Day Start and Length", () => {
-        test("Default Values", () => {
-            expect(calendar.getDayStart()).toBe(0);
-            expect(calendar.getDayLength()).toBe(86400000); // 24 hours in milliseconds
-        });
-
-        // Minimum values
-        test("Minimum Values", () => {
-            calendar.setDayStart(0); // Reset to default
-            calendar.setDayLength(0); // Reset to default
-            expect(calendar.getDayStart()).toBe(0);
-            expect(calendar.getDayLength()).toBe(0);
-        });
-        // Maximum values
-        test("Maximum Values", () => {
-            calendar.setDayStart(0);
-            calendar.setDayLength(0);
-            calendar.setDayStart(86400000); // 24 hours
-            expect(calendar.getDayStart()).toBe(86400000);
-            calendar.setDayStart(0); // Reset to default
-            calendar.setDayLength(86400000); // 24 hours
-            expect(calendar.getDayLength()).toBe(86400000);
-            calendar.setDayLength(0); // Reset to default
-        });
-
-        // Negative values
-        test("Negative Values", () => {
-            calendar.setDayStart(0);
-            calendar.setDayLength(0);
-            calendar.setDayStart(-1000);
-            expect(calendar.getDayStart()).toBe(0);
-            calendar.setDayLength(-1000);
-            expect(calendar.getDayLength()).toBe(0);
-        });
-
-        test("Exceeding Limits", () => {
-            calendar.setDayStart(0);
-            calendar.setDayLength(0);
-            calendar.setDayStart(90000000); // 25 hours
-            expect(calendar.getDayStart()).toBe(86400000);
-            calendar.setDayStart(0); // Reset to default
-            calendar.setDayLength(90000000); // 25 hours
-            expect(calendar.getDayLength()).toBe(86400000);
-            calendar.setDayLength(0);
-        });
-
-        test("Sum of Day Start and Length > 24 hours", () => {
-            calendar.setDayStart(0);
-            calendar.setDayLength(0);
-
-            // Set day start to 8 hours
-            calendar.setDayStart(8 * 60 * 60 * 1000); // 8 hours
-            expect(calendar.getDayStart()).toBe(8 * 60 * 60 * 1000);
-
-            // Attempt to set day length to 17 hours (8 + 17 > 24)
-            calendar.setDayLength(17 * 60 * 60 * 1000); // 17 hours
-            expect(calendar.getDayLength()).toBe(16 * 60 * 60 * 1000);
-
-            // Reset both to 0
-            calendar.setDayLength(0);
-            calendar.setDayStart(0);
-
-            // Set day length to 17 hours
-            calendar.setDayLength(17 * 60 * 60 * 1000); // 17 hours
-            expect(calendar.getDayLength()).toBe(17 * 60 * 60 * 1000);
-
-            // Attempt to set day start to 8 hours (8 + 17 > 24)
-            calendar.setDayStart(8 * 60 * 60 * 1000); // 8 hours
-            expect(calendar.getDayStart()).toBe(7 * 60 * 60 * 1000);
-        });
     });
 
     test("Adding and Removing Things", () => {
@@ -119,19 +47,19 @@ describe('Calendar', () => {
 
         // Testing completing things
         calendar.addThing(task);
-        expect(task.completed).toBe(false);
+        expect(task.isCompleted()).toBe(false);
         expect(calendar.getActiveThings().things.length).toBe(1);
         expect(calendar.getActiveThings().things).toContain(task);
         expect(calendar.getCompletedThings().things.length).toBe(0);
         calendar.completeThing(task);
-        expect(task.completed).toBe(true);
+        expect(task.isCompleted()).toBe(true);
         expect(calendar.getActiveThings().things.length).toBe(0);
         expect(calendar.getCompletedThings().things.length).toBe(1);
         expect(calendar.getCompletedThings().things).toContain(task);
 
         // Testing uncompleting things
         calendar.uncompleteThing(task);
-        expect(task.completed).toBe(false);
+        expect(task.isCompleted()).toBe(false);
         expect(calendar.getCompletedThings().things.length).toBe(0);
         expect(calendar.getActiveThings().things.length).toBe(1);
         expect(calendar.getActiveThings().things).toContain(task);
@@ -160,9 +88,9 @@ describe('Calendar', () => {
         });
 
         test("Same Due Date, Different Duration", () => {
-            task1.dueDate = now + 3000;
+            task1.setDueDate(now + 3000);
             task1.setDuration(2000);
-            task2.dueDate = now + 3000;
+            task2.setDueDate(now + 3000);
             task2.setDuration(1000);
 
             const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
@@ -172,9 +100,9 @@ describe('Calendar', () => {
         });
 
         test ("Different Due Dates, Same Duration", () => {
-            task1.dueDate = now + 3000;
+            task1.setDueDate(now + 3000);
             task1.setDuration(2000);
-            task2.dueDate = now + 5000;
+            task2.setDueDate(now + 5000);
             task2.setDuration(2000);
 
             const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
@@ -184,9 +112,9 @@ describe('Calendar', () => {
         });
 
         test("Different Due Dates, Different Duration", () => {
-            task1.dueDate = now + 3000;
+            task1.setDueDate(now + 3000);
             task1.setDuration(2000);
-            task2.dueDate = now + 5000;
+            task2.setDueDate(now + 5000);
             task2.setDuration(2500);
 
             const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
@@ -206,9 +134,9 @@ describe('Calendar', () => {
             });
 
             test("Same Due Date, Different Duration", () => {
-                task1.dueDate = now - 2000;
+                task1.setDueDate(now - 2000);
                 task1.setDuration(2000);
-                task2.dueDate = now - 2000;
+                task2.setDueDate(now - 2000);
                 task2.setDuration(1000);
                 const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
                 expect(prioritizedTasks.things[0]).toBe(task1);
@@ -216,9 +144,9 @@ describe('Calendar', () => {
             });
 
             test("Different Due Dates, Same Duration", () => {
-                task1.dueDate = now - 2000;
+                task1.setDueDate(now - 2000);
                 task1.setDuration(2000);
-                task2.dueDate = now - 4000;
+                task2.setDueDate(now - 4000);
                 task2.setDuration(2000);
                 const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
                 expect(prioritizedTasks.things[0]).toBe(task2);
@@ -226,9 +154,9 @@ describe('Calendar', () => {
             });
 
             test("Different Due Dates, Different Duration", () => {
-                task1.dueDate = now - 2000;
+                task1.setDueDate(now - 2000);
                 task1.setDuration(2000);
-                task2.dueDate = now - 4000;
+                task2.setDueDate(now - 4000);
                 task2.setDuration(2500);
                 const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
                 expect(prioritizedTasks.things[0]).toBe(task2);
@@ -252,8 +180,8 @@ describe('Calendar', () => {
         });
 
         test("Same Start Time", () => {
-            event1.startTime = now + 3000;
-            event2.startTime = now + 3000;
+            event1.setStartTime(now + 3000);
+            event2.setStartTime(now + 3000);
 
             const prioritizedEvents = Calendar.sortByPriority(now, calendar.getActiveThings());
             expect(prioritizedEvents.things.length).toBe(2);
@@ -263,8 +191,8 @@ describe('Calendar', () => {
         });
 
         test("Different Start Times", () => {
-            event1.startTime = now + 5000;
-            event2.startTime = now + 3000;
+            event1.setStartTime(now + 5000);
+            event2.setStartTime(now + 3000);
 
             const prioritizedEvents = Calendar.sortByPriority(now, calendar.getActiveThings());
             expect(prioritizedEvents.things.length).toBe(2);
@@ -283,8 +211,8 @@ describe('Calendar', () => {
             });
 
             test("Both Events Overdue", () => {
-                event1.startTime = now - 2000;
-                event2.startTime = now - 4000;
+                event1.setStartTime(now - 2000);
+                event2.setStartTime(now - 4000);
 
                 const prioritizedEvents = Calendar.sortByPriority(now, calendar.getActiveThings());
                 // More overdue event should come first
@@ -293,8 +221,8 @@ describe('Calendar', () => {
             });
 
             test("One Event Overdue", () => {
-                event1.startTime = now + 2000;
-                event2.startTime = now - 2000;
+                event1.setStartTime(now + 2000);
+                event2.setStartTime(now - 2000);
 
                 const prioritizedEvents = Calendar.sortByPriority(now, calendar.getActiveThings());
                 // Overdue event should come first
@@ -320,8 +248,8 @@ describe('Calendar', () => {
         test("Overlapping Events", () => {
             const event1 = new Event("Event 1", 2000);
             const event2 = new Event("Event 2", 2000);
-            event1.startTime = now;
-            event2.startTime = now + 1000; // Starts before event1 ends
+            event1.setStartTime(now);
+            event2.setStartTime(now + 1000); // Starts before event1 ends
             calendar.addThing(event1);
             calendar.addThing(event2);
             const prioritized = Calendar.sortByPriority(now, calendar.getActiveThings());
@@ -345,8 +273,8 @@ describe('Calendar', () => {
         });
 
         test("Task Due During Event", () => {
-            event1.startTime = now + 3000;
-            task1.dueDate = now + 4000;
+            event1.setStartTime(now + 3000);
+            task1.setDueDate(now + 4000);
             calendar.addThing(task1);
             calendar.addThing(event1);
 
@@ -356,10 +284,10 @@ describe('Calendar', () => {
         });
 
         test("Multiple Tasks Between Events", () => {
-            event1.startTime = now;
-            event2.startTime = now + 5000;
-            task1.dueDate = now + 3000;
-            task2.dueDate = now + 4000;
+            event1.setStartTime(now);
+            event2.setStartTime(now + 5000);
+            task1.setDueDate(now + 3000);
+            task2.setDueDate(now + 4000);
 
             calendar.addThing(event1);
             calendar.addThing(event2);
@@ -374,10 +302,10 @@ describe('Calendar', () => {
         });
 
         test("Tasks That Don't Fit Between Events", () => {
-            event1.startTime = now;
-            event2.startTime = now + 1500; // Only 1500ms gap between events
+            event1.setStartTime(now);
+            event2.setStartTime(now + 1500); // Only 1500ms gap between events
             task1.setDuration(2000); // Too long to fit between events
-            task1.dueDate = now + 3000;
+            task1.setDueDate(now + 3000);
 
             calendar.addThing(event1);
             calendar.addThing(event2);
@@ -390,9 +318,9 @@ describe('Calendar', () => {
         });
 
         test("Overdue Tasks and Future Events", () => {
-            event1.startTime = now + 3000;
-            task1.dueDate = now - 1000; // Overdue
-            task2.dueDate = now - 2000; // More overdue
+            event1.setStartTime(now + 3000);
+            task1.setDueDate(now - 1000); // Overdue
+            task2.setDueDate(now - 2000); // More overdue
 
             calendar.addThing(event1);
             calendar.addThing(task1);
@@ -405,9 +333,9 @@ describe('Calendar', () => {
         });
 
         test("Overdue Events and Future Tasks", () => {
-            event1.startTime = now - 1000; // Overdue
-            event2.startTime = now - 2000; // More overdue
-            task1.dueDate = now + 3000;
+            event1.setStartTime(now - 1000); // Overdue
+            event2.setStartTime(now - 2000); // More overdue
+            task1.setDueDate(now + 3000);
 
             calendar.addThing(event1);
             calendar.addThing(event2);
@@ -420,11 +348,11 @@ describe('Calendar', () => {
         });
 
         test("Complex Mixed Scenario", () => {
-            event1.startTime = now + 1000;
-            event2.startTime = now + 5000;
-            task1.dueDate = now + 3000;
+            event1.setStartTime(now + 1000);
+            event2.setStartTime(now + 5000);
+            task1.setDueDate(now + 3000);
             task1.setDuration(1000);
-            task2.dueDate = now + 4000;
+            task2.setDueDate(now + 4000);
             task2.setDuration(1500);
 
             calendar.addThing(event1);
