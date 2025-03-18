@@ -26,4 +26,5 @@ dist-electron
 *.sw?
 
 # Custom
+.hintrc
 database
