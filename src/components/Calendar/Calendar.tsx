@@ -1,4 +1,5 @@
-import Day from "@/components/Calendar/Day";
+import { CalendarDays } from "lucide-react";
+import DayLabel from "@/components/Calendar/DayLabel";
 import Event from "@/components/Calendar/Event";
 import { useState } from "react";
 
@@ -48,8 +49,20 @@ export default function Calendar() {
         }`;
     });
     return (
-        <section className="bg-dark p-4 h-[95vh] grow overflow-hidden">
-            <div className="bg-off-white h-full rounded-3xl"></div>
+        <section id="calendar" className="bg-dark p-4 h-[95vh] grow">
+            <div className="bg-off-white h-full rounded-3xl flex flex-col overflow-hidden">
+                <div
+                    id="calendar-header"
+                    className="w-full bg-white h-[120px] flex flex-row items-center pl-4"
+                >
+                    <CalendarDays size={200} strokeWidth={1.25} />
+                    <DayLabel num={15} name="Thu" selected={true} />
+                    <DayLabel num={16} name="Fri" selected={false} />
+                    <DayLabel num={17} name="Sat" selected={false} />
+                    <DayLabel num={18} name="Sun" selected={false} />
+                    <DayLabel num={19} name="Mon" selected={false} />
+                </div>
+            </div>
         </section>
     );
 }

@@ -23,7 +23,7 @@ export default function TitleBar() {
 
                 <button
                     id="create-new-btn"
-                    className="bg-white text-black font-semibold rounded-full p-1 px-3 flex gap-1 cursor-pointer [app-region:no-drag]"
+                    className="bg-white text-black font-semibold rounded-full p-1 px-3 flex gap-1 cursor-pointer z-30 [app-region:no-drag]"
                 >
                     Create New <Plus strokeWidth={2} />
                 </button>
