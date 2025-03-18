@@ -18,10 +18,23 @@ class IdHandler {
     }
 
     /**
+     * Registers a new ID.
+     * @param id ID to register.
+     * @throws Error if the ID is already registered.
+     */
+    public static registerID(id: number): void {
+        if (!IdHandler.ids.includes(id)) {
+            IdHandler.ids.push(id);
+        } else {
+            throw new Error(`ID ${id} is already registered.`);
+        }
+    }
+
+    /**
      * Returns a new unique ID.
      * @returns A new unique ID.
      */
-    static requestId(instance: Object): number {
+    public static requestId(instance: Object): number {
         let id: number = 0;
         while (IdHandler.ids.includes(id)) {
             id++;
@@ -36,7 +49,7 @@ class IdHandler {
      * @param id ID to retrieve.
      * @returns The instance associated with the ID, or undefined if not found.
      */
-    static getInstance(id: number): Object | undefined {
+    public static getInstance(id: number): Object | undefined {
         return IdHandler.idMap.get(id);
     }
 
@@ -45,7 +58,7 @@ class IdHandler {
      * Releases an ID.
      * @param id ID to release.
      */
-    static releaseId(id: number): void {
+    public static releaseId(id: number): void {
         IdHandler.ids = IdHandler.ids.filter((value) => value !== id);
     }
 
@@ -53,9 +66,9 @@ class IdHandler {
      * Return ID list.
      * @returns ID list.
      */
-    public getIds(): Array<number> {
+    public static getIds(): Array<number> {
         return IdHandler.ids;
     }
 }
 
-export { IdHandler };
+export default IdHandler;
