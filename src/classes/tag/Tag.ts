@@ -24,6 +24,7 @@ class Tag {
 		this.description = description;
 		this.color = color;
 		this.id = customId !== -1 ? customId : IdHandler.requestId(this);
+		if (customId !== -1) IdHandler.registerId(this.id, this);
 	}
 
 	/**

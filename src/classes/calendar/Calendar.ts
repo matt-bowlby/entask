@@ -1,4 +1,5 @@
 import IdHandler from "./IdHandler";
+import Tag from "../tag/Tag";
 import { ThingList } from "../thing/ThingList";
 import Thing, { Task, Event } from "../thing/Thing";
 
@@ -22,6 +23,11 @@ class Calendar {
     protected completed: ThingList;
 
     /**
+     * The list of tags associated with the Calendar.
+     */
+    protected tags: Array<Tag> = [];
+
+    /**
      * The unique identifier of the Calendar.
      */
     readonly id: number;
@@ -38,13 +44,15 @@ class Calendar {
         name: string,
         active_thing_list: ThingList = new ThingList,
         completed_thing_list: ThingList = new ThingList,
+        tags: Array<Tag> = [],
         customId: number = -1
     ) {
         this.name = name;
         this.active = active_thing_list;
         this.completed = completed_thing_list;
+        this.tags = tags;
         this.id = customId !== -1 ? customId : IdHandler.requestId(this);
-        if (customId !== -1) IdHandler.registerId(this.id);
+        if (customId !== -1) IdHandler.registerId(this.id, this);
     }
 
 //#endregion

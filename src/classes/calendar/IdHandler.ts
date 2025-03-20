@@ -22,12 +22,11 @@ class IdHandler {
      * @param id ID to register.
      * @throws Error if the ID is already registered.
      */
-    public static registerId(id: number): void {
+    public static registerId(id: number, instance: Object): void {
         if (!IdHandler.ids.includes(id)) {
             IdHandler.ids.push(id);
-        } else {
-            throw new Error(`ID ${id} is already registered.`);
-        }
+            IdHandler.idMap.set(id, instance); // Initialize with an empty object
+        } else throw new Error(`ID ${id} is already registered.`);
     }
 
     /**
@@ -39,8 +38,7 @@ class IdHandler {
         while (IdHandler.ids.includes(id)) {
             id++;
         }
-        IdHandler.ids.push(id);
-        IdHandler.idMap.set(id, instance); // Store the instance with the ID
+        IdHandler.registerId(id, instance);
         return id;
     }
 

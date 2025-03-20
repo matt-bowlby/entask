@@ -68,7 +68,7 @@ abstract class Thing {
         this.setCompleted(completed);
         this.id = customId !== -1 ? customId : IdHandler.requestId(this);
         // Register the ID if necessary
-        if (customId !== -1) IdHandler.registerId(this.id);
+        if (customId !== -1) IdHandler.registerId(this.id, this);
     }
 
 //#endregion
