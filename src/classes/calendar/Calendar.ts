@@ -1,7 +1,6 @@
 import IdHandler from "./IdHandler";
 import Tag from "../tag/Tag";
 import TagBlock from "../tag/TagBlock";
-import { ThingList } from "../thing/ThingList";
 import Thing, { Task, Event } from "../thing/Thing";
 
 class Calendar {
@@ -16,17 +15,17 @@ class Calendar {
     /**
      * The list of Things that have not been completed yet.
      */
-    protected active: ThingList;
+    protected active: Array<Thing> = [];
 
     /**
      * The list of Things that have been completed.
      */
-    protected completed: ThingList;
+    protected completed: Array<Thing> = [];
 
     /**
      * A List that contains exclusively tagBlocks.
      */
-    protected tagBlocks: ThingList;
+    protected tagBlocks: Array<TagBlock> = [];
 
     /**
      * The list of tags associated with the Calendar.
@@ -48,9 +47,9 @@ class Calendar {
      */
     constructor(
         name: string,
-        active_thing_list: ThingList = new ThingList,
-        completed_thing_list: ThingList = new ThingList,
-        tagBlocks: ThingList = new ThingList,
+        active_thing_list: Array<Thing> = [],
+        completed_thing_list: Array<Thing> = [],
+        tagBlocks: Array<TagBlock> = [],
         tags: Array<Tag> = [],
         customId: number = -1
     ) {
@@ -73,8 +72,8 @@ class Calendar {
      */
     public addThing(...things: Array<Thing>): void {
         for (const thing of things) {
-            if (thing instanceof TagBlock) this.tagBlocks.addThing(thing);
-            else this.active.addThing(thing);
+            if (thing instanceof TagBlock) this.tagBlocks.push(thing);
+            else this.active.push(thing);
         }
     }
 
@@ -83,8 +82,8 @@ class Calendar {
      * @param thing - The Thing to remove.
      */
     public removeThing(thing: Thing): void {
-        this.active.removeThing(thing);
-        this.completed.removeThing(thing);
+        this.active = this.active.filter(activeThing => activeThing !== thing);
+        this.completed = this.completed.filter(completedThing => completedThing !== thing);
     }
 
     /**
@@ -92,8 +91,8 @@ class Calendar {
      * @param thing - The Thing to complete.
      */
     public completeThing(thing: Thing): void {
-        this.active.removeThing(thing);
-        this.completed.addThing(thing);
+        this.active = this.active.filter(activeThing => activeThing !== thing);
+        this.completed.push(thing);
         thing.setCompleted(true);
     }
 
@@ -102,21 +101,21 @@ class Calendar {
      * @param thing - The Thing to uncomplete.
      */
     public uncompleteThing(thing: Thing): void {
-        this.completed.removeThing(thing);
-        this.active.addThing(thing);
+        this.completed = this.completed.filter(completedThing => completedThing !== thing);
+        this.active.push(thing);
         thing.setCompleted(false);
     }
 
     /**
      * Sorts a list of things by their priorities relative to a certain time.
      * @param relativeTo - The point in time to sort things relative to.
-     * @param thingList - The list of things to sort.
+     * @param things - The list of things to sort.
      * @returns A sorted list of things.
      */
-    public static sortByPriority(relativeTo: number, thingList: ThingList): ThingList {
-        const newThingList: ThingList = new ThingList();
-        const taskList: Array<Task> = thingList.getTasks();
-        const eventList: Array<Event> = thingList.getEvents();
+    public static sortByPriority(relativeTo: number, things: Array<Thing>): Array<Thing> {
+        const sortedThings: Array<Thing> = [];
+        const taskList: Array<Task> = things.filter(thing => thing instanceof Task);
+        const eventList: Array<Event> = things.filter(thing => thing instanceof Event);
 
         // Sort tasks by priority.
         taskList.sort(
@@ -161,28 +160,33 @@ class Calendar {
             const freeTime: number = eventList.length > 0 ? eventList[0].getStartTime() - periodStart : Infinity;
             if (taskList.length > 0 && freeTime - taskList[0].getDuration() >= 0) {
                 // If the next task can be completed before the next event
-                newThingList.addThing(taskList[0]);
+                sortedThings.push(taskList[0]);
                 taskList.shift();
             } else if (eventList.length > 0) {
                 periodStart = eventList[0].getEndTime();
-                newThingList.addThing(eventList[0]);
+                sortedThings.push(eventList[0]);
                 eventList.shift();
             }
         }
 
-        return newThingList;
+        return sortedThings;
     }
 
     /**
      * Sorts a list of Things by their tags.
      * @param things - The list of Things to sort.
      * @param tags - The tags to sort by.
-     * @returns A new ThingList containing only the Things that have all the specified tags.
+     * @returns A new list of Things containing only the Things that have all the specified tags.
      */
-    public static sortForTags(things: ThingList, ...tags: Array<Tag>): ThingList {
-        const newThingList: ThingList = new ThingList();
-        newThingList.things = things.things.filter(thing => tags.every(tag => thing.getTags().includes(tag)))
-        return newThingList;
+    public static sortForTags(things: Array<Thing>, ...tags: Array<Tag>): Array<Thing> {
+        const sortedThings: Array<Thing> = things.filter(
+            thing =>
+                tags.every(
+                    tag =>
+                        thing.getTags().includes(tag)
+                )
+        );
+        return sortedThings;
     }
 
     /**
@@ -194,17 +198,17 @@ class Calendar {
     public getAllThingsBetween(
         from: number,
         to: number
-    ): ThingList {
+    ): Array<Thing> {
         const timeLength: number = to - from;
         const sortedActive = Calendar.sortByPriority(from, this.active);
-        const things: ThingList = new ThingList();
+        const things: Array<Thing> = [];
 
         let totalTime: number = 0;
         let i: number = 0;
-        while (totalTime <= timeLength && i < sortedActive.things.length) {
-            if (totalTime + sortedActive.things[i].getDuration() > timeLength) break;
-            things.things.push(sortedActive.things[i]);
-            totalTime += sortedActive.things[i].getDuration();
+        while (totalTime <= timeLength && i < sortedActive.length) {
+            if (totalTime + sortedActive[i].getDuration() > timeLength) break;
+            things.push(sortedActive[i]);
+            totalTime += sortedActive[i].getDuration();
             i++;
         }
 
@@ -218,15 +222,13 @@ class Calendar {
      * @param now - The current time (in milliseconds).
      * @returns A list of Things that should be done within the specified time period, obeying the current tagBlock(s).
      */
-    public getTagThingsBetween(from: number, to: number, now: number = Date.now()): ThingList {
+    public getTagThingsBetween(from: number, to: number, now: number = Date.now()): Array<Thing> {
         // Getting currently active tags
-        const activeTagBlocks: ThingList = new ThingList(
-            this.tagBlocks.things.filter(
-                (tagBlock) =>
-                    tagBlock.getEndTime() > now && tagBlock.getStartTime() < now
-            )
-        );
-        const activeTags: Array<Tag> = activeTagBlocks.things.map(
+        const activeTagBlocks: Array<Thing> = this.tagBlocks.filter(
+            (tagBlock) =>
+                tagBlock.getEndTime() > now && tagBlock.getStartTime() < now
+        )
+        const activeTags: Array<Tag> = activeTagBlocks.map(
             tagBlock =>
                 tagBlock.getTags()
         ).flat();
@@ -257,19 +259,19 @@ class Calendar {
     }
 
     /**
-     * Returns a duplicate of the list of active Things.
-     * @returns A duplicate of the active Things.
+     * Returns a reference to the list of active Things.
+     * @returns A reference of the active Things.
      */
-    public getActiveThings(): ThingList {
-        return this.active.duplicate();
+    public getActiveThings(): Array<Thing> {
+        return this.active
     }
 
     /**
-     * Returns a duplicate of the list of completed Things.
-     * @returns A duplicate of the completed Things.
+     * Returns a reference to the list of completed Things.
+     * @returns A reference of the completed Things.
      */
-    public getCompletedThings(): ThingList {
-        return this.completed.duplicate();
+    public getCompletedThings(): Array<Thing> {
+        return this.completed;
     }
 
 //#endregion

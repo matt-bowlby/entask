@@ -1,9 +1,8 @@
-import { Event, Task } from "../thing/Thing";
+import Thing, { Event, Task } from "../thing/Thing";
 import Calendar from '../calendar/Calendar';
 import * as fs from 'fs';
 import * as path from 'path';
 import { EventType, TaskType, TagType } from "./data-manager-types";
-import { ThingList } from "../thing/ThingList";
 import Tag from "../tag/Tag";
 
 class DataManager {
@@ -24,8 +23,8 @@ class DataManager {
 
 	///////////////// Load Calender /////////////////
 	public loadDatabase(calendar_name: string): Calendar { //TODO: read database and load Events and Tasks into calender type.
-        let comp_thing_list = new ThingList;
-        let act_thing_list = new ThingList;
+        let comp_thing_list: Array<Thing> = [];
+        let act_thing_list: Array<Thing> = [];
         this.loadCompletedEvents(comp_thing_list);
         this.loadCompletedTasks(comp_thing_list);
         this.loadActiveEvents(act_thing_list);
@@ -94,7 +93,7 @@ class DataManager {
         }
     }
 
-    public loadActiveEvents(thing_list: ThingList): void {
+    public loadActiveEvents(thing_list: Array<Thing>): void {
         try {
             const json_string = fs.readFileSync(this.event_act_file_path, 'utf8');
             const event_objs: EventType[] = JSON.parse(json_string);
@@ -109,7 +108,7 @@ class DataManager {
                     event_objs[i].completed,
                     event_objs[i].id
                 );
-                thing_list.addThing(loaded_event);
+                thing_list.push(loaded_event);
             }
         }
         catch (error) {
@@ -117,7 +116,7 @@ class DataManager {
         }
     }
 
-    public loadCompletedEvents(thing_list: ThingList): void {
+    public loadCompletedEvents(thing_list: Array<Thing>): void {
         try {
             const json_string = fs.readFileSync(this.event_comp_file_path, 'utf8');
             const event_objs: EventType[] = JSON.parse(json_string);
@@ -132,7 +131,7 @@ class DataManager {
                     event_objs[i].completed,
                     event_objs[i].id
                 );
-                thing_list.addThing(loaded_event);
+                thing_list.push(loaded_event);
             }
         }
         catch (error) {
@@ -202,7 +201,7 @@ class DataManager {
         }
     }
 
-    public loadActiveTasks(thing_list: ThingList): void {
+    public loadActiveTasks(thing_list: Array<Thing>): void {
         try {
             const json_string = fs.readFileSync(this.task_act_file_path, 'utf8');
             const task_objs: TaskType[] = JSON.parse(json_string);
@@ -218,14 +217,14 @@ class DataManager {
                     task_objs[i].completed,
                     task_objs[i].id,
                 );
-                thing_list.addThing(loaded_task);
+                thing_list.push(loaded_task);
             }
         } catch (error) {
             console.error("Error loading tasks:", error);
         }
     }
 
-    public loadCompletedTasks(thing_list: ThingList): void {
+    public loadCompletedTasks(thing_list: Array<Thing>): void {
         try {
             const json_string = fs.readFileSync(this.task_comp_file_path, 'utf8');
             const task_objs: TaskType[] = JSON.parse(json_string);
@@ -241,7 +240,7 @@ class DataManager {
                     task_objs[i].completed,
                     task_objs[i].id,
                 );
-                thing_list.addThing(loaded_task);
+                thing_list.push(loaded_task);
             }
         } catch (error) {
             console.error("Error loading tasks:", error);
