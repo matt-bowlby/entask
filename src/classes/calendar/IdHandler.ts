@@ -11,7 +11,7 @@ class IdHandler {
 
     /**
      * Constructor.
-     * @param current_ids load ids into IdHandler
+     * @param current_ids loads ids into IdHandler.
      */
     constructor(current_ids: Array<number>) {
         IdHandler.ids = current_ids;

@@ -1,5 +1,6 @@
 import IdHandler from "./IdHandler";
 import Tag from "../tag/Tag";
+import TagBlock from "../tag/TagBlock";
 import { ThingList } from "../thing/ThingList";
 import Thing, { Task, Event } from "../thing/Thing";
 
@@ -23,6 +24,11 @@ class Calendar {
     protected completed: ThingList;
 
     /**
+     * A List that contains exclusively tagBlocks.
+     */
+    protected tagBlocks: ThingList;
+
+    /**
      * The list of tags associated with the Calendar.
      */
     protected tags: Array<Tag> = [];
@@ -44,12 +50,14 @@ class Calendar {
         name: string,
         active_thing_list: ThingList = new ThingList,
         completed_thing_list: ThingList = new ThingList,
+        tagBlocks: ThingList = new ThingList,
         tags: Array<Tag> = [],
         customId: number = -1
     ) {
         this.name = name;
         this.active = active_thing_list;
         this.completed = completed_thing_list;
+        this.tagBlocks = tagBlocks;
         this.tags = tags;
         this.id = customId !== -1 ? customId : IdHandler.requestId(this);
         if (customId !== -1) IdHandler.registerId(this.id, this);
@@ -64,8 +72,10 @@ class Calendar {
      * @param thing - The Thing to add.
      */
     public addThing(...things: Array<Thing>): void {
-
-        this.active.addThing(...things);
+        for (const thing of things) {
+            if (thing instanceof TagBlock) this.tagBlocks.addThing(thing);
+            else this.active.addThing(thing);
+        }
     }
 
     /**
@@ -164,25 +174,65 @@ class Calendar {
     }
 
     /**
+     * Sorts a list of Things by their tags.
+     * @param things - The list of Things to sort.
+     * @param tags - The tags to sort by.
+     * @returns A new ThingList containing only the Things that have all the specified tags.
+     */
+    public static sortForTags(things: ThingList, ...tags: Array<Tag>): ThingList {
+        const newThingList: ThingList = new ThingList();
+        newThingList.things = things.things.filter(thing => tags.every(tag => thing.getTags().includes(tag)))
+        return newThingList;
+    }
+
+    /**
      * Returns a list of Things that need to be completed within a certain time period.
      * @param from - The start of the time period (in milliseconds).
-     * @param to - The end of the time period (in milliseconds).
+     * @param to - The end of the time period (in milliseconds).tagBlock.
      * @returns A list of Things that should be done within the specified time period.
      */
-    public getThingsBetween(from: number, to: number): ThingList {
+    public getAllThingsBetween(
+        from: number,
+        to: number
+    ): ThingList {
         const timeLength: number = to - from;
         const sortedActive = Calendar.sortByPriority(from, this.active);
-        const tasks: ThingList = new ThingList();
+        const things: ThingList = new ThingList();
 
         let totalTime: number = 0;
         let i: number = 0;
         while (totalTime <= timeLength && i < sortedActive.things.length) {
             if (totalTime + sortedActive.things[i].getDuration() > timeLength) break;
-            tasks.things.push(sortedActive.things[i]);
+            things.things.push(sortedActive.things[i]);
             totalTime += sortedActive.things[i].getDuration();
             i++;
         }
-        return tasks;
+
+        return things;
+    }
+
+    /**
+     * Like getAllThingsBetween, but only returns Things that obey the current tagBlock(s).
+     * @param from - The start of the time period (in milliseconds).
+     * @param to - The end of the time period (in milliseconds).
+     * @param now - The current time (in milliseconds).
+     * @returns A list of Things that should be done within the specified time period, obeying the current tagBlock(s).
+     */
+    public getTagThingsBetween(from: number, to: number, now: number = Date.now()): ThingList {
+        // Getting currently active tags
+        const activeTagBlocks: ThingList = new ThingList(
+            this.tagBlocks.things.filter(
+                (tagBlock) =>
+                    tagBlock.getEndTime() > now && tagBlock.getStartTime() < now
+            )
+        );
+        const activeTags: Array<Tag> = activeTagBlocks.things.map(
+            tagBlock =>
+                tagBlock.getTags()
+        ).flat();
+
+        // Apply tag blocks
+        return Calendar.sortForTags(this.getAllThingsBetween(from, to), ...activeTags);
     }
 
 //#endregion
