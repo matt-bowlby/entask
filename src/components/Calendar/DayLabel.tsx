@@ -10,8 +10,8 @@ export default function DayLabel({ num, name, selected }: Day) {
             <div
                 className={
                     selected
-                        ? "h-[60px] flex justify-between items-center p-2 px-4 bg-dark text-white rounded-3xl"
-                        : "h-[60px] flex justify-between items-center p-2 px-4 bg-off-white rounded-3xl"
+                        ? "h-[53px] flex justify-between items-center p-2 px-4 bg-dark text-white rounded-2xl"
+                        : "h-[53px] flex justify-between items-center p-2 px-4 bg-off-white rounded-2xl"
                 }
             >
                 <h2 className="font-black text-2xl">{num}</h2>
