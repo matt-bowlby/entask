@@ -53,7 +53,7 @@ export default function Calendar() {
             <div className="bg-off-white h-full rounded-3xl flex flex-col overflow-hidden">
                 <div
                     id="calendar-header"
-                    className="w-full bg-white h-[120px] flex flex-row items-center pl-4"
+                    className="w-full bg-white h-[120px] flex flex-row items-center pl-4 rounded-3xl drop-shadow-md"
                 >
                     <CalendarDays size={200} strokeWidth={1.25} />
                     <DayLabel num={15} name="Thu" selected={true} />
@@ -61,6 +61,27 @@ export default function Calendar() {
                     <DayLabel num={17} name="Sat" selected={false} />
                     <DayLabel num={18} name="Sun" selected={false} />
                     <DayLabel num={19} name="Mon" selected={false} />
+                </div>
+                <div
+                    id="calendar-body"
+                    className="flex pl-4 py-4 overflow-y-scroll [scrollbar-width:none] relative"
+                >
+                    <div className="w-full absolute flex flex-row items-center">
+                        <p className="absolute text-sm">9AM</p>
+                        <div className="absolute w-6xl bg-indigo-400 h-[2px] -top-[1.5px] left-9"></div>
+                    </div>
+
+                    <div className="w-full absolute flex flex-row items-center top-[100px]">
+                        <p className="absolute text-sm">10AM</p>
+                        <div className="absolute w-6xl bg-indigo-400 h-[2px] -top-[1.5px] left-9"></div>
+                    </div>
+                    <div className="w-[200px]"></div>
+
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
                 </div>
             </div>
         </section>
