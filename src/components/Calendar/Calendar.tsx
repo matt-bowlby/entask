@@ -65,17 +65,18 @@ export default function Calendar() {
                     id="calendar-body"
                     className="flex pl-4 py-4 overflow-y-scroll [scrollbar-width:none] relative"
                 >
-                    <div className="absolute w-full">
-                        <HourMarkers />
-                    </div>
 
                     <div className="w-[200px] mx-4"></div>
 
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full ml-[10px] h-column-height outline-1"></div>
+                    <div className="flex flex-col gap-2 min-w-[20px] h-column-height outline-1 outline-amber-400"></div>
+                    <div className="flex flex-col gap-2 w-full h-column-height outline-1"></div>
+                    <div className="flex flex-col gap-2 min-w-[20px] h-column-height outline-1 outline-amber-400"></div>
+                    <div className="flex flex-col gap-2 w-full h-column-height outline-1"></div>
+                    <div className="flex flex-col gap-2 min-w-[20px] h-column-height outline-1 outline-amber-400"></div>
+                    <div className="flex flex-col gap-2 w-full h-column-height outline-1"></div>
+                    <div className="flex flex-col gap-2 min-w-[20px] h-column-height outline-1 outline-amber-400"></div>
+                    <div className="flex flex-col gap-2 w-full mr-[10px] h-column-height outline-1"></div>
                 </div>
             </div>
         </section>
