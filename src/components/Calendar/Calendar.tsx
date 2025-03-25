@@ -2,6 +2,7 @@ import { CalendarDays } from "lucide-react";
 import DayLabel from "@/components/Calendar/DayLabel";
 import Event from "@/components/Calendar/Event";
 import { useState } from "react";
+import HourMarkers from "./HourMarkers";
 
 export default function Calendar() {
     const today = new Date();
@@ -42,12 +43,6 @@ export default function Calendar() {
         return { name: dayNames[date.getDay()], num: date.getDate() };
     });
 
-    const timeSlots = Array.from({ length: 24 }, (_, i) => {
-        const hour = i;
-        return `${hour > 12 || i === 0 ? Math.abs(hour - 12) : hour}:00 ${
-            hour >= 12 ? "PM" : "AM"
-        }`;
-    });
     return (
         <section id="calendar" className="bg-dark p-4 h-[95vh] grow">
             <div className="bg-off-white h-full rounded-3xl flex flex-col overflow-hidden">
@@ -55,7 +50,11 @@ export default function Calendar() {
                     id="calendar-header"
                     className="w-full bg-white h-[120px] flex flex-row items-center pl-4 rounded-3xl drop-shadow-md"
                 >
-                    <CalendarDays size={200} strokeWidth={1.25} />
+                    <CalendarDays
+                        size={200}
+                        strokeWidth={1.25}
+                        className="mx-4"
+                    />
                     <DayLabel num={15} name="Thu" selected={true} />
                     <DayLabel num={16} name="Fri" selected={false} />
                     <DayLabel num={17} name="Sat" selected={false} />
@@ -66,22 +65,17 @@ export default function Calendar() {
                     id="calendar-body"
                     className="flex pl-4 py-4 overflow-y-scroll [scrollbar-width:none] relative"
                 >
-                    <div className="w-full absolute flex flex-row items-center">
-                        <p className="absolute text-sm">9AM</p>
-                        <div className="absolute w-6xl bg-indigo-400 h-[2px] -top-[1.5px] left-9"></div>
+                    <div className="absolute w-full">
+                        <HourMarkers />
                     </div>
 
-                    <div className="w-full absolute flex flex-row items-center top-[100px]">
-                        <p className="absolute text-sm">10AM</p>
-                        <div className="absolute w-6xl bg-indigo-400 h-[2px] -top-[1.5px] left-9"></div>
-                    </div>
-                    <div className="w-[200px]"></div>
+                    <div className="w-[200px] mx-4"></div>
 
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
-                    <div className="flex flex-col gap-2 w-full mx-[10px] h-[1200px] outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
+                    <div className="flex flex-col gap-2 w-full mx-[10px] h-column-height outline-1"></div>
                 </div>
             </div>
         </section>

@@ -2,4 +2,10 @@
 @theme {
     --color-dark: #323339;
     --color-off-white: #f0f0f0;
+    --spacing-column-height: var(--column-height);
+}
+
+:root {
+    --main-bg-color: brown;
+    --column-height: 1200px;
 }
