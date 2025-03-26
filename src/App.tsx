@@ -7,7 +7,7 @@ function App() {
     return (
         <>
             <TitleBar />
-            <main className="flex max-h-[100vh] bg-dark overflow-hidden">
+            <main className="flex h-[calc(100vh-var(--title-bar-height))] bg-dark overflow-hidden">
                 <TodoList />
                 <CalendarView />
             </main>

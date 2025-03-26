@@ -44,7 +44,7 @@ export default function Calendar() {
     });
 
     return (
-        <section id="calendar" className="bg-dark p-4 h-[95vh] grow">
+        <section id="calendar" className="bg-dark p-4 grow">
             <div className="bg-off-white h-full rounded-3xl flex flex-col overflow-hidden">
                 <div
                     id="calendar-header"
@@ -65,7 +65,6 @@ export default function Calendar() {
                     id="calendar-body"
                     className="flex pl-4 py-4 overflow-y-scroll [scrollbar-width:none] relative"
                 >
-
                     <div className="w-[200px] mx-4"></div>
 
                     <div className="flex flex-col gap-2 w-full ml-[10px] h-column-height outline-1"></div>

@@ -3,7 +3,7 @@ export default function TitleBar() {
     return (
         <div
             id="title-bar"
-            className="h-[5vh] pt-3 bg-dark flex items-center [app-region:drag]"
+            className="h-title-bar pt-3 bg-dark flex items-center [app-region:drag]"
         >
             <div id="left-side" className="w-[400px] flex justify-between m-4">
                 <div className="flex gap-2">

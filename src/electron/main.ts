@@ -34,6 +34,9 @@ function createWindow() {
         },
         autoHideMenuBar: true,
         titleBarStyle: "hidden",
+        center: true,
+        minHeight: 400,
+        minWidth: 900,
         // expose window controlls in Windows/Linux
         ...(process.platform !== "darwin"
             ? {
@@ -45,6 +48,7 @@ function createWindow() {
               }
             : {}),
     });
+    win.maximize();
 
     // Test active push message to Renderer-process.
     win.webContents.on("did-finish-load", () => {
