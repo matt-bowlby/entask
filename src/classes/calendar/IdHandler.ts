@@ -10,23 +10,14 @@ class IdHandler {
     private static idMap: Map<number, Object> = new Map();
 
     /**
-     * Constructor.
-     * @param current_ids loads ids into IdHandler.
-     */
-    constructor(current_ids: Array<number>) {
-        IdHandler.ids = current_ids;
-    }
-
-    /**
-     * Registers a new ID.
+     * Registers a new ID. If ID is already registered, does nothing.
      * @param id ID to register.
-     * @throws Error if the ID is already registered.
      */
     public static registerId(id: number, instance: Object): void {
         if (!IdHandler.ids.includes(id)) {
             IdHandler.ids.push(id);
             IdHandler.idMap.set(id, instance); // Initialize with an empty object
-        } else throw new Error(`ID ${id} is already registered.`);
+        }
     }
 
     /**

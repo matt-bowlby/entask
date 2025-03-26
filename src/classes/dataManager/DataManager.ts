@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { EventType, TaskType, TagType } from "./data-manager-types";
 import Tag from "../tag/Tag";
+import IdHandler from "../calendar/IdHandler";
 
 class DataManager {
     //File paths & names
@@ -15,8 +16,6 @@ class DataManager {
     private event_act_file_path = path.join('database', this.event_act_file_name);
     private task_act_file_name: string = 'task-active-database.json';
     private task_act_file_path = path.join('database', this.task_act_file_name);
-    private ids_name: string = 'ids.json';
-    private ids_file_path = path.join('database', this.ids_name);
     private tags_name: string = 'tags.json';
     private tags_file_path = path.join('database', this.tags_name);
 
@@ -44,6 +43,10 @@ class DataManager {
                 file_path = this.event_act_file_path;
             }
 
+            if (!fs.existsSync(file_path)) {
+                fs.writeFileSync(file_path, '[]')
+            }
+
             const json_string = fs.readFileSync(file_path, 'utf8');
 
             let events: EventType[];
@@ -59,6 +62,7 @@ class DataManager {
                 "description": event_instance.getDescription(),
                 "startTime": event_instance.getStartTime(),
                 "duration": event_instance.getDuration(),
+                "tags": event_instance.getTags().map((tag) => {return tag.id}),
                 "id": event_instance.id,
             };
 
@@ -81,6 +85,11 @@ class DataManager {
             else {
                 file_path = this.event_act_file_path;
             }
+
+            if (!fs.existsSync(file_path)) {
+                fs.writeFileSync(file_path, '[]')
+            }
+
             const json_string = fs.readFileSync(file_path, 'utf8');
             const events: EventType[] = JSON.parse(json_string);
 
@@ -95,6 +104,10 @@ class DataManager {
 
     public loadActiveEvents(thing_list: Array<Thing>): void {
         try {
+            if (!fs.existsSync(this.event_act_file_path)) {
+                fs.writeFileSync(this.event_act_file_path, '[]')
+            }
+
             const json_string = fs.readFileSync(this.event_act_file_path, 'utf8');
             const event_objs: EventType[] = JSON.parse(json_string);
 
@@ -104,7 +117,7 @@ class DataManager {
                     event_objs[i].duration,
                     event_objs[i].startTime,
                     event_objs[i].description,
-                    [], // TODO: Add tag loading system
+                    event_objs[i].tags.map((tagId) => {return IdHandler.getInstance(tagId) as Tag}),
                     event_objs[i].completed,
                     event_objs[i].id
                 );
@@ -118,6 +131,10 @@ class DataManager {
 
     public loadCompletedEvents(thing_list: Array<Thing>): void {
         try {
+            if (!fs.existsSync(this.event_comp_file_path)) {
+                fs.writeFileSync(this.event_comp_file_path, '[]')
+            }
+
             const json_string = fs.readFileSync(this.event_comp_file_path, 'utf8');
             const event_objs: EventType[] = JSON.parse(json_string);
 
@@ -127,7 +144,7 @@ class DataManager {
                     event_objs[i].duration,
                     event_objs[i].startTime,
                     event_objs[i].description,
-                    [], // TODO: Add tag loading system
+                    event_objs[i].tags.map((tagIdValue) => {return IdHandler.getInstance(tagIdValue) as Tag}),
                     event_objs[i].completed,
                     event_objs[i].id
                 );
@@ -151,6 +168,10 @@ class DataManager {
                 file_path = this.task_act_file_path;
             }
 
+            if (!fs.existsSync(file_path)) {
+                fs.writeFileSync(file_path, '[]')
+            }
+
             const json_string = fs.readFileSync(file_path, 'utf8');
 
             let tasks: TaskType[];
@@ -166,6 +187,7 @@ class DataManager {
                 "description": task_instance.getDescription(),
                 "startTime": task_instance.getStartTime(),
                 "duration": task_instance.getDuration(),
+                "tags": task_instance.getTags().map((tag) => {return tag.id}),
                 "id": task_instance.id,
                 "dueDate": task_instance.getDueDate(),
             };
@@ -189,6 +211,11 @@ class DataManager {
             else {
                 file_path = this.task_act_file_path;
             }
+
+            if (!fs.existsSync(file_path)) {
+                fs.writeFileSync(file_path, '[]')
+            }
+
             const json_string = fs.readFileSync(file_path, 'utf8');
             const tasks: TaskType[] = JSON.parse(json_string);
 
@@ -203,6 +230,9 @@ class DataManager {
 
     public loadActiveTasks(thing_list: Array<Thing>): void {
         try {
+            if (!fs.existsSync(this.task_act_file_path)) {
+                fs.writeFileSync(this.task_act_file_path, '[]')
+            }
             const json_string = fs.readFileSync(this.task_act_file_path, 'utf8');
             const task_objs: TaskType[] = JSON.parse(json_string);
 
@@ -213,7 +243,7 @@ class DataManager {
                     task_objs[i].dueDate,
                     task_objs[i].startTime,
                     task_objs[i].description,
-                    [], // TODO: Add tag loading system
+                    task_objs[i].tags.map((tagIdValue) => {return IdHandler.getInstance(tagIdValue) as Tag}),
                     task_objs[i].completed,
                     task_objs[i].id,
                 );
@@ -226,6 +256,9 @@ class DataManager {
 
     public loadCompletedTasks(thing_list: Array<Thing>): void {
         try {
+            if (!fs.existsSync(this.task_comp_file_path)) {
+                fs.writeFileSync(this.task_comp_file_path, '[]')
+            }
             const json_string = fs.readFileSync(this.task_comp_file_path, 'utf8');
             const task_objs: TaskType[] = JSON.parse(json_string);
 
@@ -236,7 +269,7 @@ class DataManager {
                     task_objs[i].dueDate,
                     task_objs[i].startTime,
                     task_objs[i].description,
-                    [], // TODO: Add tag loading system
+                    task_objs[i].tags.map((tagIdValue) => {return IdHandler.getInstance(tagIdValue) as Tag}),
                     task_objs[i].completed,
                     task_objs[i].id,
                 );
@@ -249,32 +282,32 @@ class DataManager {
 
     ///////////////// ID's /////////////////
 
-    public saveIds(ids: Array<number>) {
-        try {
-            const json_data = JSON.stringify(ids);
-            fs.writeFileSync(this.ids_file_path, json_data);
-        } catch (error) {
-            console.error("Error saving ids:", error);
-        }
-    }
+    // public saveIds(ids: Array<number>) {
+    //     try {
+    //         const json_data = JSON.stringify(ids);
+    //         fs.writeFileSync(this.ids_file_path, json_data);
+    //     } catch (error) {
+    //         console.error("Error saving ids:", error);
+    //     }
+    // }
 
-    public loadIds(): Array<number> {
-        try {
-            const json_string = fs.readFileSync(this.ids_file_path, 'utf8');
-            let ids: Array<number>;
+    // public loadIds(): Array<number> {
+    //     try {
+    //         const json_string = fs.readFileSync(this.ids_file_path, 'utf8');
+    //         let ids: Array<number>;
 
-            try {
-                ids = JSON.parse(json_string);
-            } catch (error) {
-                ids = [];
-            }
+    //         try {
+    //             ids = JSON.parse(json_string);
+    //         } catch (error) {
+    //             ids = [];
+    //         }
 
-            return ids;
-        } catch (error) {
-            console.error("Error saving ids:", error);
-        }
-        return [];
-    }
+    //         return ids;
+    //     } catch (error) {
+    //         console.error("Error saving ids:", error);
+    //     }
+    //     return [];
+    // }
 
     ///////////////// Tags /////////////////
 

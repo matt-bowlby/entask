@@ -4,6 +4,7 @@ type EventType = {
     description: string,
     startTime: number,
     duration: number,
+    tags: Array<number>,
     id: number
 };
 
@@ -13,7 +14,8 @@ type TaskType = {
     description: string,
     startTime: number,
     duration: number,
-    id: number
+    tags: Array<number>,
+    id: number,
     dueDate: number
 };
 
