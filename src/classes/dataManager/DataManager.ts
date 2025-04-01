@@ -24,11 +24,14 @@ class DataManager {
 	public loadDatabase(calendar_name: string): Calendar { //TODO: read database and load Events and Tasks into calender type.
         let comp_thing_list: Array<Thing> = [];
         let act_thing_list: Array<Thing> = [];
+        let tag_list: Array<Tag> = [];
+
+        this.loadTags(tag_list);
         this.loadCompletedEvents(comp_thing_list);
         this.loadCompletedTasks(comp_thing_list);
         this.loadActiveEvents(act_thing_list);
         this.loadActiveTasks(act_thing_list);
-		const dataCalendar = new Calendar(calendar_name, act_thing_list, comp_thing_list);
+		const dataCalendar = new Calendar(calendar_name, act_thing_list, comp_thing_list, undefined, tag_list);
 		return (dataCalendar);
 	}
 
@@ -332,6 +335,29 @@ class DataManager {
 
         } catch (error) {
             console.error("Error adding tags:", error);
+        }
+    }
+
+    public loadTags(tags:Array<Tag>) {
+        try {
+            if (!fs.existsSync(this.tags_file_path)) {
+                fs.writeFileSync(this.tags_file_path, '[]')
+            }
+            const json_string = fs.readFileSync(this.tags_file_path, 'utf8');
+            const tags_objs: TagType[] = JSON.parse(json_string);
+
+            for (let i = 0; i < tags_objs.length; i++) {
+                let loaded_tag = new Tag(
+                    tags_objs[i].name,
+                    tags_objs[i].description,
+                    tags_objs[i].color,
+                    tags_objs[i].id,
+                );
+
+                tags.push(loaded_tag);
+            }
+        } catch (error) {
+            console.error("Error loading tags:", error);
         }
     }
 }
