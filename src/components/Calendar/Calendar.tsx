@@ -56,7 +56,7 @@ export default function CalendarView({
                                     <p className="text-sm text-nowrap -translate-y-2">
                                         {item}
                                     </p>
-                                    <div className="border-b-[1px] w-full h-0 shrink-0"></div>
+                                    <div className="border-b-[1px] w-full h-0"></div>
                                 </div>
                             ))}
                         </div>
