@@ -7,9 +7,9 @@ function App() {
     return (
         <>
             <TitleBar />
-            <main className="flex h-[calc(100vh-var(--title-bar-height))] bg-dark overflow-hidden">
+            <main className="flex h-[calc(100vh-var(--title-bar-height))] bg-dark p-4 gap-4 overflow-hidden">
                 <TodoList />
-                <CalendarView />
+                <CalendarView numDaysInView={5} />
             </main>
         </>
     );
