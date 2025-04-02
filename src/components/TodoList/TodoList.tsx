@@ -14,7 +14,7 @@ export default function TodoList({ calendar }: TodoListProps) {
     const dayEnd: Date = new Date();
     dayEnd.setHours(23, 59, 59, 999);
 
-    const activeThings = calendar.getAllThingsBetween(dayStart.getMilliseconds(), dayEnd.getMilliseconds());
+    const activeThings = calendar.getAllThingsBetween(dayStart.getTime(), dayEnd.getTime());
 
     return (
         <section className="bg-dark">
@@ -26,7 +26,7 @@ export default function TodoList({ calendar }: TodoListProps) {
                         <h2 className="text-regular text-base select-none">{dayNames[dayStart.getDay()]}</h2>
                     </div>
                 </div>
-                <div className="flex-col overflow-auto gap-2">
+                <div className="flex-col overflow-auto gap-2 p-2">
                     {Array.from({length: activeThings.length }, (_, i) =>  {
                         if (activeThings[i] instanceof Task) {
                             return <TodoTaskComponent key={i} task={activeThings[i]} />;
