@@ -8,6 +8,7 @@ interface TodoListProps {
 }
 
 export default function TodoList({ calendar }: TodoListProps) {
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const dayStart: Date = new Date();
     dayStart.setHours(0, 0, 0, 0);
     const dayEnd: Date = new Date();
@@ -21,8 +22,8 @@ export default function TodoList({ calendar }: TodoListProps) {
                 <div className="sticky top-0 z-10 todo-header flex flex-row justify-between items-center h-16 p-8 rounded-2xl bg-white drop-shadow-md">
                     <h1 className="font-bold text-2xl">To-Do</h1>
                     <h2 className="text-lg">
-                        <span className="font-bold text-2xl">13 </span>
-                        Thu
+                        <span className="font-bold text-2xl">{dayStart.getDate()} </span>
+                        {dayNames[dayStart.getDay()]}
                     </h2>
                 </div>
                 <div className="flex-col overflow-auto pb-2">
