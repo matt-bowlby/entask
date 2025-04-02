@@ -35,6 +35,51 @@ class DataManager {
 		return (dataCalendar);
 	}
 
+    public saveDatabaseOverwrite(calendar_instance: Calendar) {
+        this.clearDatabase();
+
+        //save tags first
+
+        const act_thing_list = calendar_instance.getActiveThings();
+        const comp_thing_list = calendar_instance.getCompletedThings();
+
+        for (let i = 0; i < act_thing_list.length; i++) {
+            if (act_thing_list[i] instanceof Event) {
+                this.saveEvent(act_thing_list[i] as Event);
+            }
+            else if (act_thing_list[i] instanceof Task) {
+                this.saveTask(act_thing_list[i] as Task);
+            }
+        }
+
+        for (let i = 0; i < comp_thing_list.length; i++) {
+            if (comp_thing_list[i] instanceof Event) {
+                this.saveEvent(comp_thing_list[i] as Event);
+            }
+            else if (comp_thing_list[i] instanceof Task) {
+                this.saveTask(comp_thing_list[i] as Task);
+            }
+        }
+    }
+
+    public clearDatabase() {
+        if (fs.existsSync(this.event_act_file_path)) {
+            fs.writeFileSync(this.event_act_file_path, '[]')
+        }
+        if (fs.existsSync(this.event_comp_file_path)) {
+            fs.writeFileSync(this.event_comp_file_path, '[]')
+        }
+        if (fs.existsSync(this.task_act_file_path)) {
+            fs.writeFileSync(this.task_act_file_path, '[]')
+        }
+        if (fs.existsSync(this.task_comp_file_path)) {
+            fs.writeFileSync(this.task_comp_file_path, '[]')
+        }
+        if (fs.existsSync(this.tags_file_path)) {
+            fs.writeFileSync(this.tags_file_path, '[]')
+        }
+    }
+
 	///////////////// Events /////////////////
     public saveEvent(event_instance:Event): void{
         try {
@@ -360,6 +405,10 @@ class DataManager {
             console.error("Error loading tags:", error);
         }
     }
+
+    ///////////////// TagBlocks /////////////////
+
+
 }
 
 export default DataManager;

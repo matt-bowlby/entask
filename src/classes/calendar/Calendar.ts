@@ -274,6 +274,14 @@ class Calendar {
         return this.completed;
     }
 
+    /**
+     * Returns a reference to the list of Tags.
+     * @returns A reference of the Tags.
+     */
+    public getTags(): Array<Tag> {
+        return this.tags;
+    }
+
 //#endregion
 
 //#region Json
