@@ -47,14 +47,14 @@ export default function TodoTaskComponent({ task }: TaskProps) {
                 {isComplete ? (
                     <CheckSquare2
                         size={32}
-                        strokeWidth={1.5}
+                        strokeWidth={1}
                         className="cursor-pointer text-dark"
                         onClick={handleToggleComplete}
                     />
                 ) : (
                     <Square
                         size={32}
-                        strokeWidth={1.5}
+                        strokeWidth={1}
                         className="cursor-pointer text-dark"
                         onClick={handleToggleComplete}
                     />
