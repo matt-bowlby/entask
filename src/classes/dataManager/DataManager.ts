@@ -38,10 +38,11 @@ class DataManager {
     public saveDatabaseOverwrite(calendar_instance: Calendar) {
         this.clearDatabase();
 
-        //save tags first
-
+        const tag_list = calendar_instance.getTags();
         const act_thing_list = calendar_instance.getActiveThings();
         const comp_thing_list = calendar_instance.getCompletedThings();
+
+        this.saveTags(tag_list);
 
         for (let i = 0; i < act_thing_list.length; i++) {
             if (act_thing_list[i] instanceof Event) {
