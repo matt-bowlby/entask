@@ -18,15 +18,15 @@ export default function TodoList({ calendar }: TodoListProps) {
 
     return (
         <section className="bg-dark">
-            <div className="relative bg-off-white w-[400px] h-full flex flex-col rounded-3xl overflow-auto gap-1">
-                <div className="sticky top-0 z-10 todo-header flex flex-row justify-between items-center h-16 p-8 rounded-2xl bg-white drop-shadow-md">
-                    <h1 className="font-bold text-2xl">To-Do</h1>
-                    <h2 className="text-lg">
-                        <span className="font-bold text-2xl">{dayStart.getDate()} </span>
-                        {dayNames[dayStart.getDay()]}
-                    </h2>
+            <div className="relative bg-off-white w-[400px] h-full flex flex-col rounded-xl overflow-auto">
+                <div className="sticky top-0 z-10 todo-header flex flex-row justify-between items-center h-14 p-4 bg-white drop-shadow-md">
+                    <h1 className="font-bold text-xl select-none">To-Do</h1>
+                    <div className="flex flex-row gap-2 items-center justify-center">
+                        <h1 className="font-bold text-xl select-none">{dayStart.getDate()}</h1>
+                        <h2 className="text-regular text-base select-none">{dayNames[dayStart.getDay()]}</h2>
+                    </div>
                 </div>
-                <div className="flex-col overflow-auto pb-2">
+                <div className="flex-col overflow-auto gap-2">
                     {Array.from({length: activeThings.length }, (_, i) =>  {
                         if (activeThings[i] instanceof Task) {
                             return <TodoTaskComponent key={i} task={activeThings[i]} />;

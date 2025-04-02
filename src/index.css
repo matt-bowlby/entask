@@ -10,6 +10,9 @@
 @theme {
     --color-dark: #323339;
     --color-off-white: #f0f0f0;
+    --color-accent-1: #7FB4DA;
+    --color-accent-2: #5ED27D;
+    --color-accent-3: #DE6C50;
     --spacing-column-height: var(--column-height);
     --spacing-title-bar: var(--title-bar-height);
     --default-font-family: "Onest", sans-serif;
@@ -17,6 +20,6 @@
 
 :root {
     --main-bg-color: brown;
-    --column-height: 1200px;
+    --column-height: 2000px;
     --title-bar-height: 40px;
 }

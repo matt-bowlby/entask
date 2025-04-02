@@ -3,18 +3,18 @@ export default function TitleBar() {
     return (
         <div
             id="title-bar"
-            className="h-title-bar pt-3 bg-dark flex items-center [app-region:drag]"
+            className="h-title-bar pt-2 bg-dark flex items-center [app-region:drag] pl-2"
         >
-            <div id="left-side" className="w-[400px] flex justify-between m-4">
-                <div className="flex gap-2">
+            <div id="left-side" className="w-[400px] flex justify-between">
+                <div className="flex gap-2 items-center justify-center">
                     <Image
-                        size={32}
+                        size={30}
                         color="white"
                         strokeWidth={1}
                         className="cursor-pointer [app-region:no-drag]"
                     />
                     <Settings
-                        size={32}
+                        size={30}
                         color="white"
                         strokeWidth={1}
                         className="cursor-pointer [app-region:no-drag]"
@@ -23,9 +23,9 @@ export default function TitleBar() {
 
                 <button
                     id="create-new-btn"
-                    className="bg-white text-black font-semibold rounded-full p-1 px-3 flex gap-1 cursor-pointer z-30 [app-region:no-drag]"
+                    className="bg-white text-black font-semibold rounded-md p-1 px-3 flex gap-1 cursor-pointer z-30 text-sm [app-region:no-drag] items-center justify-center select-none"
                 >
-                    Create New <Plus strokeWidth={2} />
+                    Create New <Plus size={16} strokeWidth={2} />
                 </button>
             </div>
             <div
@@ -39,7 +39,7 @@ export default function TitleBar() {
                         strokeWidth={1.5}
                         className="cursor-pointer [app-region:no-drag]"
                     />
-                    <span className="text-lg font-semibold">Today</span>
+                    <h2 className="text-base font-regular cursor-pointer [app-region:no-drag] select-none">Today</h2>
                     <ChevronRight
                         size={24}
                         color="white"
@@ -47,10 +47,10 @@ export default function TitleBar() {
                         className="cursor-pointer [app-region:no-drag]"
                     />
                 </div>
-
-                <h2 className="font-bold text-2xl">
-                    September <span className="font-semibold">2025</span>
-                </h2>
+                <div className="flex flex-row items-center justify-center gap-2 select-none">
+                    <h1 className="font-bold text-lg">September</h1>
+                    <h1 className="font-regular text-lg">2025</h1>
+                </div>
             </div>
         </div>
     );

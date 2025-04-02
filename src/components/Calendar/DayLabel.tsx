@@ -9,17 +9,19 @@ export default function DayLabel({ date }: Day) {
             <div
                 className={
                     date.getDate() === (new Date()).getDate()
-                        ? "h-[53px] flex justify-between items-center p-2 px-4 bg-dark text-white rounded-2xl"
-                        : "h-[53px] flex justify-between items-center p-2 px-4 bg-off-white rounded-2xl"
+                        ? "h-[40px] flex justify-between items-center p-2 px-4 bg-dark text-white rounded-md"
+                        : "h-[40px] flex justify-between items-center p-2 px-4 bg-off-white rounded-md"
                 }
             >
-                <h2 className="font-black text-2xl">{date.getDate()}</h2>
-                <p className="font-semibold text-xl">{dayNames[date.getDay()]}</p>
+                <h2 className="font-bold text-xl select-none">{date.getDate()}</h2>
+                <p className="font-regular text-base select-none">{dayNames[date.getDay()]}</p>
             </div>
-            <div className="w-5/6 self-center rounded-full h-2 overflow-hidden flex flex-row">
-                <div className="w-full bg-red-200"></div>
-                <div className="w-full bg-blue-200"></div>
-                <div className="w-full bg-green-200"></div>
+            <div className="px-2">
+                <div className="w-full self-center rounded-full h-2 overflow-hidden flex flex-row">
+                    <div className="w-full bg-accent-1"></div>
+                    <div className="w-full bg-accent-2"></div>
+                    <div className="w-full bg-accent-3"></div>
+                </div>
             </div>
         </div>
     );
