@@ -117,7 +117,7 @@ function CalendarHeader({
     return (
         <div
             id="calendar-header"
-            className="w-full bg-white flex flex-row items-center p-2 gap-2 drop-shadow-md"
+            className="w-full bg-white flex flex-row items-center p-2 gap-2 drop-shadow-md z-10"
         >
             <div className="flex flex-col gap-2 w-10 h-full items-center justify-center flex-shrink-0">
                 <CalendarDays size={30} strokeWidth={1.25} />
