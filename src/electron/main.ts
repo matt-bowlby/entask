@@ -33,7 +33,22 @@ function createWindow() {
             preload: path.join(__dirname, "preload.mjs"),
         },
         autoHideMenuBar: true,
+        titleBarStyle: "hidden",
+        center: true,
+        minHeight: 400,
+        minWidth: 900,
+        // expose window controlls in Windows/Linux
+        ...(process.platform !== "darwin"
+            ? {
+                  titleBarOverlay: {
+                      color: "#323339",
+                      symbolColor: "white",
+                      height: 40,
+                  },
+              }
+            : {}),
     });
+    win.maximize();
 
     // Test active push message to Renderer-process.
     win.webContents.on("did-finish-load", () => {
