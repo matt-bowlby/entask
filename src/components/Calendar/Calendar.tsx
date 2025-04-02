@@ -2,7 +2,7 @@ import { CalendarDays } from "lucide-react";
 import DayLabel from "@/components/Calendar/DayLabel";
 import Calendar from "../../classes/calendar/Calendar";
 import EventComponent from "@/components/Calendar/EventComponent";
-import { Event } from "@/classes/thing/Thing";
+import Thing, { Event } from "@/classes/thing/Thing";
 import { useState } from "react";
 
 interface CalendarInterface {
@@ -18,59 +18,25 @@ export default function CalendarView({
 }: CalendarInterface) {
     const dates: Array<Date> = [];
     for (let i = 0; i < numDaysInView; i++) {
-        dates.push(new Date(Date.now() + (i + dayOffset) * 24 * 60 * 60 * 1000));
+        const newDate = new Date(Date.now() + (i + dayOffset) * 24 * 60 * 60 * 1000);
+        newDate.setHours(0, 0, 0, 0);
+        dates.push(newDate);
     }
 
-    // Create base date for today (April 1, 2025)
-    const today = new Date();
-    today.setHours(9, 0, 0, 0); // Start at 9:00 AM
-
-    // Helper function to create an event with time offset
-    function createEventWithOffset(
-        name: string,
-        description: string,
-        baseTime: Date,
-        hoursOffset: number,
-        durationMs: number,
-        completed: boolean = false
-    ): Event {
-        const eventTime = new Date(
-            baseTime.getTime() + hoursOffset * 60 * 60 * 1000
-        );
-        const event = new Event(name, durationMs);
-        event.setDescription(description);
-        event.setStartTime(eventTime.getTime());
-        event.setCompleted(completed);
-        return event;
+    const events: Array<Array<Thing>> = [];
+    for (let i = 0; i < numDaysInView; i++) {
+        events.push(calendar.getActiveThings().filter((thing) => {
+            console.log(dates[i].getTime());
+            if (thing.getStartTime() !== 0) {
+                if (thing.getStartTime() >= dates[i].getTime() && thing.getStartTime() < dates[i].getTime() + 24 * 60 * 60 * 1000) {
+                    return true;
+                }
+                return false;
+            }
+        }));
     }
 
-    // Create events using your existing Event class
-    const [events, setEvents] = useState([
-        createEventWithOffset(
-            "Morning Run",
-            "A refreshing 5K run in the park.",
-            today,
-            0, // 0 hours offset = 9:00 AM
-            3600000, // 1 hour in milliseconds
-            false
-        ),
-        createEventWithOffset(
-            "Team Meeting",
-            "Weekly sync-up with the development team.",
-            today,
-            2, // 2 hours after 9:00 AM = 11:00 AM
-            5400000, // 1.5 hours in milliseconds
-            true
-        ),
-        createEventWithOffset(
-            "Lunch with Sarah",
-            "Catching up over sushi.",
-            today,
-            4, // 4 hours after 9:00 AM = 1:00 PM
-            3600000, // 1 hour in milliseconds
-            false
-        ),
-    ]);
+    const [eventsList, setEventsList] = useState<Array<Array<Thing>>>(events);
 
     return (
         <section id="calendar" className="bg-dark grow">
@@ -78,7 +44,7 @@ export default function CalendarView({
                 <CalendarHeader numDaysInView={numDaysInView} dates={dates} />
                 <div
                     id="calendar-body"
-                    className="flex p-2 gap-2 overflow-y-scroll [scrollbar-width:none] relative"
+                    className="flex p-2 pt-4 gap-2 overflow-y-scroll [scrollbar-width:none] relative"
                 >
                     <HourMarkers />
                     <div className="w-10 flex-shrink-0 h-column-height"></div>
@@ -89,10 +55,10 @@ export default function CalendarView({
                                     key={i}
                                     className="flex flex-col w-full h-column-height relative"
                                 >
-                                    {events.map((item, i) => {
+                                    {eventsList[i].map((item, j) => {
                                         return (
                                             <EventComponent
-                                                key={i}
+                                                key={j}
                                                 event={item}
                                             />
                                         );
@@ -132,7 +98,7 @@ function CalendarHeader({
 }
 
 function HourMarkers() {
-    const timeSlots = Array.from({ length: 24 }, (_, i) => {
+    const timeSlots = Array.from({ length: 25 }, (_, i) => {
         const hour = i;
         return `${hour > 12 || i === 0 ? Math.abs(hour - 12) : hour} ${
             hour >= 12 ? "PM" : "AM"
