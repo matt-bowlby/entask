@@ -16,7 +16,7 @@ export default function EventComponent({ event }: EventProps) {
 
     return (
         <div
-            className="bg-cyan-100 rounded-lg absolute left-0 right-0 flex-col p-2"
+            className="bg-white rounded-lg absolute left-0 right-0 flex-col p-2"
             style={{
                 top: `${
                     50 * date.getHours() +

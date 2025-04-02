@@ -17,23 +17,22 @@ export default function TodoList({ calendar }: TodoListProps) {
     const activeThings = calendar.getAllThingsBetween(dayStart.getTime(), dayEnd.getTime());
 
     return (
-        <section className="bg-dark">
-            <div className="relative resize-x bg-off-white min-w-[200px] max-w-[960px] w-[400px] h-full flex flex-col rounded-xl overflow-auto">
-                <div className="sticky top-0 z-10 todo-header flex flex-row justify-between items-center h-14 p-4 bg-white drop-shadow-md">
-                    <h1 className="font-bold text-xl select-none">To-Do</h1>
-                    <div className="flex flex-row gap-2 items-center justify-center">
-                        <h1 className="font-bold text-xl select-none">{dayStart.getDate()}</h1>
-                        <h2 className="text-regular text-base select-none">{dayNames[dayStart.getDay()]}</h2>
-                    </div>
-                </div>
-                <div className="flex flex-col overflow-auto gap-2 p-2">
-                    {Array.from({length: activeThings.length }, (_, i) =>  {
-                        if (activeThings[i] instanceof Task) {
-                            return <TodoTaskComponent key={i} task={activeThings[i]} />;
-                        }
-                    })}
+        <div className="relative resize-x bg-off-white min-w-[260px] max-w-[960px] w-[400px] h-full flex flex-col rounded-xl overflow-auto">
+            <div className="sticky top-0 z-10 todo-header flex flex-row justify-between items-center h-14 p-4 bg-white drop-shadow-md">
+                <h1 className="font-bold text-xl select-none text-dark">To-Do</h1>
+                <div className="flex flex-row gap-2 items-center justify-center">
+                    <h1 className="font-bold text-xl select-none text-dark">{dayStart.getDate()}</h1>
+                    <h2 className="text-regular text-base select-none text-dark">{dayNames[dayStart.getDay()]}</h2>
                 </div>
             </div>
-        </section>
+            <div className="flex flex-col overflow-auto gap-2 p-2 [scrollbar-width:none]">
+                {Array.from({length: activeThings.length }, (_, i) =>  {
+                    if (activeThings[i] instanceof Task) {
+                        return <TodoTaskComponent key={i} task={activeThings[i]} />;
+                    }
+
+                })}
+            </div>
+        </div>
     );
 }

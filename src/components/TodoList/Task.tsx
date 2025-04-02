@@ -31,16 +31,16 @@ export default function TodoTaskComponent({ task }: TaskProps) {
             </div>
             <div className="flex flex-col gap-2 w-full">
                 <div className="flex flex-col">
-                    <h3 className="font-bold text-base">{task.getName()}</h3>
-                    <p className="text-gray-600 text-sm">
+                    <h3 className="font-bold text-base text-dark">{task.getName()}</h3>
+                    <p className="text-dark text-sm">
                         {(task.getDuration() / 1000 / 60 / 60) + " hrs"}
                     </p>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-dark text-sm">
                         {"Due in " + (task.getTimeUntilDue() / 1000 / 60 / 60) + " hrs"}
                     </p>
                 </div>
                 {task.getDescription().length > 0 && (
-                    <p className="text-gray-600 text-sm">{task.getDescription()}</p>
+                    <p className="text-dark text-sm">{task.getDescription()}</p>
                 )}
             </div>
             <div className="flex justify-center items-center">
@@ -48,14 +48,14 @@ export default function TodoTaskComponent({ task }: TaskProps) {
                     <CheckSquare2
                         size={32}
                         strokeWidth={1.5}
-                        className="cursor-pointer"
+                        className="cursor-pointer text-dark"
                         onClick={handleToggleComplete}
                     />
                 ) : (
                     <Square
                         size={32}
                         strokeWidth={1.5}
-                        className="cursor-pointer"
+                        className="cursor-pointer text-dark"
                         onClick={handleToggleComplete}
                     />
                 )}

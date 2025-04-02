@@ -122,7 +122,7 @@ function CalendarHeader({
             <div className="flex flex-col gap-2 w-10 h-full items-center justify-center flex-shrink-0">
                 <CalendarDays size={30} strokeWidth={1.25} />
             </div>
-            <div className="flex flex-row gap-2 w-full">
+            <div className="flex flex-row gap-2 w-full text-dark">
                 {Array.from({ length: numDaysInView }, (_, i) => {
                     return <DayLabel key={i} date={dates[i]} />;
                 })}
@@ -150,11 +150,11 @@ function HourMarkers() {
                         }}
                     >
                         <div className="w-10 flex-shrink-0 flex justify-center">
-                            <p className="text-xs text-nowrap -translate-y-2">
+                            <p className="text-xs text-nowrap -translate-y-2 text-[#00000088]">
                                 {item}
                             </p>
                         </div>
-                        <div className="border-b-[1px] w-full h-0"></div>
+                        <div className="border-b-[#00000022] border-b-[1px] w-full h-0"></div>
                     </div>
                 ))}
             </div>
