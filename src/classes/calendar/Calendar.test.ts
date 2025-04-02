@@ -16,7 +16,7 @@ describe('Calendar', () => {
     });
 
     test("Adding and Removing Things", () => {
-        expect(calendar.getActiveThings().things.length).toBe(0);
+        expect(calendar.getActiveThings().length).toBe(0);
 
         const task = new Task("Task 1", 0);
         const event = new Event("Event 1");
@@ -24,53 +24,53 @@ describe('Calendar', () => {
         // Testing adding things
         calendar.addThing(task);
         calendar.addThing(event);
-        expect(calendar.getActiveThings().things.length).toBe(2);
-        expect(calendar.getActiveThings().things).toContain(task);
-        expect(calendar.getActiveThings().things).toContain(event);
+        expect(calendar.getActiveThings().length).toBe(2);
+        expect(calendar.getActiveThings()).toContain(task);
+        expect(calendar.getActiveThings()).toContain(event);
 
         // Testing removing things
         calendar.removeThing(task);
-        expect(calendar.getActiveThings().things.length).toBe(1);
-        expect(calendar.getActiveThings().things).not.toContain(task);
-        expect(calendar.getActiveThings().things).toContain(event);
+        expect(calendar.getActiveThings().length).toBe(1);
+        expect(calendar.getActiveThings()).not.toContain(task);
+        expect(calendar.getActiveThings()).toContain(event);
         calendar.removeThing(event);
-        expect(calendar.getActiveThings().things.length).toBe(0);
-        expect(calendar.getActiveThings().things).not.toContain(event);
-        expect(calendar.getActiveThings().things).not.toContain(task);
+        expect(calendar.getActiveThings().length).toBe(0);
+        expect(calendar.getActiveThings()).not.toContain(event);
+        expect(calendar.getActiveThings()).not.toContain(task);
     });
 
     test("Completing Things", () => {
-        expect(calendar.getCompletedThings().things.length).toBe(0);
-        expect(calendar.getActiveThings().things.length).toBe(0);
+        expect(calendar.getCompletedThings().length).toBe(0);
+        expect(calendar.getActiveThings().length).toBe(0);
 
         const task = new Task("Task 1", 0);
 
         // Testing completing things
         calendar.addThing(task);
         expect(task.isCompleted()).toBe(false);
-        expect(calendar.getActiveThings().things.length).toBe(1);
-        expect(calendar.getActiveThings().things).toContain(task);
-        expect(calendar.getCompletedThings().things.length).toBe(0);
+        expect(calendar.getActiveThings().length).toBe(1);
+        expect(calendar.getActiveThings()).toContain(task);
+        expect(calendar.getCompletedThings().length).toBe(0);
         calendar.completeThing(task);
         expect(task.isCompleted()).toBe(true);
-        expect(calendar.getActiveThings().things.length).toBe(0);
-        expect(calendar.getCompletedThings().things.length).toBe(1);
-        expect(calendar.getCompletedThings().things).toContain(task);
+        expect(calendar.getActiveThings().length).toBe(0);
+        expect(calendar.getCompletedThings().length).toBe(1);
+        expect(calendar.getCompletedThings()).toContain(task);
 
         // Testing uncompleting things
         calendar.uncompleteThing(task);
         expect(task.isCompleted()).toBe(false);
-        expect(calendar.getCompletedThings().things.length).toBe(0);
-        expect(calendar.getActiveThings().things.length).toBe(1);
-        expect(calendar.getActiveThings().things).toContain(task);
+        expect(calendar.getCompletedThings().length).toBe(0);
+        expect(calendar.getActiveThings().length).toBe(1);
+        expect(calendar.getActiveThings()).toContain(task);
 
         // Testing removing completed things
         calendar.completeThing(task);
-        expect(calendar.getCompletedThings().things.length).toBe(1);
-        expect(calendar.getCompletedThings().things).toContain(task);
+        expect(calendar.getCompletedThings().length).toBe(1);
+        expect(calendar.getCompletedThings()).toContain(task);
         calendar.removeThing(task);
-        expect(calendar.getCompletedThings().things.length).toBe(0);
-        expect(calendar.getActiveThings().things.length).toBe(0);
+        expect(calendar.getCompletedThings().length).toBe(0);
+        expect(calendar.getActiveThings().length).toBe(0);
     });
 
     describe("Testing Task Prioritization", () => {
@@ -84,7 +84,7 @@ describe('Calendar', () => {
             task2 = new Task("Task 2", 0);
             calendar.addThing(task1);
             calendar.addThing(task2);
-            expect(calendar.getActiveThings().things.length).toBe(2);
+            expect(calendar.getActiveThings().length).toBe(2);
         });
 
         test("Same Due Date, Different Duration", () => {
@@ -94,9 +94,9 @@ describe('Calendar', () => {
             task2.setDuration(1000);
 
             const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritizedTasks.things.length).toBe(2);
-            expect(prioritizedTasks.things[0]).toBe(task1);
-            expect(prioritizedTasks.things[1]).toBe(task2);
+            expect(prioritizedTasks.length).toBe(2);
+            expect(prioritizedTasks[0]).toBe(task1);
+            expect(prioritizedTasks[1]).toBe(task2);
         });
 
         test ("Different Due Dates, Same Duration", () => {
@@ -106,9 +106,9 @@ describe('Calendar', () => {
             task2.setDuration(2000);
 
             const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritizedTasks.things.length).toBe(2);
-            expect(prioritizedTasks.things[0]).toBe(task1);
-            expect(prioritizedTasks.things[1]).toBe(task2);
+            expect(prioritizedTasks.length).toBe(2);
+            expect(prioritizedTasks[0]).toBe(task1);
+            expect(prioritizedTasks[1]).toBe(task2);
         });
 
         test("Different Due Dates, Different Duration", () => {
@@ -118,9 +118,9 @@ describe('Calendar', () => {
             task2.setDuration(2500);
 
             const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritizedTasks.things.length).toBe(2);
-            expect(prioritizedTasks.things[0]).toBe(task1);
-            expect(prioritizedTasks.things[1]).toBe(task2);
+            expect(prioritizedTasks.length).toBe(2);
+            expect(prioritizedTasks[0]).toBe(task1);
+            expect(prioritizedTasks[1]).toBe(task2);
         });
 
         describe("Overdue Tasks", () => {
@@ -139,8 +139,8 @@ describe('Calendar', () => {
                 task2.setDueDate(now - 2000);
                 task2.setDuration(1000);
                 const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
-                expect(prioritizedTasks.things[0]).toBe(task1);
-                expect(prioritizedTasks.things[1]).toBe(task2);
+                expect(prioritizedTasks[0]).toBe(task1);
+                expect(prioritizedTasks[1]).toBe(task2);
             });
 
             test("Different Due Dates, Same Duration", () => {
@@ -149,8 +149,8 @@ describe('Calendar', () => {
                 task2.setDueDate(now - 4000);
                 task2.setDuration(2000);
                 const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
-                expect(prioritizedTasks.things[0]).toBe(task2);
-                expect(prioritizedTasks.things[1]).toBe(task1);
+                expect(prioritizedTasks[0]).toBe(task2);
+                expect(prioritizedTasks[1]).toBe(task1);
             });
 
             test("Different Due Dates, Different Duration", () => {
@@ -159,8 +159,8 @@ describe('Calendar', () => {
                 task2.setDueDate(now - 4000);
                 task2.setDuration(2500);
                 const prioritizedTasks = Calendar.sortByPriority(now, calendar.getActiveThings());
-                expect(prioritizedTasks.things[0]).toBe(task2);
-                expect(prioritizedTasks.things[1]).toBe(task1);
+                expect(prioritizedTasks[0]).toBe(task2);
+                expect(prioritizedTasks[1]).toBe(task1);
             });
         });
     });
@@ -176,7 +176,7 @@ describe('Calendar', () => {
             event2 = new Event("Event 2", 1000);
             calendar.addThing(event1);
             calendar.addThing(event2);
-            expect(calendar.getActiveThings().things.length).toBe(2);
+            expect(calendar.getActiveThings().length).toBe(2);
         });
 
         test("Same Start Time", () => {
@@ -184,10 +184,10 @@ describe('Calendar', () => {
             event2.setStartTime(now + 3000);
 
             const prioritizedEvents = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritizedEvents.things.length).toBe(2);
+            expect(prioritizedEvents.length).toBe(2);
             // Events with same start time should maintain original order
-            expect(prioritizedEvents.things[0]).toBe(event1);
-            expect(prioritizedEvents.things[1]).toBe(event2);
+            expect(prioritizedEvents[0]).toBe(event1);
+            expect(prioritizedEvents[1]).toBe(event2);
         });
 
         test("Different Start Times", () => {
@@ -195,10 +195,10 @@ describe('Calendar', () => {
             event2.setStartTime(now + 3000);
 
             const prioritizedEvents = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritizedEvents.things.length).toBe(2);
+            expect(prioritizedEvents.length).toBe(2);
             // Earlier start time should come first
-            expect(prioritizedEvents.things[0]).toBe(event2);
-            expect(prioritizedEvents.things[1]).toBe(event1);
+            expect(prioritizedEvents[0]).toBe(event2);
+            expect(prioritizedEvents[1]).toBe(event1);
         });
 
         describe("Overdue Events", () => {
@@ -216,8 +216,8 @@ describe('Calendar', () => {
 
                 const prioritizedEvents = Calendar.sortByPriority(now, calendar.getActiveThings());
                 // More overdue event should come first
-                expect(prioritizedEvents.things[0]).toBe(event2);
-                expect(prioritizedEvents.things[1]).toBe(event1);
+                expect(prioritizedEvents[0]).toBe(event2);
+                expect(prioritizedEvents[1]).toBe(event1);
             });
 
             test("One Event Overdue", () => {
@@ -226,8 +226,8 @@ describe('Calendar', () => {
 
                 const prioritizedEvents = Calendar.sortByPriority(now, calendar.getActiveThings());
                 // Overdue event should come first
-                expect(prioritizedEvents.things[0]).toBe(event2);
-                expect(prioritizedEvents.things[1]).toBe(event1);
+                expect(prioritizedEvents[0]).toBe(event2);
+                expect(prioritizedEvents[1]).toBe(event1);
             });
         });
     });
@@ -237,7 +237,7 @@ describe('Calendar', () => {
             const task = new Task("Zero Task", 0);
             calendar.addThing(task);
             const prioritized = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritized.things).toContain(task);
+            expect(prioritized).toContain(task);
         });
 
         test("Negative Duration Task", () => {
@@ -253,8 +253,8 @@ describe('Calendar', () => {
             calendar.addThing(event1);
             calendar.addThing(event2);
             const prioritized = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritized.things[0]).toBe(event1);
-            expect(prioritized.things[1]).toBe(event2);
+            expect(prioritized[0]).toBe(event1);
+            expect(prioritized[1]).toBe(event2);
         });
     });
 
@@ -279,8 +279,8 @@ describe('Calendar', () => {
             calendar.addThing(event1);
 
             const prioritized = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritized.things[0]).toBe(task1);
-            expect(prioritized.things[1]).toBe(event1);
+            expect(prioritized[0]).toBe(task1);
+            expect(prioritized[1]).toBe(event1);
         });
 
         test("Multiple Tasks Between Events", () => {
@@ -295,10 +295,10 @@ describe('Calendar', () => {
             calendar.addThing(task2);
 
             const prioritized = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritized.things[0]).toBe(event1);
-            expect(prioritized.things[1]).toBe(task1);
-            expect(prioritized.things[2]).toBe(task2);
-            expect(prioritized.things[3]).toBe(event2);
+            expect(prioritized[0]).toBe(event1);
+            expect(prioritized[1]).toBe(task1);
+            expect(prioritized[2]).toBe(task2);
+            expect(prioritized[3]).toBe(event2);
         });
 
         test("Tasks That Don't Fit Between Events", () => {
@@ -312,9 +312,9 @@ describe('Calendar', () => {
             calendar.addThing(task1);
 
             const prioritized = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritized.things[0]).toBe(event1);
-            expect(prioritized.things[1]).toBe(event2);
-            expect(prioritized.things[2]).toBe(task1);
+            expect(prioritized[0]).toBe(event1);
+            expect(prioritized[1]).toBe(event2);
+            expect(prioritized[2]).toBe(task1);
         });
 
         test("Overdue Tasks and Future Events", () => {
@@ -327,9 +327,9 @@ describe('Calendar', () => {
             calendar.addThing(task2);
 
             const prioritized = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritized.things[0]).toBe(task2);
-            expect(prioritized.things[1]).toBe(task1);
-            expect(prioritized.things[2]).toBe(event1);
+            expect(prioritized[0]).toBe(task2);
+            expect(prioritized[1]).toBe(task1);
+            expect(prioritized[2]).toBe(event1);
         });
 
         test("Overdue Events and Future Tasks", () => {
@@ -342,9 +342,9 @@ describe('Calendar', () => {
             calendar.addThing(task1);
 
             const prioritized = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritized.things[0]).toBe(event2);
-            expect(prioritized.things[1]).toBe(event1);
-            expect(prioritized.things[2]).toBe(task1);
+            expect(prioritized[0]).toBe(event2);
+            expect(prioritized[1]).toBe(event1);
+            expect(prioritized[2]).toBe(task1);
         });
 
         test("Complex Mixed Scenario", () => {
@@ -361,10 +361,10 @@ describe('Calendar', () => {
             calendar.addThing(task2);
 
             const prioritized = Calendar.sortByPriority(now, calendar.getActiveThings());
-            expect(prioritized.things[0]).toBe(task1);
-            expect(prioritized.things[1]).toBe(event1);
-            expect(prioritized.things[2]).toBe(task2);
-            expect(prioritized.things[3]).toBe(event2);
+            expect(prioritized[0]).toBe(task1);
+            expect(prioritized[1]).toBe(event1);
+            expect(prioritized[2]).toBe(task2);
+            expect(prioritized[3]).toBe(event2);
         });
     });
 });
