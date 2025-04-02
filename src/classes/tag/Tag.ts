@@ -10,19 +10,19 @@ class Tag {
 	 */
 	protected description: string = "";
 	/**
-	 * The color of the tag.
+	 * The color of the tag in hexadecimal, without the '#' character.
 	 */
-	protected color: string = "#000000";
+	protected color: string = "000000";
 
 	/**
 	 * The unique identifier of the tag.
 	 */
 	readonly id: number;
 
-	constructor(name: string, description: string = "", color: string = "#000000", customId: number = -1) {
+	constructor(name: string, description: string = "", color: string = "000000", customId: number = -1) {
 		this.name = name;
-		this.description = description;
-		this.color = color;
+		this.setDescription(description);
+		this.setColor(color);
 		this.id = customId !== -1 ? customId : IdHandler.requestId(this);
 		if (customId !== -1) IdHandler.registerId(this.id, this);
 	}
@@ -64,12 +64,13 @@ class Tag {
 	 * @param color
 	 */
 	public setColor(color: string): void {
+		if (color.substring(0, 1) === "#") color = color.substring(1);
 		this.color = color;
 	}
 
 	/**
-	 * Gets the color of the tag.
-	 * @returns The color of the tag.
+	 * Gets the color of the tag in hexadecimal, without the '#' character.
+	 * @returns The color of the tag in hexadecimal, without the '#' character.
 	 */
 	public getColor(): string {
 		return this.color;
