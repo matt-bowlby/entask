@@ -1,6 +1,8 @@
 import { CalendarDays } from "lucide-react";
 import DayLabel from "@/components/Calendar/DayLabel";
 import Calendar from "../../classes/calendar/Calendar";
+import EventComponent from "@/components/Calendar/EventComponent";
+import { Event } from "@/classes/thing/Thing";
 import { useState } from "react";
 
 interface CalendarInterface {
@@ -23,6 +25,57 @@ export default function CalendarView({
             hour >= 12 ? "PM" : "AM"
         }`;
     });
+
+    // Create base date for today (April 1, 2025)
+    const today = new Date();
+    today.setHours(9, 0, 0, 0); // Start at 9:00 AM
+
+    // Helper function to create an event with time offset
+    function createEventWithOffset(
+        name: string,
+        description: string,
+        baseTime: Date,
+        hoursOffset: number,
+        durationMs: number,
+        completed: boolean = false
+    ): Event {
+        const eventTime = new Date(
+            baseTime.getTime() + hoursOffset * 60 * 60 * 1000
+        );
+        const event = new Event(name, durationMs);
+        event.description = description;
+        event.startTime = eventTime.getTime();
+        event.completed = completed;
+        return event;
+    }
+
+    // Create events using your existing Event class
+    const [events, setEvents] = useState([
+        createEventWithOffset(
+            "Morning Run",
+            "A refreshing 5K run in the park.",
+            today,
+            0, // 0 hours offset = 9:00 AM
+            3600000, // 1 hour in milliseconds
+            false
+        ),
+        createEventWithOffset(
+            "Team Meeting",
+            "Weekly sync-up with the development team.",
+            today,
+            2, // 2 hours after 9:00 AM = 11:00 AM
+            5400000, // 1.5 hours in milliseconds
+            true
+        ),
+        createEventWithOffset(
+            "Lunch with Sarah",
+            "Catching up over sushi.",
+            today,
+            4, // 4 hours after 9:00 AM = 1:00 PM
+            3600000, // 1 hour in milliseconds
+            false
+        ),
+    ]);
 
     return (
         <section id="calendar" className="bg-dark grow">
@@ -67,8 +120,17 @@ export default function CalendarView({
                             return (
                                 <div
                                     key={i}
-                                    className="flex flex-col w-full h-column-height outline-1"
-                                ></div>
+                                    className="flex flex-col w-full h-column-height relative"
+                                >
+                                    {events.map((item, i) => {
+                                        return (
+                                            <EventComponent
+                                                key={i}
+                                                event={item}
+                                            />
+                                        );
+                                    })}
+                                </div>
                             );
                         })}
                     </div>
