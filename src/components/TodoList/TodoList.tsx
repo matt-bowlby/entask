@@ -1,6 +1,20 @@
-import Task from "@/components/TodoList/Task";
+import TodoTaskComponent from "@/components/TodoList/Task";
+import Calendar from "@/classes/calendar/Calendar";
+import { Task } from "@/classes/thing/Thing";
 // import TodoEvent from "@/components/TodoList/TodoEvent";
-export default function TodoList() {
+
+interface TodoListProps {
+    calendar: Calendar;
+}
+
+export default function TodoList({ calendar }: TodoListProps) {
+    const dayStart: Date = new Date();
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd: Date = new Date();
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const activeThings = calendar.getThingsBetween(dayStart.getMilliseconds(), dayEnd.getMilliseconds());
+
     return (
         <section className="bg-dark">
             <div className="relative bg-off-white w-[400px] h-full flex flex-col rounded-3xl overflow-auto gap-1">
@@ -12,16 +26,11 @@ export default function TodoList() {
                     </h2>
                 </div>
                 <div className="flex-col overflow-auto pb-2">
-                    <Task></Task>
-                    <Task></Task>
-                    <Task></Task>
-                    <Task></Task>
-                    <Task></Task>
-                    <Task></Task>
-                    <Task></Task>
-                    <Task></Task>
-                    <Task></Task>
-                    <Task></Task>
+                    {Array.from({length: activeThings.length() }, (_, i) =>  {
+                        if (activeThings.things[i] instanceof Task) {
+                            return <TodoTaskComponent key={i} task={activeThings.things[i]} />;
+                        }
+                    })}
                 </div>
             </div>
         </section>
