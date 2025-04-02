@@ -14,11 +14,11 @@ export default function TodoTaskComponent( { task }: TaskProps) {
             </div>
             <div className="overflow-clip flex flex-col">
                 <h3 className="font-bold text-xl">
-                    {task.name}
+                    {task.getName()}
                 </h3>
                 <p className="text-gray-600">{(task.getDuration() / 1000 / 60 / 60) + " hrs"}</p>
                 <p className="text-gray-600">{"Due in " + (task.getTimeUntilDue() / 1000 / 60 / 60) + " hrs"}</p>
-                <p className="text-gray-600">{task.description}</p>
+                <p className="text-gray-600">{task.getDescription()}</p>
             </div>
             <ChevronDown className="absolute right-4 bottom-2 cursor-pointer" />
         </div>

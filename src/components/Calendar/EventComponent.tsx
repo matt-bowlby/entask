@@ -5,7 +5,7 @@ interface EventProps {
 }
 
 export default function EventComponent({ event }: EventProps) {
-    const date = new Date(event.startTime);
+    const date = new Date(event.getStartTime());
 
     function msToHours(milliseconds: number) {
         return milliseconds / (1000 * 60 * 60);
@@ -25,9 +25,9 @@ export default function EventComponent({ event }: EventProps) {
                 height: `${msToHours(event.getDuration()) * 50}px`,
             }}
         >
-            <h1 className="font-black font-2xl">{event.name}</h1>
-            <p className="text-xs">{event.description}</p>
-            {event.completed ? (
+            <h1 className="font-black font-2xl">{event.getName()}</h1>
+            <p className="text-xs">{event.getDescription()}</p>
+            {event.isCompleted() ? (
                 <div className="h-8 w-8 absolute right-0 bottom-0">✅</div>
             ) : (
                 <div className="h-8 w-8 absolute right-0 bottom-0">❌</div>

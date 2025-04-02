@@ -43,9 +43,9 @@ export default function CalendarView({
             baseTime.getTime() + hoursOffset * 60 * 60 * 1000
         );
         const event = new Event(name, durationMs);
-        event.description = description;
-        event.startTime = eventTime.getTime();
-        event.completed = completed;
+        event.setDescription(description);
+        event.setStartTime(eventTime.getTime());
+        event.setCompleted(completed);
         return event;
     }
 
