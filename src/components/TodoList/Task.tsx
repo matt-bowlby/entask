@@ -1,6 +1,7 @@
 import { CheckSquare2, Square } from "lucide-react";
 import React from "react";
 import Thing, { Task, Event } from "../../classes/thing/Thing";
+import { msToTimeString } from "@/utils/msToTimeString";
 
 interface TaskProps {
     task: Task;
@@ -15,7 +16,7 @@ export default function TodoTaskComponent({ task }: TaskProps) {
     };
 
     return (
-        <div className="bg-white h-auto max-w-full p-2 flex rounded-xl gap-4 relative">
+        <div className="bg-white h-auto max-w-full drop-shadow-md  p-2 flex rounded-xl gap-2 relative">
             <div className="tag-bar min-w-2 rounded-full overflow-hidden flex flex-col">
                 {task.getTags().length === 0 ? (
                     <div className="w-full h-full bg-dark"></div>
@@ -33,10 +34,10 @@ export default function TodoTaskComponent({ task }: TaskProps) {
                 <div className="flex flex-col">
                     <h3 className="font-bold text-base text-dark">{task.getName()}</h3>
                     <p className="text-dark text-sm">
-                        {(task.getDuration() / 1000 / 60 / 60) + " hrs"}
+                        {msToTimeString(task.getDuration())}
                     </p>
-                    <p className="text-dark text-sm">
-                        {"Due in " + (task.getTimeUntilDue() / 1000 / 60 / 60) + " hrs"}
+                    <p className={`text-dark text-sm`}>
+                        {"Due in " + msToTimeString(task.getTimeUntilDue())}
                     </p>
                 </div>
                 {task.getDescription().length > 0 && (
