@@ -1,5 +1,5 @@
 import { CalendarDays } from "lucide-react";
-import DayLabel from "@/components/Calendar/DayLabel";
+import DayLabel from "@/components/Calendar/DayLabelComponent";
 import Calendar from "../../classes/calendar/Calendar";
 import EventComponent from "@/components/Calendar/EventComponent";
 import Thing, { Event } from "@/classes/thing/Thing";
