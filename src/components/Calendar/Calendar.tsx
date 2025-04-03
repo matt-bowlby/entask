@@ -18,22 +18,30 @@ export default function CalendarView({
 }: CalendarInterface) {
     const dates: Array<Date> = [];
     for (let i = 0; i < numDaysInView; i++) {
-        const newDate = new Date(Date.now() + (i + dayOffset) * 24 * 60 * 60 * 1000);
+        const newDate = new Date(
+            Date.now() + (i + dayOffset) * 24 * 60 * 60 * 1000
+        );
         newDate.setHours(0, 0, 0, 0);
         dates.push(newDate);
     }
 
     const events: Array<Array<Thing>> = [];
     for (let i = 0; i < numDaysInView; i++) {
-        events.push(calendar.getActiveThings().filter((thing) => {
-            console.log(dates[i].getTime());
-            if (thing.getStartTime() !== 0) {
-                if (thing.getStartTime() >= dates[i].getTime() && thing.getStartTime() < dates[i].getTime() + 24 * 60 * 60 * 1000) {
-                    return true;
+        events.push(
+            calendar.getActiveThings().filter((thing) => {
+                console.log(dates[i].getTime());
+                if (thing.getStartTime() !== 0) {
+                    if (
+                        thing.getStartTime() >= dates[i].getTime() &&
+                        thing.getStartTime() <
+                            dates[i].getTime() + 24 * 60 * 60 * 1000
+                    ) {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        }));
+            })
+        );
     }
 
     const [eventsList, setEventsList] = useState<Array<Array<Thing>>>(events);
@@ -105,7 +113,7 @@ function HourMarkers() {
         }`;
     });
     return (
-        <div className="absolute top-0 right-0 left-0 h-column-height p-2 py-4">
+        <div className="absolute top-0 right-0 left-0 h-column-height p-2 py-4 select-none">
             <div className="relative">
                 {timeSlots.map((item, i) => (
                     <div

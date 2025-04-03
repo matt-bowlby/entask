@@ -10,9 +10,9 @@
 @theme {
     --color-dark: #323339;
     --color-off-white: #f0f0f0;
-    --color-accent-1: #7FB4DA;
-    --color-accent-2: #5ED27D;
-    --color-accent-3: #DE6C50;
+    --color-accent-1: #7fb4da;
+    --color-accent-2: #5ed27d;
+    --color-accent-3: #de6c50;
     --spacing-column-height: var(--column-height);
     --spacing-title-bar: var(--title-bar-height);
     --default-font-family: "Onest", sans-serif;
