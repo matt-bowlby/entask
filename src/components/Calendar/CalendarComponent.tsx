@@ -1,9 +1,13 @@
 import { CalendarDays } from "lucide-react";
-import DayLabel from "@/components/Calendar/DayLabelComponent";
-import Calendar from "../../classes/calendar/Calendar";
-import EventComponent from "@/components/Calendar/EventComponent";
-import Thing, { Event } from "@/classes/thing/Thing";
 import { useState } from "react";
+
+import { meridiem } from "@/utils/timeString";
+
+import Thing, { Event } from "@/classes/thing/Thing";
+import Calendar from "../../classes/calendar/Calendar";
+
+import DayLabel from "@/components/Calendar/DayLabelComponent";
+import EventComponent from "@/components/Calendar/CalendarEventComponent";
 
 interface CalendarInterface {
     calendar: Calendar;
@@ -107,10 +111,7 @@ function CalendarHeader({
 
 function HourMarkers() {
     const timeSlots = Array.from({ length: 25 }, (_, i) => {
-        const hour = i;
-        return `${hour > 12 || i === 0 ? Math.abs(hour - 12) : hour} ${
-            hour >= 12 ? "PM" : "AM"
-        }`;
+        return (meridiem(i, 0)); // 0 minutes for simplicity
     });
     return (
         <div className="absolute top-0 right-0 left-0 h-column-height p-2 py-4 select-none">

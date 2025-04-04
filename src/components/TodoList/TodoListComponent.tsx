@@ -1,4 +1,4 @@
-import TodoTaskComponent from "@/components/TodoList/Component";
+import TodoTaskComponent from "@/components/TodoList/TodoTaskComponent";
 import Calendar from "@/classes/calendar/Calendar";
 import { Task } from "@/classes/thing/Thing";
 // import TodoEvent from "@/components/TodoList/TodoEvent";

@@ -1,4 +1,4 @@
-export function msToTimeString(ms: number, abbreviate: boolean = false): string {
+export function msDurationToString(ms: number, abbreviate: boolean = false): string {
 	const years: number = Math.floor(Math.abs(ms) / (1000 * 60 * 60 * 24 * 365));
 	const months: number = Math.floor((Math.abs(ms) % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
 	const weeks: number = Math.floor((Math.abs(ms) % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24 * 7));
@@ -12,4 +12,12 @@ export function msToTimeString(ms: number, abbreviate: boolean = false): string 
 	if (days > 0) return `${days}${abbreviate ? "d" : ` day${ days != 1 ? 's' : ''}`}`;
 	if (hours > 0) return `${hours}${abbreviate ? "h" : ` hour${ hours != 1 ? 's' : ''}`}`;
 	return `${minutes}${abbreviate ? "m" : ` minute${ minutes != 1 ? 's' : ''}`}`;
+}
+
+export function military(hour: number, minute: number): string {
+	return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+}
+
+export function meridiem(hour: number, minute: number, includeMeridiem: boolean = true): string {
+	return `${hour % 12 || 12}${minute == 0 ? "" : ":" + minute.toString().padStart(2, '0')} ${hour % 24 >= 12 ? (includeMeridiem ? "pm" : "") : (includeMeridiem ? "am" : "")}`;
 }

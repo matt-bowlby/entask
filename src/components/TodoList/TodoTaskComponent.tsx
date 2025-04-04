@@ -1,7 +1,7 @@
 import { CheckSquare2, Square } from "lucide-react";
 import React from "react";
-import Thing, { Task, Event } from "../../classes/thing/Thing";
-import { msToTimeString } from "@/utils/msToTimeString";
+import { Task } from "../../classes/thing/Thing";
+import { msDurationToString } from "@/utils/timeString";
 
 interface TaskProps {
     task: Task;
@@ -14,6 +14,9 @@ export default function TodoTaskComponent({ task }: TaskProps) {
         task.setCompleted(!task.isCompleted());
         setIsComplete(!isComplete);
     };
+
+    const pastDue = task.getDueDate() < Date.now();
+    const isClose = task.getDuration() > (task.getDueDate() - Date.now());
 
     return (
         <div className="bg-white h-auto max-w-full drop-shadow-md  p-2 flex rounded-xl gap-2 relative">
@@ -34,10 +37,16 @@ export default function TodoTaskComponent({ task }: TaskProps) {
                 <div className="flex flex-col">
                     <h3 className="font-bold text-base text-dark">{task.getName()}</h3>
                     <p className="text-dark text-sm">
-                        {msToTimeString(task.getDuration())}
+                        {msDurationToString(task.getDuration())}
                     </p>
-                    <p className={`text-dark text-sm`}>
-                        {"Due in " + msToTimeString(task.getTimeUntilDue())}
+                    <p className={`text-sm ${isClose ? "text-red-500" : "text-dark"}`}>
+                        {
+                            (pastDue ? (
+                                "Due " + msDurationToString(task.getTimeUntilDue()) + " ago"
+                            ) : (
+                                "Due in " + msDurationToString(task.getTimeUntilDue())
+                            ))
+                        }
                     </p>
                 </div>
                 {task.getDescription().length > 0 && (
