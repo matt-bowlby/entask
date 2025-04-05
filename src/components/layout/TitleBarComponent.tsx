@@ -1,5 +1,11 @@
 import { Image, Settings, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+
+import { useCalendarOffsetStore } from "@/store/calendarStore";
+
 export default function TitleBar() {
+    const { incrementDayOffset, decrementDayOffset } = useCalendarOffsetStore();
+    const { setDayOffset } = useCalendarOffsetStore();
+
     return (
         <div
             id="title-bar"
@@ -38,13 +44,20 @@ export default function TitleBar() {
                         color="white"
                         strokeWidth={1.5}
                         className="cursor-pointer [app-region:no-drag]"
+                        onClick={incrementDayOffset}
                     />
-                    <h2 className="text-base font-regular cursor-pointer [app-region:no-drag] select-none">Today</h2>
+                    <h2
+                        className="text-base font-regular cursor-pointer [app-region:no-drag] select-none"
+                        onClick={() => setDayOffset(0)} // Reset to today when clicked
+                    >
+                        Today
+                    </h2>
                     <ChevronRight
                         size={24}
                         color="white"
                         strokeWidth={1.5}
                         className="cursor-pointer [app-region:no-drag]"
+                        onClick={decrementDayOffset}
                     />
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2 select-none">

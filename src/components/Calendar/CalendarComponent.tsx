@@ -1,5 +1,7 @@
 import { CalendarDays } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+
+import { useCalendarOffsetStore } from "@/store/calendarStore";
 
 import { meridiem } from "@/utils/timeString";
 
@@ -15,40 +17,44 @@ interface CalendarInterface {
     dayOffset: number;
 }
 
-export default function CalendarView({
+const CalendarView = ({
     calendar,
     numDaysInView = 5,
-    dayOffset = 0,
-}: CalendarInterface) {
-    const dates: Array<Date> = [];
-    for (let i = 0; i < numDaysInView; i++) {
-        const newDate = new Date(
-            Date.now() + (i + dayOffset) * 24 * 60 * 60 * 1000
-        );
-        newDate.setHours(0, 0, 0, 0);
-        dates.push(newDate);
-    }
+}: CalendarInterface) => {
+    const dayOffset = useCalendarOffsetStore((state) => state.dayOffset);
 
-    const events: Array<Array<Thing>> = [];
-    for (let i = 0; i < numDaysInView; i++) {
-        events.push(
-            calendar.getActiveThings().filter((thing) => {
-                console.log(dates[i].getTime());
-                if (thing.getStartTime() !== 0) {
-                    if (
-                        thing.getStartTime() >= dates[i].getTime() &&
-                        thing.getStartTime() <
-                            dates[i].getTime() + 24 * 60 * 60 * 1000
-                    ) {
-                        return true;
+    // Memoize the dates array
+    const dates = useMemo(() => {
+        const calculatedDates: Array<Date> = [];
+        for (let i = 0; i < numDaysInView; i++) {
+            const newDate = new Date(
+                Date.now() + (i + dayOffset) * 24 * 60 * 60 * 1000
+            );
+            newDate.setHours(0, 0, 0, 0);
+            calculatedDates.push(newDate);
+        }
+        return calculatedDates;
+    }, [dayOffset, numDaysInView]);
+
+    const [eventsList, setEventsList] = useState<Thing[][]>([]);
+
+    useEffect(() => {
+        const events: Thing[][] = [];
+        for (let i = 0; i < numDaysInView; i++) {
+            events.push(
+                calendar.getActiveThings().filter((thing) => {
+                    if (thing.getStartTime() !== 0) {
+                        return (
+                            thing.getStartTime() >= dates[i].getTime() &&
+                            thing.getStartTime() <
+                                dates[i].getTime() + 24 * 60 * 60 * 1000
+                        );
                     }
-                    return false;
-                }
-            })
-        );
-    }
-
-    const [eventsList, setEventsList] = useState<Array<Array<Thing>>>(events);
+                })
+            );
+        }
+        setEventsList(events);
+    }, [calendar, dates, numDaysInView]); // Dependencies to re-run the effect
 
     return (
         <section id="calendar" className="bg-dark grow">
@@ -67,7 +73,7 @@ export default function CalendarView({
                                     key={i}
                                     className="flex flex-col w-full h-column-height relative"
                                 >
-                                    {eventsList[i].map((item, j) => {
+                                    {(eventsList[i] || []).map((item, j) => {
                                         return (
                                             <EventComponent
                                                 key={j}
@@ -136,3 +142,5 @@ function HourMarkers() {
         </div>
     );
 }
+
+export default CalendarView;
