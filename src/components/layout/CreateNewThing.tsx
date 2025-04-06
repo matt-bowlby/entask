@@ -1,6 +1,6 @@
 
 import { useState } from 'react'
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
+import { Dialog, DialogBackdrop, DialogPanel} from '@headlessui/react'
 import {Plus } from "lucide-react";
 
 export default function AddNew({ open, onClose }: { open: boolean; onClose: () => void }) {

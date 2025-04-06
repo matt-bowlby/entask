@@ -1,10 +1,12 @@
 import { Image, Settings, Plus, ChevronLeft, ChevronRight } from "lucide-react";
-
+import AddNew from "@/components/layout/CreateNewThing";
+import { useState } from "react";
 import { useCalendarOffsetStore } from "@/store/calendarStore";
 
 export default function TitleBar() {
     const { incrementDayOffset, decrementDayOffset } = useCalendarOffsetStore();
     const { setDayOffset } = useCalendarOffsetStore();
+	const [openCreate, setOpenCreate] = useState(false)
 
     return (
         <div
@@ -30,6 +32,7 @@ export default function TitleBar() {
                 <button
                     id="create-new-btn"
                     className="bg-white text-black font-semibold rounded-xl p-1 px-3 flex gap-1 cursor-pointer z-30 text-sm [app-region:no-drag] items-center justify-center select-none"
+					onClick={() => setOpenCreate(true)}
                 >
                     Create New <Plus size={16} strokeWidth={2} />
                 </button>
@@ -65,6 +68,10 @@ export default function TitleBar() {
                     <h1 className="font-regular text-lg">2025</h1>
                 </div>
             </div>
+			{/* Render the AddNew dialog conditionally */}
+			{openCreate && (
+        		<AddNew open={openCreate} onClose={() => setOpenCreate(false)} />
+      		)}
         </div>
     );
 }
