@@ -4,8 +4,7 @@ import TagBlock from "../tag/TagBlock";
 import Thing, { Task, Event } from "../thing/Thing";
 
 class Calendar {
-
-//#region Properties
+    //#region Properties
 
     /**
      * The name of the Calendar.
@@ -37,9 +36,9 @@ class Calendar {
      */
     readonly id: number;
 
-//#endregion
+    //#endregion
 
-//#region Constructor
+    //#region Constructor
 
     /**
      * Creates an instance of Calendar.
@@ -62,9 +61,9 @@ class Calendar {
         if (customId !== -1) IdHandler.registerId(this.id, this);
     }
 
-//#endregion
+    //#endregion
 
-//#region Public Methods
+    //#region Public Methods
 
     /**
      * Adds a Thing to the Calendar.
@@ -82,8 +81,12 @@ class Calendar {
      * @param thing - The Thing to remove.
      */
     public removeThing(thing: Thing): void {
-        this.active = this.active.filter(activeThing => activeThing !== thing);
-        this.completed = this.completed.filter(completedThing => completedThing !== thing);
+        this.active = this.active.filter(
+            (activeThing) => activeThing !== thing
+        );
+        this.completed = this.completed.filter(
+            (completedThing) => completedThing !== thing
+        );
     }
 
     /**
@@ -91,7 +94,9 @@ class Calendar {
      * @param thing - The Thing to complete.
      */
     public completeThing(thing: Thing): void {
-        this.active = this.active.filter(activeThing => activeThing !== thing);
+        this.active = this.active.filter(
+            (activeThing) => activeThing !== thing
+        );
         this.completed.push(thing);
         thing.setCompleted(true);
     }
@@ -101,7 +106,9 @@ class Calendar {
      * @param thing - The Thing to uncomplete.
      */
     public uncompleteThing(thing: Thing): void {
-        this.completed = this.completed.filter(completedThing => completedThing !== thing);
+        this.completed = this.completed.filter(
+            (completedThing) => completedThing !== thing
+        );
         this.active.push(thing);
         thing.setCompleted(false);
     }
@@ -112,53 +119,62 @@ class Calendar {
      * @param things - The list of things to sort.
      * @returns A sorted list of things.
      */
-    public static sortByPriority(relativeTo: number, things: Array<Thing>): Array<Thing> {
+    public static sortByPriority(
+        relativeTo: number,
+        things: Array<Thing>
+    ): Array<Thing> {
         const sortedThings: Array<Thing> = [];
-        const taskList: Array<Task> = things.filter(thing => thing instanceof Task);
-        const eventList: Array<Event> = things.filter(thing => thing instanceof Event);
+        const taskList: Array<Task> = things.filter(
+            (thing) => thing instanceof Task
+        );
+        const eventList: Array<Event> = things.filter(
+            (thing) => thing instanceof Event
+        );
 
         // Sort tasks by priority.
-        taskList.sort(
-            (taskA: Task, taskB: Task): number => {
-                const timeLeftA: number = taskA.getDueDate() - relativeTo;
-                const timeLeftB: number = taskB.getDueDate() - relativeTo;
+        taskList.sort((taskA: Task, taskB: Task): number => {
+            const timeLeftA: number = taskA.getDueDate() - relativeTo;
+            const timeLeftB: number = taskB.getDueDate() - relativeTo;
 
-                // Sort by time left first
-                if (timeLeftA < timeLeftB) return -1;
-                if (timeLeftA > timeLeftB) return 1;
-                // If time left is the same, sort by duration
-                if (taskA.getDuration() > taskB.getDuration()) return -1;
-                if (taskA.getDuration() < taskB.getDuration()) return 1;
-                return 0;
-            }
-        );
+            // Sort by time left first
+            if (timeLeftA < timeLeftB) return -1;
+            if (timeLeftA > timeLeftB) return 1;
+            // If time left is the same, sort by duration
+            if (taskA.getDuration() > taskB.getDuration()) return -1;
+            if (taskA.getDuration() < taskB.getDuration()) return 1;
+            return 0;
+        });
 
         // Sort Events by start time.
-        eventList.sort(
-            (eventA: Event, eventB: Event): number => {
-                const timeLeftA: number = eventA.getStartTime() - relativeTo;
-                const timeLeftB: number = eventB.getStartTime() - relativeTo;
+        eventList.sort((eventA: Event, eventB: Event): number => {
+            const timeLeftA: number = eventA.getStartTime() - relativeTo;
+            const timeLeftB: number = eventB.getStartTime() - relativeTo;
 
-                // Handle overdue tasks first
-                if (timeLeftA <= 0 || timeLeftB <= 0) {
-                    // If time left is more negative on A, A is more overdue
-                    if (timeLeftA < timeLeftB) return -1;
-                    if (timeLeftA > timeLeftB) return 1;
-                    return 0;
-                }
-
-                // Sort by start time
+            // Handle overdue tasks first
+            if (timeLeftA <= 0 || timeLeftB <= 0) {
+                // If time left is more negative on A, A is more overdue
                 if (timeLeftA < timeLeftB) return -1;
                 if (timeLeftA > timeLeftB) return 1;
                 return 0;
             }
-        );
+
+            // Sort by start time
+            if (timeLeftA < timeLeftB) return -1;
+            if (timeLeftA > timeLeftB) return 1;
+            return 0;
+        });
 
         // Combine sorted tasks and events
         let periodStart: number = relativeTo;
         while (taskList.length > 0 || eventList.length > 0) {
-            const freeTime: number = eventList.length > 0 ? eventList[0].getStartTime() - periodStart : Infinity;
-            if (taskList.length > 0 && freeTime - taskList[0].getDuration() >= 0) {
+            const freeTime: number =
+                eventList.length > 0
+                    ? eventList[0].getStartTime() - periodStart
+                    : Infinity;
+            if (
+                taskList.length > 0 &&
+                freeTime - taskList[0].getDuration() >= 0
+            ) {
                 // If the next task can be completed before the next event
                 sortedThings.push(taskList[0]);
                 taskList.shift();
@@ -178,13 +194,12 @@ class Calendar {
      * @param tags - The tags to sort by.
      * @returns A new list of Things containing only the Things that have all the specified tags.
      */
-    public static sortForTags(things: Array<Thing>, ...tags: Array<Tag>): Array<Thing> {
-        const sortedThings: Array<Thing> = things.filter(
-            thing =>
-                tags.every(
-                    tag =>
-                        thing.getTags().includes(tag)
-                )
+    public static sortForTags(
+        things: Array<Thing>,
+        ...tags: Array<Tag>
+    ): Array<Thing> {
+        const sortedThings: Array<Thing> = things.filter((thing) =>
+            tags.every((tag) => thing.getTags().includes(tag))
         );
         return sortedThings;
     }
@@ -195,10 +210,7 @@ class Calendar {
      * @param to - The end of the time period (in milliseconds).tagBlock.
      * @returns A list of Things that should be done within the specified time period.
      */
-    public getAllThingsBetween(
-        from: number,
-        to: number
-    ): Array<Thing> {
+    public getAllThingsBetween(from: number, to: number): Array<Thing> {
         const timeLength: number = to - from;
         const sortedActive = Calendar.sortByPriority(from, this.active);
         const things: Array<Thing> = [];
@@ -222,24 +234,45 @@ class Calendar {
      * @param now - The current time (in milliseconds).
      * @returns A list of Things that should be done within the specified time period, obeying the current tagBlock(s).
      */
-    public getTagThingsBetween(from: number, to: number, now: number = Date.now()): Array<Thing> {
+    public getTagThingsBetween(
+        from: number,
+        to: number,
+        now: number = Date.now()
+    ): Array<Thing> {
         // Getting currently active tags
         const activeTagBlocks: Array<Thing> = this.tagBlocks.filter(
             (tagBlock) =>
                 tagBlock.getEndTime() > now && tagBlock.getStartTime() < now
-        )
-        const activeTags: Array<Tag> = activeTagBlocks.map(
-            tagBlock =>
-                tagBlock.getTags()
-        ).flat();
+        );
+        const activeTags: Array<Tag> = activeTagBlocks
+            .map((tagBlock) => tagBlock.getTags())
+            .flat();
 
         // Apply tag blocks
-        return Calendar.sortForTags(this.getAllThingsBetween(from, to), ...activeTags);
+        return Calendar.sortForTags(
+            this.getAllThingsBetween(from, to),
+            ...activeTags
+        );
     }
 
-//#endregion
+    /**
+     * Clones the current calendar and returns a new instance.
+     * @returns A new instance of the Calendar class with the same properties as the object it was called on.
+     */
+    public clone(): Calendar {
+        return new Calendar(
+            this.name,
+            [...this.active],
+            [...this.completed],
+            [...this.tagBlocks],
+            [...this.tags],
+            this.id
+        );
+    }
 
-//#region Setters and Getters
+    //#endregion
+
+    //#region Setters and Getters
 
     /**
      * Returns the name of the Calendar.
@@ -263,7 +296,7 @@ class Calendar {
      * @returns A reference of the active Things.
      */
     public getActiveThings(): Array<Thing> {
-        return this.active
+        return this.active;
     }
 
     /**
@@ -282,10 +315,9 @@ class Calendar {
         return this.tags;
     }
 
-//#endregion
+    //#endregion
 
-//#region Json
-
+    //#region Json
 }
 
 export default Calendar;
