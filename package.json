@@ -13,6 +13,7 @@
     "coverage": "npm test --coverage --watchAll --collectCoverageFrom='src/components/**/*.{ts,tsx}'"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
     "@tailwindcss/vite": "^4.0.7",
     "esbuild": "^0.25.1",
     "lucide-react": "^0.482.0",
