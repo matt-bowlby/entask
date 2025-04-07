@@ -1,5 +1,5 @@
 import TodoList from "@/components/TodoList/TodoListComponent";
-import CalendarView from "@/components/Calendar/CalendarComponent";
+import CalendarComponent from "@/components/Calendar/CalendarComponent";
 import TitleBar from "./components/layout/TitleBarComponent";
 import { Task, Event } from "./classes/thing/Thing";
 import Tag from "./classes/tag/Tag";
@@ -55,10 +55,9 @@ function App() {
             </div>
             <main className="flex h-[calc(100vh-var(--title-bar-height))] bg-dark p-2 gap-2 overflow-hidden">
                 <TodoList calendar={calendarStore.calendar} />
-                <CalendarView
+                <CalendarComponent
                     calendar={calendarStore.calendar}
                     numDaysInView={5}
-                    dayOffset={0}
                 />
             </main>
         </>

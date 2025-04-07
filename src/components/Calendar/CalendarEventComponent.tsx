@@ -27,13 +27,13 @@ export default function EventComponent({ event }: EventProps) {
         const observerCallback = (entries: IntersectionObserverEntry[]) => {
             entries.forEach(entry => {
                 // Set visibility to true only if the element is fully visible
-                setIsDescriptionVisible(entry.intersectionRatio === 1);
+                setIsDescriptionVisible(entry.intersectionRatio >= 0.6);
             });
         };
 
         const observer = new IntersectionObserver(observerCallback, {
             root: containerRef.current?.parentElement, // Observe within the parent container
-            threshold: 1.0, // Fully visible
+            threshold: 0.6, // Fully visible
         });
 
         if (descriptionTextRef.current) {
@@ -84,13 +84,26 @@ export default function EventComponent({ event }: EventProps) {
     // Non-abbreviated event
     return (
         <div
-            className="absolute flex flex-row bg-white rounded-xl gap-2 drop-shadow-md left-0 right-0 p-2 overflow-clip justify-between"
+            className="absolute flex flex-col bg-white rounded-xl gap-1 drop-shadow-md left-0 right-0 p-2 overflow-clip"
             style={{
                 top: `${top}px`,
                 height: `${height}px`,
             }}
             ref={containerRef}
         >
+            <div className="flex flex-row h-2 w-full rounded-full overflow-hidden flex-shrink-0">
+                {event.getTags().length === 0 ? (
+                    <div className="w-full h-2 bg-dark flex-shrink-0" />
+                ) : (
+                    event.getTags().map((tag, i) => (
+                        <div
+                            key={i}
+                            className="w-full h-2"
+                            style={{ backgroundColor: `#${tag.getColor()}` }}
+                        />
+                    ))
+                )}
+            </div>
             <div className="flex flex-col w-full overflow-auto [scrollbar-width:none]">
                 <div className="flex flex-col justify-center items-center w-full overflow-hidden h-fit flex-shrink-0">
                     <h1 className="font-bold text-dark text-sm w-full text-ellipsis whitespace-nowrap overflow-hidden">{event.getName()}</h1>
@@ -113,19 +126,6 @@ export default function EventComponent({ event }: EventProps) {
                         </p>
                     )}
                 </div>
-            </div>
-            <div className="flex flex-col w-2 h-full rounded-full overflow-hidden flex-shrink-0">
-                {event.getTags().length === 0 ? (
-                    <div className="h-full w-2 bg-dark flex-shrink-0" />
-                ) : (
-                    event.getTags().map((tag, i) => (
-                        <div
-                            key={i}
-                            className="h-full w-2"
-                            style={{ backgroundColor: `#${tag.getColor()}` }}
-                        />
-                    ))
-                )}
             </div>
         </div>
     );
