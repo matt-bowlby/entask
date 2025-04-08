@@ -37,7 +37,7 @@ describe('DataManager', () =>  {
 
     test('LoadTag', () => {
         let tags: Array<Tag> = [];
-        myDataManager.loadTags(tags);
+        DataManager.loadTags(tags);
 
         console.log(tags[0].getName());
     })

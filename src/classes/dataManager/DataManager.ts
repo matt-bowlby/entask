@@ -8,20 +8,20 @@ import IdHandler from "../calendar/IdHandler";
 
 class DataManager {
     //File paths & names
-    private event_comp_file_name: string = 'event-completed-database.json';
-    private event_comp_file_path = path.join('database', this.event_comp_file_name);
-    private task_comp_file_name: string = 'task-completed-database.json';
-    private task_comp_file_path = path.join('database', this.task_comp_file_name);
-    private event_act_file_name: string = 'event-active-database.json';
-    private event_act_file_path = path.join('database', this.event_act_file_name);
-    private task_act_file_name: string = 'task-active-database.json';
-    private task_act_file_path = path.join('database', this.task_act_file_name);
-    private tags_name: string = 'tags.json';
-    private tags_file_path = path.join('database', this.tags_name);
+    private static event_comp_file_name: string = 'event-completed-database.json';
+    private static event_comp_file_path = path.join('database', this.event_comp_file_name);
+    private static task_comp_file_name: string = 'task-completed-database.json';
+    private static task_comp_file_path = path.join('database', this.task_comp_file_name);
+    private static event_act_file_name: string = 'event-active-database.json';
+    private static event_act_file_path = path.join('database', this.event_act_file_name);
+    private static task_act_file_name: string = 'task-active-database.json';
+    private static task_act_file_path = path.join('database', this.task_act_file_name);
+    private static tags_name: string = 'tags.json';
+    private static tags_file_path = path.join('database', this.tags_name);
 
 
 	///////////////// Load Calender /////////////////
-	public loadDatabase(calendar_name: string): Calendar { //TODO: read database and load Events and Tasks into calender type.
+	public static loadDatabase(calendar_name: string): Calendar { //TODO: read database and load Events and Tasks into calender type.
         let comp_thing_list: Array<Thing> = [];
         let act_thing_list: Array<Thing> = [];
         let tag_list: Array<Tag> = [];
@@ -35,7 +35,7 @@ class DataManager {
 		return (dataCalendar);
 	}
 
-    public saveDatabaseOverwrite(calendar_instance: Calendar) {
+    public static saveDatabaseOverwrite(calendar_instance: Calendar) {
         this.clearDatabase();
 
         const tag_list = calendar_instance.getTags();
@@ -63,7 +63,7 @@ class DataManager {
         }
     }
 
-    public clearDatabase() {
+    public static clearDatabase() {
         if (fs.existsSync(this.event_act_file_path)) {
             fs.writeFileSync(this.event_act_file_path, '[]')
         }
@@ -82,7 +82,7 @@ class DataManager {
     }
 
 	///////////////// Events /////////////////
-    public saveEvent(event_instance:Event): void{
+    public static saveEvent(event_instance:Event): void{
         try {
             let file_path;
             if (event_instance.isCompleted()) {
@@ -125,7 +125,7 @@ class DataManager {
         }
     }
 
-    public deleteEvent(event_instance:Event): void {
+    public static deleteEvent(event_instance:Event): void {
         try {
             let file_path;
             if (event_instance.isCompleted()) {
@@ -151,7 +151,7 @@ class DataManager {
         }
     }
 
-    public loadActiveEvents(thing_list: Array<Thing>): void {
+    public static loadActiveEvents(thing_list: Array<Thing>): void {
         try {
             if (!fs.existsSync(this.event_act_file_path)) {
                 fs.writeFileSync(this.event_act_file_path, '[]')
@@ -178,7 +178,7 @@ class DataManager {
         }
     }
 
-    public loadCompletedEvents(thing_list: Array<Thing>): void {
+    public static loadCompletedEvents(thing_list: Array<Thing>): void {
         try {
             if (!fs.existsSync(this.event_comp_file_path)) {
                 fs.writeFileSync(this.event_comp_file_path, '[]')
@@ -207,7 +207,7 @@ class DataManager {
 
     ///////////////// Tasks /////////////////
 
-    public saveTask(task_instance: Task): void {
+    public static saveTask(task_instance: Task): void {
         try {
             let file_path;
             if (task_instance.isCompleted()) {
@@ -251,7 +251,7 @@ class DataManager {
         }
     }
 
-    public deleteTask(task_instance:Task): void {
+    public static deleteTask(task_instance:Task): void {
         try {
             let file_path;
             if (task_instance.isCompleted()) {
@@ -277,7 +277,7 @@ class DataManager {
         }
     }
 
-    public loadActiveTasks(thing_list: Array<Thing>): void {
+    public static loadActiveTasks(thing_list: Array<Thing>): void {
         try {
             if (!fs.existsSync(this.task_act_file_path)) {
                 fs.writeFileSync(this.task_act_file_path, '[]')
@@ -303,7 +303,7 @@ class DataManager {
         }
     }
 
-    public loadCompletedTasks(thing_list: Array<Thing>): void {
+    public static loadCompletedTasks(thing_list: Array<Thing>): void {
         try {
             if (!fs.existsSync(this.task_comp_file_path)) {
                 fs.writeFileSync(this.task_comp_file_path, '[]')
@@ -360,7 +360,7 @@ class DataManager {
 
     ///////////////// Tags /////////////////
 
-    public saveTags(tags: Array<Tag>) {
+    public static saveTags(tags: Array<Tag>) {
         try {
             let tag_objs: TagType[] = [];
 
@@ -384,7 +384,7 @@ class DataManager {
         }
     }
 
-    public loadTags(tags:Array<Tag>) {
+    public static loadTags(tags:Array<Tag>) {
         try {
             if (!fs.existsSync(this.tags_file_path)) {
                 fs.writeFileSync(this.tags_file_path, '[]')
