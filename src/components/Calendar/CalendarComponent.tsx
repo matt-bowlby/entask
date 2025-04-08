@@ -2,26 +2,26 @@ import { CalendarDays } from "lucide-react";
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 
-import { useCalendarOffsetStore } from "@/store/calendarStore";
+import useCalendarStore, { useCalendarOffsetStore } from "@/store/calendarStore";
 
 import { meridiem } from "@/utils/timeString";
 
 import Thing from "@/classes/thing/Thing";
-import Calendar from "../../classes/calendar/Calendar";
+// import Calendar from "../../classes/calendar/Calendar";
 
 import DayLabel from "@/components/Calendar/DayLabelComponent";
 import EventComponent from "@/components/Calendar/CalendarEventComponent";
 
 interface CalendarInterface {
-    calendar: Calendar | undefined;
     numDaysInView: number;
 }
 
 const CalendarComponent = ({
-    calendar,
     numDaysInView = 5,
 }: CalendarInterface) => {
     const dayOffset = useCalendarOffsetStore((state) => state.dayOffset);
+    const calendar = useCalendarStore().calendar;
+    console.log(calendar?.getActiveThings());
 
     const { dates, events } = useMemo(() => {
         const calculatedDates: Array<Date> = [];

@@ -1,20 +1,22 @@
 import TodoTaskComponent from "@/components/TodoList/TodoTaskComponent";
-import Calendar from "@/classes/calendar/Calendar";
+import { useMemo } from "react";
 import { Task } from "@/classes/thing/Thing";
+import useCalendarStore from "@/store/calendarStore";
 // import TodoEvent from "@/components/TodoList/TodoEvent";
 
-interface TodoListProps {
-    calendar: Calendar | undefined;
-}
-
-export default function TodoList({ calendar }: TodoListProps) {
+export default function TodoList() {
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const dayStart: Date = new Date();
     dayStart.setHours(0, 0, 0, 0);
     const dayEnd: Date = new Date();
     dayEnd.setHours(23, 59, 59, 999);
+    const calendar = useCalendarStore().calendar;
 
-    const activeThings = calendar?.getAllThingsBetween(dayStart.getTime(), dayEnd.getTime());
+    const {activeThings} = useMemo(() => {
+        return {
+            activeThings: calendar?.getActiveThings(),
+        };
+    }, [calendar]);
 
     return (
         <div className="relative resize-x bg-off-white min-w-[260px] max-w-[960px] w-[400px] h-full flex flex-col rounded-xl overflow-auto">
