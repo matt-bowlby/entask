@@ -3,36 +3,36 @@ import Calendar from "../classes/calendar/Calendar";
 import Thing from "../classes/thing/Thing";
 
 type CalendarState = {
-    calendar: Calendar;
-    setCalendar: (calendar: Calendar) => void;
+    calendar: Calendar | undefined;
+    setCalendar: (calendar: Calendar | undefined) => void;
     addThing: (thing: Thing) => void;
     removeThing: (thing: Thing) => void;
-    getAllThingsBetween: (from: number, to: number) => Thing[];
-    getTagThingsBetween: (from: number, to: number, now: number) => Thing[];
+    getAllThingsBetween: (from: number, to: number) => Thing[] | undefined;
+    getTagThingsBetween: (from: number, to: number, now: number) => Thing[] | undefined;
 };
 
 const useCalendarStore = create<CalendarState>((set, get) => ({
-    calendar: new Calendar("Test calendar"),
-    setCalendar: (calendar: Calendar) => set({ calendar }),
+    calendar: undefined,
+    setCalendar: (calendar: Calendar | undefined) => set({ calendar }),
     addThing: (thing: Thing) =>
         set((state) => {
-            const newCalendar = state.calendar.clone();
-            newCalendar.addThing(thing);
+            const newCalendar = state?.calendar?.clone();
+            newCalendar?.addThing(thing);
             return { calendar: newCalendar };
         }),
     removeThing: (thing: Thing) =>
         set((state) => {
-            const newCalendar = state.calendar.clone();
-            newCalendar.removeThing(thing);
+            const newCalendar = state?.calendar?.clone();
+            newCalendar?.removeThing(thing);
             return { calendar: newCalendar };
         }),
     getAllThingsBetween: (from: number, to: number) => {
         const state = get();
-        return state.calendar.getAllThingsBetween(from, to);
+        return state?.calendar?.getAllThingsBetween(from, to);
     },
     getTagThingsBetween: (from: number, to: number, now: number) => {
         const state = get();
-        return state.calendar.getTagThingsBetween(from, to, now);
+        return state?.calendar?.getTagThingsBetween(from, to, now);
     },
 }));
 

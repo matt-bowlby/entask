@@ -13,7 +13,7 @@ import DayLabel from "@/components/Calendar/DayLabelComponent";
 import EventComponent from "@/components/Calendar/CalendarEventComponent";
 
 interface CalendarInterface {
-    calendar: Calendar;
+    calendar: Calendar | undefined;
     numDaysInView: number;
 }
 
@@ -34,17 +34,18 @@ const CalendarComponent = ({
             newDate.setHours(0, 0, 0, 0);
             calculatedDates.push(newDate);
 
-            events.push(
-                calendar.getActiveThings().filter((thing) => {
-                    if (thing.getStartTime() !== 0) {
-                        return (
-                            thing.getStartTime() >= newDate.getTime() &&
-                            thing.getStartTime() <
-                                newDate.getTime() + 24 * 60 * 60 * 1000
-                        );
-                    }
-                })
-            );
+            if (calendar)
+                events.push(
+                    calendar.getActiveThings().filter((thing) => {
+                        if (thing.getStartTime() !== 0) {
+                            return (
+                                thing.getStartTime() >= newDate.getTime() &&
+                                thing.getStartTime() <
+                                    newDate.getTime() + 24 * 60 * 60 * 1000
+                            );
+                        }
+                    })
+                );
         }
 
         return { dates: calculatedDates, events: events };

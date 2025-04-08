@@ -4,7 +4,7 @@ import { Task } from "@/classes/thing/Thing";
 // import TodoEvent from "@/components/TodoList/TodoEvent";
 
 interface TodoListProps {
-    calendar: Calendar;
+    calendar: Calendar | undefined;
 }
 
 export default function TodoList({ calendar }: TodoListProps) {
@@ -14,7 +14,7 @@ export default function TodoList({ calendar }: TodoListProps) {
     const dayEnd: Date = new Date();
     dayEnd.setHours(23, 59, 59, 999);
 
-    const activeThings = calendar.getAllThingsBetween(dayStart.getTime(), dayEnd.getTime());
+    const activeThings = calendar?.getAllThingsBetween(dayStart.getTime(), dayEnd.getTime());
 
     return (
         <div className="relative resize-x bg-off-white min-w-[260px] max-w-[960px] w-[400px] h-full flex flex-col rounded-xl overflow-auto">
@@ -26,12 +26,16 @@ export default function TodoList({ calendar }: TodoListProps) {
                 </div>
             </div>
             <div className="flex flex-col overflow-auto gap-2 p-2 [scrollbar-width:none]">
-                {Array.from({length: activeThings.length }, (_, i) =>  {
-                    if (activeThings[i] instanceof Task) {
-                        return <TodoTaskComponent key={i} task={activeThings[i]} />;
-                    }
+                {
+                    activeThings ?
+                        Array.from({length: activeThings.length }, (_, i) =>  {
+                            if (activeThings[i] instanceof Task) {
+                                return <TodoTaskComponent key={i} task={activeThings[i]} />;
+                            }
 
-                })}
+                        }
+                    ) : <p>No tasks available at this time.</p>
+                }
             </div>
         </div>
     );
