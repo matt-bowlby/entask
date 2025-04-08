@@ -3,7 +3,8 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Plus } from "lucide-react";
 import { useCreateDialogStore } from "@/store/TitleBarStore";
 import useCalendarStore from "@/store/calendarStore";
-import { Task } from "@/classes/thing/Thing";
+import { Task, Event } from "@/classes/thing/Thing";
+import TagBlock from "@/classes/tag/TagBlock";
 
 enum Menu {
     Task,
@@ -19,29 +20,53 @@ export default function CreateNewComponent() {
     // const [tagsArray, setTagsArray] = useState<Tag[]>([]);
 
     const handleCreate = () => {
-        if (calendarStore === undefined) {
-            console.log("Calendar store is undefined");
-            return;
-        }
+        if (calendarStore === undefined) return;
+        // Get current date
         const now = new Date();
+
+        // Get name, if applicable (Tag Blocks don't have names)
+        let name: string = "";
+        if (document.getElementById("name"))
+            name = (document.getElementById("name") as HTMLInputElement).value;
+
+        // Get date1 (All components have a date1)
+        const year1: string = (document.getElementById("date-year-1") as HTMLInputElement).value;
+        const month1: string = (document.getElementById("date-month-1") as HTMLInputElement).value;
+        const day1: string = (document.getElementById("date-day-1") as HTMLInputElement).value;
+        const hour1: string = (document.getElementById("date-hour-1") as HTMLInputElement).value;
+        const minute1: string = (document.getElementById("date-minute-1") as HTMLInputElement).value;
+        const date1: number = new Date(
+            `${(year1 || now.getFullYear())}-${(month1 || now.getMonth() + 1).toString().padStart(2, '0')}-${(day1 || now.getDate()).toString().padStart(2, '0')}T${(hour1 || "0").padStart(2, '0')}:${(minute1 || "0").padStart(2, '0')}`
+        ).getTime();
+        let date2: number = 0;
+        if (document.getElementById("date-year-2")) {
+            const year2: string = (document.getElementById("date-year-2") as HTMLInputElement).value;
+            const month2: string = (document.getElementById("date-month-2") as HTMLInputElement).value;
+            const day2: string = (document.getElementById("date-day-2") as HTMLInputElement).value;
+            const hour2: string = (document.getElementById("date-hour-2") as HTMLInputElement).value;
+            const minute2: string = (document.getElementById("date-minute-2") as HTMLInputElement).value;
+            date2 = new Date(
+                `${(year2 || now.getFullYear())}-${(month2 || now.getMonth() + 1).toString().padStart(2, '0')}-${(day2 || now.getDate()).toString().padStart(2, '0')}T${(hour2 || "0").padStart(2, '0')}:${(minute2 || "0").padStart(2, '0')}`
+            ).getTime();
+        }
+        console.log("date1: ", date1);
+        console.log("date2: ", date2)
+        console.log("duration: ", date2 - date1);
+
+        // Get description (All components have a description)
+        const description: string = (document.getElementById("description") as HTMLTextAreaElement).value;
+
+
         switch (activeMenu) {
             case Menu.Task:
-                const name = (document.getElementById("task-name") as HTMLInputElement).value;
-                const durationDays = (document.getElementById("task-duration-days") as HTMLInputElement).valueAsNumber;
-                const durationHours = (document.getElementById("task-duration-hours") as HTMLInputElement).valueAsNumber;
-                const durationMinutes = (document.getElementById("task-duration-minutes") as HTMLInputElement).valueAsNumber;
-                const dueYear = (document.getElementById("task-due-year") as HTMLInputElement).value;
-                const dueMonth = (document.getElementById("task-due-month") as HTMLInputElement).value;
-                const dueDay = (document.getElementById("task-due-day") as HTMLInputElement).value;
-                const dueHour = (document.getElementById("task-due-hour") as HTMLInputElement).value;
-                const dueMinute = (document.getElementById("task-due-minute") as HTMLInputElement).value;
-                const description = (document.getElementById("task-description") as HTMLTextAreaElement).value;
-                const dueDateText = `${(dueYear || now.getFullYear())}-${(dueMonth || now.getMonth() + 1).toString().padStart(2, '0')}-${(dueDay || now.getDate()).toString().padStart(2, '0')}T${(dueHour || "24").padStart(2, '0')}:${(dueMinute || "0").padStart(2, '0')}`;
-                console.log(dueDateText);
+                // Only tasks have durations
+                const durationDays = (document.getElementById("duration-days") as HTMLInputElement).valueAsNumber;
+                const durationHours = (document.getElementById("duration-hours") as HTMLInputElement).valueAsNumber;
+                const durationMinutes = (document.getElementById("duration-minutes") as HTMLInputElement).valueAsNumber;
                 const task = new Task(
                     name,
                     (durationDays || 0) * 86400000 + (durationHours || 1) * 3600000 + (durationMinutes || 0) * 60000,
-                    new Date(dueDateText).getTime(),
+                    date1,
                     undefined,
                     description,
                     []
@@ -50,10 +75,25 @@ export default function CreateNewComponent() {
                 close();
                 break;
             case Menu.Event:
-                // Handle event creation logic here
+                const event = new Event(
+                    name,
+                    date2 - date1,
+                    date1,
+                    description,
+                    []
+                );
+                calendarStore.addThing(event);
+                close();
                 break;
             case Menu.TagBlock:
-                // Handle tag block creation logic here
+                const tagBlock = new TagBlock(
+                    date2 - date1,
+                    date1,
+                    description,
+                    []
+                );
+                calendarStore.addThing(tagBlock);
+                close();
                 break;
         }
     }
@@ -155,7 +195,7 @@ const CreateTaskDialog = () => {
                 {/* Name */}
                 <div className="flex rounded-md h-10 bg-white px-2 gap-2">
                     <input
-                        id="task-name"
+                        id="name"
                         type="text"
                         placeholder="Task Name"
                         className="flex w-full h-full text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm"
@@ -166,7 +206,7 @@ const CreateTaskDialog = () => {
                 <div className="text-right h-10 flex flex-row gap-2">
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="task-duration-days"
+                            id="duration-days"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -177,7 +217,7 @@ const CreateTaskDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="task-duration-hours"
+                            id="duration-hours"
                             type="text"
                             placeholder="1"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -189,7 +229,7 @@ const CreateTaskDialog = () => {
 
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="task-duration-minutes"
+                            id="duration-minutes"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -203,7 +243,7 @@ const CreateTaskDialog = () => {
                 <div className="text-right h-10 flex flex-row gap-2">
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="task-due-year"
+                            id="date-year-1"
                             type="text"
                             placeholder={now.getFullYear().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -214,7 +254,7 @@ const CreateTaskDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="task-due-month"
+                            id="date-month-1"
                             type="text"
                             placeholder={(now.getMonth() + 1).toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -225,7 +265,7 @@ const CreateTaskDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="task-due-day"
+                            id="date-day-1"
                             type="text"
                             placeholder={now.getDate().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -239,7 +279,7 @@ const CreateTaskDialog = () => {
 
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="task-due-hour"
+                            id="date-hour-1"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -250,7 +290,7 @@ const CreateTaskDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="task-due-minute"
+                            id="date-minute-1"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -264,7 +304,7 @@ const CreateTaskDialog = () => {
                 <div className="text-right h-40 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
                         <textarea
-                            id="task-description"
+                            id="description"
                             placeholder="Description"
                             className="w-full h-full text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm resize-none overflow-y-auto p-2"
                         />
@@ -309,7 +349,7 @@ const CreateEventDialog = () => {
                 {/* Name */}
                 <div className="flex rounded-md h-10 bg-white px-2 gap-2">
                     <input
-                        id="event-name"
+                        id="name"
                         type="text"
                         placeholder="Event Name"
                         className="flex w-full h-full text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm"
@@ -320,7 +360,7 @@ const CreateEventDialog = () => {
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
 
-                            id="event-start-year"
+                            id="date-year-1"
                             type="text"
                             placeholder={now.getFullYear().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -331,7 +371,7 @@ const CreateEventDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="event-start-month"
+                            id="date-month-1"
                             type="text"
                             placeholder={(now.getMonth() + 1).toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -342,7 +382,7 @@ const CreateEventDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="event-start-day"
+                            id="date-day-1"
                             type="text"
                             placeholder={now.getDate().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -356,7 +396,7 @@ const CreateEventDialog = () => {
 
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="event-start-hour"
+                            id="date-hour-1"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -367,7 +407,7 @@ const CreateEventDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="event-start-minute"
+                            id="date-minute-1"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -381,7 +421,7 @@ const CreateEventDialog = () => {
                 <div className="text-right h-10 flex flex-row gap-2">
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="event-end-year"
+                            id="date-year-2"
                             type="text"
                             placeholder={now.getFullYear().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -392,7 +432,7 @@ const CreateEventDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="event-end-month"
+                            id="date-month-2"
                             type="text"
                             placeholder={(now.getMonth() + 1).toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -403,7 +443,7 @@ const CreateEventDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="event-end-day"
+                            id="date-day-2"
                             type="text"
                             placeholder={now.getDate().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -417,7 +457,7 @@ const CreateEventDialog = () => {
 
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="event-end-hour"
+                            id="date-hour-2"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -428,7 +468,7 @@ const CreateEventDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="event-end-minute"
+                            id="date-minute-2"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -442,7 +482,7 @@ const CreateEventDialog = () => {
                 <div className="text-right h-40 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
                         <textarea
-                            id="event-description"
+                            id="description"
                             placeholder="Description"
                             className="w-full h-full text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm resize-none overflow-y-auto p-2"
                         />
@@ -475,6 +515,9 @@ const CreateTagBlockDialog = () => {
                 <div className={`text-right flex items-center justify-end h-10`}>
                     Ends
                 </div>
+                <div className={`text-right flex items-center justify-end h-40`}>
+                    Description
+                </div>
             </div>
             <div className="flex flex-col h-full w-full gap-2">
                 {/* Tag */}
@@ -489,7 +532,7 @@ const CreateTagBlockDialog = () => {
                 <div className="text-right h-10 flex flex-row gap-2">
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-start-year"
+                            id="date-year-1"
                             type="text"
                             placeholder={now.getFullYear().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -500,7 +543,7 @@ const CreateTagBlockDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-start-month"
+                            id="date-month-1"
                             type="text"
                             placeholder={(now.getMonth() + 1).toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -511,7 +554,7 @@ const CreateTagBlockDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-start-day"
+                            id="date-day-1"
                             type="text"
                             placeholder={now.getDate().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -525,7 +568,7 @@ const CreateTagBlockDialog = () => {
 
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-start-hour"
+                            id="date-hour-1"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -536,7 +579,7 @@ const CreateTagBlockDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-start-minute"
+                            id="date-minute-1"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -550,7 +593,7 @@ const CreateTagBlockDialog = () => {
                 <div className="text-right h-10 flex flex-row gap-2">
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-end-year"
+                            id="date-year-2"
                             type="text"
                             placeholder={now.getFullYear().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -561,7 +604,7 @@ const CreateTagBlockDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-end-month"
+                            id="date-month-2"
                             type="text"
                             placeholder={(now.getMonth() + 1).toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -572,7 +615,7 @@ const CreateTagBlockDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-end-day"
+                            id="date-day-2"
                             type="text"
                             placeholder={now.getDate().toString()}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -586,7 +629,7 @@ const CreateTagBlockDialog = () => {
 
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-end-hour"
+                            id="date-hour-2"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -597,7 +640,7 @@ const CreateTagBlockDialog = () => {
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
-                            id="tag-block-end-minute"
+                            id="date-minute-2"
                             type="text"
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
@@ -605,6 +648,16 @@ const CreateTagBlockDialog = () => {
                         <div className="text-right text-sm flex items-center">
                             Minute
                         </div>
+                    </div>
+                </div>
+                {/* Description */}
+                <div className="text-right h-40 flex flex-row gap-2">
+                    <div className="w-full text-right rounded-md bg-white text-wrap">
+                        <textarea
+                            id="description"
+                            placeholder="Description"
+                            className="w-full h-full text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm resize-none overflow-y-auto p-2"
+                        />
                     </div>
                 </div>
             </div>
