@@ -9,16 +9,23 @@ function App() {
     const calendarStore = useCalendarStore();
     useEffect(() => {
         const loadCalendar = async () => {
-            const calendar = await window.electronAPI.loadCalendar("Calendar") as Calendar;
-            console.log("calendar from app: ", calendar.getName());
+            const loadedCalendar = await window.electronAPI.loadCalendar("Calendar");
+            const calendar = new Calendar(
+                loadedCalendar.name,
+                loadedCalendar.active,
+                loadedCalendar.completed,
+                loadedCalendar.tagBlocks,
+                loadedCalendar.tags,
+                loadedCalendar.id
+            );
             calendarStore.setCalendar(calendar as Calendar);
         };
         loadCalendar();
         // calendarStore.setCalendar(new Calendar("Calendar"));
     }, []);
 
-    // If calendar not loaded, return empty component
-    if (!calendarStore.calendar) return <></>;
+    // If calendar not loaded, return loading component
+    if (!calendarStore.calendar) return <div className="bg-dark text-white w-[100%] h-[100%]">Loading...</div>;
 
     return (
         <>

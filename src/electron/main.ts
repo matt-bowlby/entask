@@ -29,7 +29,6 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 let win: BrowserWindow | null;
 
 function createWindow() {
-    console.log(__dirname);
     win = new BrowserWindow({
         icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
         webPreferences: {
@@ -87,9 +86,9 @@ app.on("activate", () => {
     }
 });
 
-ipcMain.handle("load-calendar", async (event: IpcMainInvokeEvent, calendarName: string) => {
-    console.log("loading calendar");
-    return await DataManager.loadDatabase(calendarName);
+ipcMain.handle("load-calendar", (event: IpcMainInvokeEvent, calendarName: string) => {
+    let calendar: Calendar = DataManager.loadDatabase(calendarName);
+    return calendar;
 });
 
 app.whenReady().then(createWindow);

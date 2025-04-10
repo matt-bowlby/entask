@@ -5,6 +5,7 @@ import { useCreateDialogStore } from "@/store/TitleBarStore";
 import useCalendarStore from "@/store/calendarStore";
 import { Task, Event } from "@/classes/thing/Thing";
 import TagBlock from "@/classes/tag/TagBlock";
+import Tag from "@/classes/tag/Tag";
 import DropdownMenu from "../items/DropdownMenu";
 import {getDaysInMonth, months} from "@/utils/timeString"
 
@@ -42,8 +43,6 @@ export default function CreateNewComponent() {
             `${year1}-${month1.padStart(2, '0')}-${day1.padStart(2, '0')}T${hour1.toString().padStart(2, '0')}:${minute1.padStart(2, '0')}`
         ).getTime();
 
-        console.log(`${year1}-${month1.padStart(2, '0')}-${day1.padStart(2, '0')}T${hour1.toString().padStart(2, '0')}:${minute1.padStart(2, '0')}`);
-
         // Get date2 (Only events and tag blocks have date2)
         let date2: Date = new Date();
         if (document.getElementById("date-year-2")) {
@@ -63,8 +62,6 @@ export default function CreateNewComponent() {
             // If second date is set to be 12 AM, it can be assumed they mean the end of the day
             // and not the start
             if (hour2 === 0 && !pm2) date2.setDate(date2.getDate() + 1);
-
-            console.log(`${year2}-${month2.toString().padStart(2, '0')}-${day2.padStart(2, '0')}T${hour2.toString().padStart(2, '0')}:${minute2.padStart(2, '0')}`);
         }
 
         // Get description (All components have a description)
@@ -265,13 +262,7 @@ const CreateTaskDialog = () => {
                     </div>
                 </div>
                 {/* Tag */}
-                <div className="flex flex-row h-fit w-full gap-2">
-                    <div className="flex w-full items-start gap-2 h-10 bg-white rounded-md">
-                    </div>
-                    <button className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center cursor-pointer">
-                        <Plus size={20} strokeWidth={1.5} />
-                    </button>
-                </div>
+                <NewTagField />
             </div>
 
         </div>
@@ -462,6 +453,24 @@ const DateField = ({ id }: DateFieldProps) => {
                     pm
                 </button>
             </div>
+        </div>
+    );
+}
+
+const NewTagField = () => {
+
+    const [tagMenuOpen, setTagMenuOpen] = useState(false);
+
+    return (
+        <div className="flex flex-row h-fit w-full gap-2">
+            <div className="flex w-full items-start gap-2 h-10 bg-white rounded-md">
+            </div>
+            <button
+                className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center cursor-pointer"
+                onClick={() => { setTagMenuOpen(!tagMenuOpen); }}
+            >
+                <Plus size={20} strokeWidth={1.5} />
+            </button>
         </div>
     );
 }

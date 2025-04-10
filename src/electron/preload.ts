@@ -25,8 +25,8 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 
 //expose global window.electronAPI for font-end by contextBridge
 contextBridge.exposeInMainWorld('electronAPI', {
-  loadCalendar: async (calendarName: string) => {
-    return await ipcRenderer.invoke("load-calendar", calendarName);
+  loadCalendar: (calendarName: string) => {
+    return ipcRenderer.invoke("load-calendar", calendarName);
   },
 });
 
@@ -34,7 +34,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 declare global {
   interface Window {
     electronAPI: {
-      loadCalendar: (calendarName: string) => Promise<any>;
+      loadCalendar: (calendarName: string) => any;
     }
   }
 }
