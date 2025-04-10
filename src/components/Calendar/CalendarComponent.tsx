@@ -21,7 +21,6 @@ const CalendarComponent = ({
 }: CalendarInterface) => {
     const dayOffset = useCalendarOffsetStore((state) => state.dayOffset);
     const calendar = useCalendarStore().calendar;
-    console.log(calendar?.getActiveThings());
 
     const { dates, events } = useMemo(() => {
         const calculatedDates: Array<Date> = [];

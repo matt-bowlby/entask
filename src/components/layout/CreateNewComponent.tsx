@@ -5,6 +5,8 @@ import { useCreateDialogStore } from "@/store/TitleBarStore";
 import useCalendarStore from "@/store/calendarStore";
 import { Task, Event } from "@/classes/thing/Thing";
 import TagBlock from "@/classes/tag/TagBlock";
+import DropdownMenu from "../items/DropdownMenu";
+import {getDaysInMonth, months} from "@/utils/timeString"
 
 enum Menu {
     Task,
@@ -31,31 +33,38 @@ export default function CreateNewComponent() {
 
         // Get date1 (All components have a date1)
         const year1: string = (document.getElementById("date-year-1") as HTMLInputElement).value;
-        const month1: string = (document.getElementById("date-month-1") as HTMLInputElement).value;
+        const month1: string = (months.indexOf((document.getElementById("date-month-1") as HTMLInputElement).value) + 1).toString();
         const day1: string = (document.getElementById("date-day-1") as HTMLInputElement).value;
-        const hour1: string = (document.getElementById("date-hour-1") as HTMLInputElement).value;
+        const pm1: boolean = (document.getElementById("date-pm-1") as HTMLInputElement).value === "true";
+        let hour1: number = parseInt((document.getElementById("date-hour-1") as HTMLInputElement).value);
+        if (hour1 === 12) hour1 = 0;
+        if (pm1) hour1 += 12;
         const minute1: string = (document.getElementById("date-minute-1") as HTMLInputElement).value;
         const date1: number = new Date(
-            `${(year1 || now.getFullYear())}-${(month1 || now.getMonth() + 1).toString().padStart(2, '0')}-${(day1 || now.getDate()).toString().padStart(2, '0')}T${(hour1 || "0").padStart(2, '0')}:${(minute1 || "0").padStart(2, '0')}`
+            `${year1}-${month1.padStart(2, '0')}-${day1.padStart(2, '0')}T${hour1.toString().padStart(2, '0')}:${minute1.padStart(2, '0')}`
         ).getTime();
+
+        console.log(`${year1}-${month1.padStart(2, '0')}-${day1.padStart(2, '0')}T${hour1.toString().padStart(2, '0')}:${minute1.padStart(2, '0')}`);
+
         let date2: number = 0;
         if (document.getElementById("date-year-2")) {
+            // Get date2 (All components have a date2)
             const year2: string = (document.getElementById("date-year-2") as HTMLInputElement).value;
-            const month2: string = (document.getElementById("date-month-2") as HTMLInputElement).value;
+            const month2: string = (months.indexOf((document.getElementById("date-month-2") as HTMLInputElement).value) + 1).toString();
             const day2: string = (document.getElementById("date-day-2") as HTMLInputElement).value;
-            const hour2: string = (document.getElementById("date-hour-2") as HTMLInputElement).value;
+            const pm2: boolean = (document.getElementById("date-pm-2") as HTMLInputElement).value === "true";
+            let hour2: number = parseInt((document.getElementById("date-hour-2") as HTMLInputElement).value);
+            if (hour2 === 12) hour2 = 0;
+            if (pm2) hour2 += 12;
             const minute2: string = (document.getElementById("date-minute-2") as HTMLInputElement).value;
             date2 = new Date(
-                `${(year2 || now.getFullYear())}-${(month2 || now.getMonth() + 1).toString().padStart(2, '0')}-${(day2 || now.getDate()).toString().padStart(2, '0')}T${(hour2 || "0").padStart(2, '0')}:${(minute2 || "0").padStart(2, '0')}`
+                `${year2}-${month2.padStart(2, '0')}-${day2.padStart(2, '0')}T${hour2.toString().padStart(2, '0')}:${minute2.padStart(2, '0')}`
             ).getTime();
+
         }
-        console.log("date1: ", date1);
-        console.log("date2: ", date2)
-        console.log("duration: ", date2 - date1);
 
         // Get description (All components have a description)
         const description: string = (document.getElementById("description") as HTMLTextAreaElement).value;
-
 
         switch (activeMenu) {
             case Menu.Task:
@@ -101,7 +110,7 @@ export default function CreateNewComponent() {
     return (
         <Dialog open={isOpen} onClose={close} className="relative z-10">
 
-            <DialogBackdrop className="fixed inset-0 backdrop-blur-md" />
+            <DialogBackdrop className="fixed inset-0 backdrop-blur-sm" />
             <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
                 <div className="flex h-full justify-center p-0">
                     <DialogPanel
@@ -116,7 +125,7 @@ export default function CreateNewComponent() {
                                 className={
                                     activeMenu === Menu.Task
                                         ? "h-16 bg-dark text-white font-semibold w-full text-xl rounded-md"
-                                        : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md"
+                                        : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md cursor-pointer"
                                 }
                             >
                                 Task
@@ -127,7 +136,7 @@ export default function CreateNewComponent() {
                                 className={
                                     activeMenu === Menu.Event
                                         ? "h-16 bg-dark text-white font-semibold w-full text-xl rounded-md"
-                                        : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md"
+                                        : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md cursor-pointer"
                                 }
                             >
                                 Event
@@ -138,7 +147,7 @@ export default function CreateNewComponent() {
                                 className={
                                     activeMenu === Menu.TagBlock
                                         ? "h-16 bg-dark text-white font-semibold w-full text-xl rounded-md"
-                                        : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md"
+                                        : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md cursor-pointer"
                                 }
                             >
                                 Tag Block
@@ -151,13 +160,13 @@ export default function CreateNewComponent() {
                         </div>
                         <div className="flex flex-row h-fit p-2 w-full gap-2 justify-end items-center">
                             <button
-                            className="h-10 w-20 bg-white text-dark rounded-md flex items-center justify-center"
+                            className="h-10 w-20 bg-white text-dark rounded-md flex items-center justify-center cursor-pointer"
                             onClick={close}
                             >
                                 Cancel
                             </button>
                             <button
-                            className="h-10 w-20 bg-dark text-white rounded-md flex items-center justify-center"
+                            className="h-10 w-20 bg-dark text-white rounded-md flex items-center justify-center cursor-pointer"
                             onClick={handleCreate}
                             >
                                 Create
@@ -171,7 +180,6 @@ export default function CreateNewComponent() {
 }
 
 const CreateTaskDialog = () => {
-    const now = new Date();
     return (
         <div className="flex flex-row h-full w-full items-center gap-2">
             <div className="flex flex-col h-full w-fit gap-2">
@@ -240,66 +248,7 @@ const CreateTaskDialog = () => {
                     </div>
                 </div>
                 {/* Due Date */}
-                <div className="text-right h-10 flex flex-row gap-2">
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-year-1"
-                            type="text"
-                            placeholder={now.getFullYear().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Year
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-month-1"
-                            type="text"
-                            placeholder={(now.getMonth() + 1).toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Month
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-day-1"
-                            type="text"
-                            placeholder={now.getDate().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Day
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-center">:</div>
-
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-hour-1"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Hour
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-minute-1"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Minute
-                        </div>
-                    </div>
-                </div>
+                <DateField id={"1"}/>
                 {/* Description */}
                 <div className="text-right h-40 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
@@ -314,7 +263,7 @@ const CreateTaskDialog = () => {
                 <div className="flex flex-row h-fit w-full gap-2">
                     <div className="flex w-full items-start gap-2 h-10 bg-white rounded-md">
                     </div>
-                    <button className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center">
+                    <button className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center cursor-pointer">
                         <Plus size={20} strokeWidth={1.5} />
                     </button>
                 </div>
@@ -325,7 +274,6 @@ const CreateTaskDialog = () => {
 }
 
 const CreateEventDialog = () => {
-    const now = new Date();
     return (
         <div className="flex flex-row h-full w-full items-center gap-2">
             <div className="flex flex-col h-full w-fit gap-2">
@@ -356,128 +304,9 @@ const CreateEventDialog = () => {
                     />
                 </div>
                 {/* Starts */}
-                <div className="text-right h-10 flex flex-row gap-2">
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-
-                            id="date-year-1"
-                            type="text"
-                            placeholder={now.getFullYear().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Year
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-month-1"
-                            type="text"
-                            placeholder={(now.getMonth() + 1).toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Month
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-day-1"
-                            type="text"
-                            placeholder={now.getDate().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Day
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-center">:</div>
-
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-hour-1"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Hour
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-minute-1"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Minute
-                        </div>
-                    </div>
-                </div>
+                <DateField id={"1"}/>
                 {/* Ends */}
-                <div className="text-right h-10 flex flex-row gap-2">
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-year-2"
-                            type="text"
-                            placeholder={now.getFullYear().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Year
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-month-2"
-                            type="text"
-                            placeholder={(now.getMonth() + 1).toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Month
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-day-2"
-                            type="text"
-                            placeholder={now.getDate().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Day
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-center">:</div>
-
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-hour-2"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Hour
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-minute-2"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Minute
-                        </div>
-                    </div>
-                </div>
+                <DateField id={"2"}/>
                 {/* Description */}
                 <div className="text-right h-40 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
@@ -492,7 +321,7 @@ const CreateEventDialog = () => {
                 <div className="flex flex-row h-fit w-full gap-2">
                     <div className="flex w-full items-start gap-2 h-10 bg-white rounded-md">
                     </div>
-                    <button className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center">
+                    <button className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center cursor-pointer">
                         <Plus size={20} strokeWidth={1.5} />
                     </button>
                 </div>
@@ -502,7 +331,6 @@ const CreateEventDialog = () => {
 }
 
 const CreateTagBlockDialog = () => {
-    const now = new Date();
     return (
         <div className="flex flex-row h-full w-full items-center gap-2">
             <div className="flex flex-col h-full w-fit gap-2">
@@ -524,132 +352,14 @@ const CreateTagBlockDialog = () => {
                 <div className="flex flex-row h-fit w-full gap-2">
                     <div className="flex w-full items-start gap-2 h-10 bg-white rounded-md">
                     </div>
-                    <button className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center">
+                    <button className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center cursor-pointer">
                         <Plus size={20} strokeWidth={1.5} />
                     </button>
                 </div>
                 {/* Starts */}
-                <div className="text-right h-10 flex flex-row gap-2">
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-year-1"
-                            type="text"
-                            placeholder={now.getFullYear().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Year
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-month-1"
-                            type="text"
-                            placeholder={(now.getMonth() + 1).toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Month
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-day-1"
-                            type="text"
-                            placeholder={now.getDate().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Day
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-center">:</div>
-
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-hour-1"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Hour
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-minute-1"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Minute
-                        </div>
-                    </div>
-                </div>
+                <DateField id={"1"}/>
                 {/* Ends */}
-                <div className="text-right h-10 flex flex-row gap-2">
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-year-2"
-                            type="text"
-                            placeholder={now.getFullYear().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Year
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-month-2"
-                            type="text"
-                            placeholder={(now.getMonth() + 1).toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Month
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-day-2"
-                            type="text"
-                            placeholder={now.getDate().toString()}
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Day
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-center">:</div>
-
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-hour-2"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Hour
-                        </div>
-                    </div>
-                    <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                        <input
-                            id="date-minute-2"
-                            type="text"
-                            placeholder="0"
-                            className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
-                        />
-                        <div className="text-right text-sm flex items-center">
-                            Minute
-                        </div>
-                    </div>
-                </div>
+                <DateField id={"2"}/>
                 {/* Description */}
                 <div className="text-right h-40 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
@@ -660,6 +370,92 @@ const CreateTagBlockDialog = () => {
                         />
                     </div>
                 </div>
+            </div>
+        </div>
+    );
+}
+
+interface DateFieldProps {
+    id: string;
+}
+
+const DateField = ({ id }: DateFieldProps) => {
+    const now = new Date();
+
+    const [month, setMonth] = useState<number>(now.getMonth());
+    const [year, setYear] = useState<number>(now.getFullYear());
+    const [amPm, setAmPm] = useState<string>(now.getHours() >= 12 ? "PM" : "AM");
+
+    return (
+        <div className="text-right h-10 flex flex-row gap-2">
+            <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
+                <DropdownMenu
+                    id={`date-year-${id}`}
+                    options={Array.from({length: (now.getFullYear() + 6) - (now.getFullYear() - 5)}, (_, i) => ((now.getFullYear() - 5) + i).toString())}
+                    optionReaction={(_: string, i: number) => setYear(i)}
+                    defaultOption={now.getFullYear().toString()}
+                    className="w-full text-sm"
+                />
+            </div>
+            <div className="w-fit flex-shrink-0 px-2 gap-2 text-right rounded-md bg-white flex truncate">
+                <DropdownMenu
+                    id={`date-month-${id}`}
+                    options={months}
+                    optionReaction={(_: string, i: number) => setMonth(i)}
+                    defaultOption={months[now.getMonth()]}
+                    className="w-full text-sm"
+                />
+            </div>
+            <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
+                <DropdownMenu
+                    id={`date-day-${id}`}
+                    options={Array.from({length: getDaysInMonth(year, month + 1)}, (_, i) => (i + 1).toString())}
+                    defaultOption={now.getDate()}
+                    className="w-full text-sm [scroll-bar:none]"
+                />
+            </div>
+
+            <div className="flex items-center justify-center">:</div>
+
+            <div className="w-fit flex-shrink-0 p-2 gap-1 text-right rounded-md bg-white flex truncate">
+                <DropdownMenu
+                    id={`date-hour-${id}`}
+                    options={Array.from({length: 12}, (_, i) => (i + 1).toString())}
+                    defaultOption={now.getHours() ? now.getHours() % 12 : "12"}
+                    className="w-12 flex-shrink-0 text-sm"
+                />
+            </div>
+            <div className="w-auto flex-shrink-0 px-2 gap-2 text-right rounded-md bg-white flex truncate">
+                <DropdownMenu
+                    id={`date-minute-${id}`}
+                    options={Array.from({length: 12}, (_, i) => (i * 5).toString())}
+                    defaultOption={"0"}
+                    className="w-12 flex-shrink-0 text-sm"
+                />
+            </div>
+            <div className="flex flex-col w-8 flex-shrink-0 rounded-md overflow-hidden select-none">
+                <button
+                    id={`date-am-${id}`}
+                    value={amPm === "PM" ? "true" : "false"}
+                    className={
+                        amPm === "AM" ?
+                        "justify-center text-xs flex items-center bg-dark text-white h-full" : "justify-center text-xs flex items-center bg-white text-dark outline-1 outline-[#7772720a] h-full"
+                    }
+                    onClick={() => setAmPm(amPm === "AM" ? "PM" : "AM")}
+                >
+                    am
+                </button>
+                <button
+                    id={`date-pm-${id}`}
+                    value={amPm === "PM" ? "true" : "false"}
+                    className={
+                        amPm === "PM" ?
+                        "justify-center text-xs flex items-center bg-dark text-white h-full" : "justify-center text-xs flex items-center bg-white text-dark outline-1 outline-[#0000000a] h-full"
+                    }
+                    onClick={() => setAmPm(amPm === "AM" ? "PM" : "AM")}
+                >
+                    pm
+                </button>
             </div>
         </div>
     );
