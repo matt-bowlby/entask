@@ -23,8 +23,6 @@ export default function CreateNewComponent() {
 
     const handleCreate = () => {
         if (calendarStore === undefined) return;
-        // Get current date
-        const now = new Date();
 
         // Get name, if applicable (Tag Blocks don't have names)
         let name: string = "";
@@ -46,26 +44,33 @@ export default function CreateNewComponent() {
 
         console.log(`${year1}-${month1.padStart(2, '0')}-${day1.padStart(2, '0')}T${hour1.toString().padStart(2, '0')}:${minute1.padStart(2, '0')}`);
 
-        let date2: number = 0;
+        // Get date2 (Only events and tag blocks have date2)
+        let date2: Date = new Date();
         if (document.getElementById("date-year-2")) {
-            // Get date2 (All components have a date2)
             const year2: string = (document.getElementById("date-year-2") as HTMLInputElement).value;
-            const month2: string = (months.indexOf((document.getElementById("date-month-2") as HTMLInputElement).value) + 1).toString();
-            const day2: string = (document.getElementById("date-day-2") as HTMLInputElement).value;
+            const month2: number = months.indexOf((document.getElementById("date-month-2") as HTMLInputElement).value) + 1;
+            let day2: string = (document.getElementById("date-day-2") as HTMLInputElement).value;
+
             const pm2: boolean = (document.getElementById("date-pm-2") as HTMLInputElement).value === "true";
             let hour2: number = parseInt((document.getElementById("date-hour-2") as HTMLInputElement).value);
             if (hour2 === 12) hour2 = 0;
             if (pm2) hour2 += 12;
+
             const minute2: string = (document.getElementById("date-minute-2") as HTMLInputElement).value;
             date2 = new Date(
-                `${year2}-${month2.padStart(2, '0')}-${day2.padStart(2, '0')}T${hour2.toString().padStart(2, '0')}:${minute2.padStart(2, '0')}`
-            ).getTime();
+                `${year2}-${month2.toString().padStart(2, '0')}-${day2.padStart(2, '0')}T${hour2.toString().padStart(2, '0')}:${minute2.padStart(2, '0')}`
+            );
+            // If second date is set to be 12 AM, it can be assumed they mean the end of the day
+            // and not the start
+            if (hour2 === 0 && !pm2) date2.setDate(date2.getDate() + 1);
 
+            console.log(`${year2}-${month2.toString().padStart(2, '0')}-${day2.padStart(2, '0')}T${hour2.toString().padStart(2, '0')}:${minute2.padStart(2, '0')}`);
         }
 
         // Get description (All components have a description)
         const description: string = (document.getElementById("description") as HTMLTextAreaElement).value;
 
+        // Create and add new thing to calendar
         switch (activeMenu) {
             case Menu.Task:
                 // Only tasks have durations
@@ -86,7 +91,7 @@ export default function CreateNewComponent() {
             case Menu.Event:
                 const event = new Event(
                     name,
-                    date2 - date1,
+                    date2.getTime() - date1,
                     date1,
                     description,
                     []
@@ -96,7 +101,7 @@ export default function CreateNewComponent() {
                 break;
             case Menu.TagBlock:
                 const tagBlock = new TagBlock(
-                    date2 - date1,
+                    date2.getTime() - date1,
                     date1,
                     description,
                     []
