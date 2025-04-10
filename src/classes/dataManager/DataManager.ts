@@ -9,15 +9,15 @@ import IdHandler from "../calendar/IdHandler";
 class DataManager {
     //File paths & names
     private static event_comp_file_name: string = 'event-completed-database.json';
-    private static event_comp_file_path = path.join('database', this.event_comp_file_name);
+    private static event_comp_file_path = path.join('src/database', this.event_comp_file_name);
     private static task_comp_file_name: string = 'task-completed-database.json';
-    private static task_comp_file_path = path.join('database', this.task_comp_file_name);
+    private static task_comp_file_path = path.join('src/database', this.task_comp_file_name);
     private static event_act_file_name: string = 'event-active-database.json';
-    private static event_act_file_path = path.join('database', this.event_act_file_name);
+    private static event_act_file_path = path.join('src/database', this.event_act_file_name);
     private static task_act_file_name: string = 'task-active-database.json';
-    private static task_act_file_path = path.join('database', this.task_act_file_name);
+    private static task_act_file_path = path.join('src/database', this.task_act_file_name);
     private static tags_name: string = 'tags.json';
-    private static tags_file_path = path.join('database', this.tags_name);
+    private static tags_file_path = path.join('src/database', this.tags_name);
 
 
 	///////////////// Load Calender /////////////////

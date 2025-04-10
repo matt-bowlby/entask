@@ -8,8 +8,18 @@ import { useEffect } from "react";
 function App() {
     const calendarStore = useCalendarStore();
     useEffect(() => {
-        calendarStore.setCalendar(new Calendar("Calendar 1"));
+        const loadCalendar = async () => {
+            const calendar = await window.electronAPI.loadCalendar("Calendar") as Calendar;
+            console.log("calendar from app: ", calendar.getName());
+            calendarStore.setCalendar(calendar as Calendar);
+        };
+        loadCalendar();
+        // calendarStore.setCalendar(new Calendar("Calendar"));
     }, []);
+
+    // If calendar not loaded, return empty component
+    if (!calendarStore.calendar) return <></>;
+
     return (
         <>
             <TitleBarComponent />

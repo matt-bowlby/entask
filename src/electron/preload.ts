@@ -22,3 +22,19 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // You can expose other APTs you need here.
   // ...
 })
+
+//expose global window.electronAPI for font-end by contextBridge
+contextBridge.exposeInMainWorld('electronAPI', {
+  loadCalendar: async (calendarName: string) => {
+    return await ipcRenderer.invoke("load-calendar", calendarName);
+  },
+});
+
+// declare the window.electronAPI, nor the font-end can't access electronAPI
+declare global {
+  interface Window {
+    electronAPI: {
+      loadCalendar: (calendarName: string) => Promise<any>;
+    }
+  }
+}

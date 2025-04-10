@@ -13,6 +13,7 @@ export default function TodoList() {
     const calendar = useCalendarStore().calendar;
 
     const {activeThings} = useMemo(() => {
+        console.log("calendar from todo: ", typeof calendar);
         return {
             activeThings: calendar?.getActiveThings(),
         };

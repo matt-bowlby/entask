@@ -1,6 +1,8 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import Calendar from "../classes/calendar/Calendar";
+import DataManager from "../classes/dataManager/DataManager";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -27,6 +29,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 let win: BrowserWindow | null;
 
 function createWindow() {
+    console.log(__dirname);
     win = new BrowserWindow({
         icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
         webPreferences: {
@@ -82,6 +85,11 @@ app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
+});
+
+ipcMain.handle("load-calendar", async (event: IpcMainInvokeEvent, calendarName: string) => {
+    console.log("loading calendar");
+    return await DataManager.loadDatabase(calendarName);
 });
 
 app.whenReady().then(createWindow);
