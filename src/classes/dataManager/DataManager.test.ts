@@ -1,19 +1,10 @@
-import Tag from "../tag/Tag";
 //import { Event, Task } from "../thing/Thing";
 //import Thing from "../thing/Thing";
 import DataManager from "./DataManager";
+import Calendar from "../calendar/Calendar";
+//import Thing from "../thing/Thing";
 
 describe('DataManager', () =>  {
-    let myDataManager: DataManager;
-    let myTag: Tag;
-    let myTags: Array<Tag>;
-
-    beforeEach(() => {
-        myDataManager = new DataManager;
-        myTag = new Tag("pizza time", "itssa pizza time");
-        myTags = [];
-        myTags.push(myTag);
-    })
 
     // test('SaveTags', () => {
     //     myDataManager.saveTags(myTags);
@@ -35,10 +26,8 @@ describe('DataManager', () =>  {
     //     console.log(thing_list[0].getTags()[0].getName());
     // })
 
-    test('LoadTag', () => {
-        let tags: Array<Tag> = [];
-        DataManager.loadTags(tags);
-
-        console.log(tags[0].getName());
+    test('LoadDatabase', () => {
+        let calendar: Calendar = DataManager.loadDatabase("newCal");
+        console.log(calendar.getName());
     })
 });
