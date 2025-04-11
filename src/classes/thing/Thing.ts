@@ -233,6 +233,36 @@ abstract class Thing {
         this.tags = tags;
     }
 
+    public abstract toJson(): object;
+
+    public static fromJson(json: any): Thing {
+        if (json.type === "Event") {
+            return new Event(
+                json.name,
+                json.duration,
+                json.startTime,
+                json.description,
+                json.tags.map((tag: string) => new Tag(tag)),
+                json.completed,
+                json.id
+            );
+        } else if (json.type === "Task") {
+            return new Task(
+                json.name,
+                json.duration,
+                json.dueDate,
+                json.startTime,
+                json.description,
+                json.tags.map((tag: string) => new Tag(tag)),
+                json.completed,
+                json.id
+            );
+        } else {
+            throw new Error("Unknown type: " + json.type);
+        }
+    }
+
+
 //#endregion
 
 }
@@ -250,6 +280,18 @@ class Event extends Thing {
         );
     }
 
+    public toJson(): object {
+        return {
+            type: "Event",
+            name: this.name,
+            duration: this.duration,
+            startTime: this.startTime,
+            description: this.description,
+            tags: this.tags.map(tag => tag.getName()),
+            completed: this.completed,
+            id: this.id
+        };
+    }
 }
 
 class Task extends Thing {
@@ -329,6 +371,20 @@ class Task extends Thing {
      */
     public getTimeUntilDue(): number {
         return this.dueDate - Date.now();
+    }
+
+    public toJson(): object {
+        return {
+            type: "Task",
+            name: this.name,
+            duration: this.duration,
+            dueDate: this.dueDate,
+            startTime: this.startTime,
+            description: this.description,
+            tags: this.tags.map(tag => tag.getName()),
+            completed: this.completed,
+            id: this.id
+        };
     }
 
 }

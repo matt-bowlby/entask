@@ -1,4 +1,4 @@
-import { Task } from "../thing/Thing";
+import { Task, Event } from "../thing/Thing";
 //import Thing from "../thing/Thing";
 import DataManager from "./DataManager";
 //import Calendar from "../calendar/Calendar";
@@ -33,6 +33,8 @@ describe('DataManager', () =>  {
 
     test('savestuff', () => {
         const myTask = new Task("myTask", 2 * 1000 * 60 * 60, Date.now());
+        const myEvent = new Event("myEvent", 2 * 1000 * 60 * 60, Date.now());
         DataManager.saveTask(myTask);
+        DataManager.saveEvent(myEvent);
     })
 });

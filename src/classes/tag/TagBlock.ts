@@ -29,6 +29,30 @@ class TagBlock extends Thing {
         );
     }
 
+    public toJson(): object {
+        return {
+            type: "TagBlock",
+            name: this.name,
+            duration: this.duration,
+            startTime: this.startTime,
+            description: this.description,
+            tags: this.tags.map(tag => tag.getName()),
+            completed: this.completed,
+            id: this.id
+        };
+    }
+
+    public static fromJson(json: any): TagBlock {
+        return new TagBlock(
+            json.duration,
+            json.startTime,
+            json.description,
+            json.tags.map((tag: string) => new Tag(tag)),
+            json.completed,
+            json.id
+        );
+    }
+
 }
 
 export default TagBlock;

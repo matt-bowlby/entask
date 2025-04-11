@@ -87,7 +87,7 @@ app.on("activate", () => {
 });
 
 ipcMain.handle("load-calendar", (event: IpcMainInvokeEvent, calendarName: string) => {
-    let calendar: Calendar = DataManager.loadDatabase(calendarName);
+    let calendar: object = DataManager.loadDatabase(calendarName).toJson();
     return calendar;
 });
 

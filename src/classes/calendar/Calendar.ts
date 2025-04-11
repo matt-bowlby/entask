@@ -315,6 +315,29 @@ class Calendar {
         return this.tags;
     }
 
+
+    public toJson(): object {
+        return {
+            name: this.name,
+            active: this.active.map((thing) => thing.toJson()),
+            completed: this.completed.map((thing) => thing.toJson()),
+            tagBlocks: this.tagBlocks.map((tagBlock) => tagBlock.toJson()),
+            tags: this.tags.map((tag) => tag.toJson()),
+            id: this.id,
+        };
+    }
+
+    public static fromJson(json: any): Calendar {
+        return new Calendar(
+            json.name,
+            json.active.map((thing: any) => Thing.fromJson(thing)),
+            json.completed.map((thing: any) => Thing.fromJson(thing)),
+            json.tagBlocks.map((tagBlock: any) => TagBlock.fromJson(tagBlock)),
+            json.tags.map((tag: any) => Tag.fromJson(tag)),
+            json.id
+        );
+    }
+
     //#endregion
 
     //#region Json

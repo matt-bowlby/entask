@@ -3,22 +3,15 @@ import CalendarComponent from "@/components/Calendar/CalendarComponent";
 import TitleBarComponent from "./components/layout/TitleBarComponent";
 import useCalendarStore from "./store/calendarStore";
 import Calendar from "./classes/calendar/Calendar";
+// import Thing, {Task, Event} from "./classes/thing/Thing";
 import { useEffect } from "react";
 
 function App() {
     const calendarStore = useCalendarStore();
     useEffect(() => {
         const loadCalendar = async () => {
-            const loadedCalendar = await window.electronAPI.loadCalendar("Calendar");
-            const calendar = new Calendar(
-                loadedCalendar.name,
-                loadedCalendar.active,
-                loadedCalendar.completed,
-                loadedCalendar.tagBlocks,
-                loadedCalendar.tags,
-                loadedCalendar.id
-            );
-            calendarStore.setCalendar(calendar as Calendar);
+            const calendarJson = await window.electronAPI.loadCalendar("Calendar");
+            calendarStore.setCalendar(Calendar.fromJson(calendarJson));
         };
         loadCalendar();
         // calendarStore.setCalendar(new Calendar("Calendar"));

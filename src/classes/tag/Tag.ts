@@ -75,6 +75,19 @@ class Tag {
 	public getColor(): string {
 		return this.color;
 	}
+
+	public toJson(): object {
+		return {
+			name: this.name,
+			description: this.description,
+			color: this.color,
+			id: this.id
+		};
+	}
+
+	public static fromJson(json: any): Tag {
+		return new Tag(json.name, json.description, json.color, json.id);
+	}
 }
 
 export default Tag;
