@@ -7,6 +7,7 @@ import { Task, Event } from "@/classes/thing/Thing";
 import TagBlock from "@/classes/tag/TagBlock";
 import Tag from "@/classes/tag/Tag";
 import DropdownMenu from "../items/DropdownMenu";
+import { createStore, useStore } from "zustand";
 import {getDaysInMonth, months} from "@/utils/timeString"
 
 enum Menu {
@@ -17,6 +18,7 @@ enum Menu {
 
 export default function CreateNewComponent() {
     const { isOpen, close } = useCreateDialogStore();
+    const tagsStore = useStore(tagsArray);
     const calendarStore = useCalendarStore();
     const [activeMenu, setActiveMenu] = useState<Menu>(Menu.Task);
 
@@ -67,6 +69,9 @@ export default function CreateNewComponent() {
         // Get description (All components have a description)
         const description: string = (document.getElementById("description") as HTMLTextAreaElement).value;
 
+        // Get tags (All components have tags)
+        const tags = tagsStore.tags as Tag[];
+
         // Create and add new thing to calendar
         switch (activeMenu) {
             case Menu.Task:
@@ -80,10 +85,9 @@ export default function CreateNewComponent() {
                     date1,
                     undefined,
                     description,
-                    []
+                    tags
                 );
                 calendarStore.addThing(task);
-                close();
                 break;
             case Menu.Event:
                 const event = new Event(
@@ -91,22 +95,26 @@ export default function CreateNewComponent() {
                     date2.getTime() - date1,
                     date1,
                     description,
-                    []
+                    tags
                 );
                 calendarStore.addThing(event);
-                close();
                 break;
             case Menu.TagBlock:
+                if (tags.length === 0) {
+                    console.log("No tags selected for tag block.");
+                    return;
+                }
                 const tagBlock = new TagBlock(
                     date2.getTime() - date1,
                     date1,
                     description,
-                    []
+                    tags
                 );
                 calendarStore.addThing(tagBlock);
-                close();
                 break;
         }
+        close();
+        tagsStore.setTags([]);
     }
 
     return (
@@ -183,8 +191,8 @@ export default function CreateNewComponent() {
 
 const CreateTaskDialog = () => {
     return (
-        <div id="task-dialog" className="flex flex-row h-fit w-full gap-2">
-            <div id="task-dialog-titles" className="flex flex-col h-fit w-fit gap-2 justify-start">
+        <div className="flex flex-row h-fit w-full gap-2">
+            <div className="flex flex-col h-fit w-fit gap-2 justify-start">
                 <div className={`text-right flex items-center justify-end h-10`}>
                     Name
                 </div>
@@ -194,14 +202,14 @@ const CreateTaskDialog = () => {
                 <div className={`text-right flex items-center justify-end h-10`}>
                     Due Date
                 </div>
-                <div className={`text-right flex justify-end items-start py-1 h-40`}>
+                <div className={`text-right flex justify-end items-start py-1 h-20`}>
                     Description
                 </div>
                 <div className={`text-right flex items-center justify-end h-10`}>
                     Tags
                 </div>
             </div>
-            <div id="task-dialog-content" className="flex flex-col h-full w-full gap-2 overflow-hidden">
+            <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Name */}
                 <div className="flex rounded-md h-10 bg-white px-2 gap-2">
                     <input
@@ -252,7 +260,7 @@ const CreateTaskDialog = () => {
                 {/* Due Date */}
                 <DateField id={"1"}/>
                 {/* Description */}
-                <div className="text-right h-40 flex flex-row gap-2">
+                <div className="text-right h-20 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
                         <textarea
                             id="description"
@@ -270,25 +278,25 @@ const CreateTaskDialog = () => {
 
 const CreateEventDialog = () => {
     return (
-        <div className="flex flex-row h-full w-full items-center gap-2">
-            <div className="flex flex-col h-full w-fit gap-2">
+        <div className="flex flex-row h-fit w-full gap-2">
+            <div className="flex flex-col h-fit w-fit gap-2 justify-start">
                 <div className={`text-right flex items-center justify-end h-10`}>
                     Name
                 </div>
                 <div className={`text-right flex items-center justify-end h-10`}>
-                    Starts
+                    Start Time
                 </div>
                 <div className={`text-right flex items-center justify-end h-10`}>
-                    Ends
+                    End Time
                 </div>
-                <div className={`text-right flex justify-end items-start py-1 h-40`}>
+                <div className={`text-right flex justify-end items-start py-1 h-20`}>
                     Description
                 </div>
                 <div className={`text-right flex items-center justify-end h-10`}>
                     Tags
                 </div>
             </div>
-            <div className="flex flex-col h-full w-full gap-2">
+            <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Name */}
                 <div className="flex rounded-md h-10 bg-white px-2 gap-2">
                     <input
@@ -303,7 +311,7 @@ const CreateEventDialog = () => {
                 {/* Ends */}
                 <DateField id={"2"}/>
                 {/* Description */}
-                <div className="text-right h-40 flex flex-row gap-2">
+                <div className="text-right h-20 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
                         <textarea
                             id="description"
@@ -321,28 +329,28 @@ const CreateEventDialog = () => {
 
 const CreateTagBlockDialog = () => {
     return (
-        <div className="flex flex-row h-full w-full items-center gap-2">
-            <div className="flex flex-col h-full w-fit gap-2">
+        <div className="flex flex-row h-fit w-full gap-2">
+            <div className="flex flex-col h-fit w-fit gap-2 justify-start">
                 <div className={`text-right flex items-center justify-end h-10`}>
-                    Starts
+                    Start Time
                 </div>
                 <div className={`text-right flex items-center justify-end h-10`}>
-                    Ends
+                    End Time
                 </div>
-                <div className={`text-right flex justify-end items-start py-1 h-40`}>
+                <div className={`text-right flex justify-end items-start py-1 h-20`}>
                     Description
                 </div>
                 <div className={`text-right flex items-center justify-end h-10`}>
                     Tags
                 </div>
             </div>
-            <div className="flex flex-col h-full w-full gap-2">
+            <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Starts */}
                 <DateField id={"1"}/>
                 {/* Ends */}
                 <DateField id={"2"}/>
                 {/* Description */}
-                <div className="text-right h-40 flex flex-row gap-2">
+                <div className="text-right h-20 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
                         <textarea
                             id="description"
@@ -411,7 +419,7 @@ const DateField = ({ id }: DateFieldProps) => {
             <div className="w-auto flex-shrink-0 px-2 gap-2 text-right rounded-md bg-white flex truncate">
                 <DropdownMenu
                     id={`date-minute-${id}`}
-                    options={Array.from({length: 12}, (_, i) => (i * 5).toString())}
+                    options={Array.from({length: 12}, (_, i) => (i * 5).toString().padStart(2, "0"))}
                     defaultOption={"0"}
                     className="w-12 flex-shrink-0 text-sm"
                 />
@@ -444,21 +452,37 @@ const DateField = ({ id }: DateFieldProps) => {
     );
 }
 
+interface TagsArray {
+    tags: Tag[];
+    addTag: (tag: Tag) => void;
+    removeTag: (tag: Tag) => void;
+    setTags: (tags: Tag[]) => void;
+}
+const tagsArray = createStore<TagsArray>((set) => ({
+    tags: [] as Tag[],
+    addTag: (tag: Tag) => set((state) => ({ tags: [...state.tags, tag] })),
+    removeTag: (tag: Tag) => set((state) => ({ tags: state.tags.filter(t => t !== tag) })),
+    setTags: (tags: Tag[]) => set(() => ({ tags })),
+}));
+
 const NewTagField = () => {
     const calendarStore = useCalendarStore()
 
     const [tagMenuOpen, setTagMenuOpen] = useState(false);
     const [useExisting, setUseExisting] = useState(true);
 
-    const [tagsArray, setTagsArray] = useState<Tag[]>([]);
+    const tagsStore = useStore(tagsArray);
+    const tags = tagsStore.tags as Tag[];
+    const addTag = tagsStore.addTag;
+    const removeTag = tagsStore.removeTag;
 
     const [newColor, setNewColor] = useState("#000000");
 
     if (calendarStore.calendar === undefined) return <></>;
 
     const handleAddTag = (tag: Tag) => {
-        if (tagsArray.find(t => t === tag)) return;
-        setTagsArray([...tagsArray, tag]);
+        if (tags.find(t => t === tag)) return;
+        addTag(tag);
     }
 
     const handleCreateTag = () => {
@@ -481,8 +505,8 @@ const NewTagField = () => {
             <div className="flex flex-row h-fit w-full gap-2">
                 <div className="flex w-full max-w-full max-h-50 flex-wrap items-start gap-2 rounded-md">
                     {
-                        Array.from({length: tagsArray.length}, (_, i) => {
-                            const tag = tagsArray[i];
+                        Array.from({length: tags.length}, (_, i) => {
+                            const tag = tags[i];
                             return <div
                                 className="flex w-fit h-10 rounded-md px-3 items-center justify-center gap-2 bg-white overflow-hidden flex-shrink-0"
                                 key={tag.getName()}
@@ -499,7 +523,7 @@ const NewTagField = () => {
                                     strokeWidth={1.5}
                                     className="cursor-pointer flex-shrink-0"
                                     onClick={() =>
-                                        setTagsArray(tagsArray.filter((_, j) => i !== j))
+                                        removeTag(tag)
                                     }
                                 />
                             </div>
@@ -585,7 +609,7 @@ const NewTagField = () => {
                                         <p className="flex w-fit h-10 text-dark items-center justify-end text-right">
                                             Color
                                         </p>
-                                        <p className="flex w-fit h-10 text-dark items-center justify-end text-right">
+                                        <p className="flex w-fit h-20 text-dark items-center justify-end text-right">
                                             Description
                                         </p>
 
@@ -614,7 +638,7 @@ const NewTagField = () => {
                                         </div>
                                         <textarea
                                             id="tag-description"
-                                            className="w-full h-40 bg-white text-dark rounded-md p-2 outline-none drop-shadow-md overflow-y-auto resize-none"
+                                            className="w-full h-20 bg-white text-dark rounded-md p-2 outline-none drop-shadow-md overflow-y-auto resize-none"
                                             placeholder="Description"
                                         />
                                     </div>
