@@ -66,6 +66,24 @@ class Calendar {
     //#region Public Methods
 
     /**
+     * Adds a Tag to the Calendar.
+     * @param tag - The Tag to add.
+     */
+    public addTag(...tags: Array<Tag>): void {
+        for (const tag of tags) {
+            if (!this.tags.includes(tag)) this.tags.push(tag);
+        }
+    }
+
+    /**
+     * Removes a Tag from the Calendar.
+     * @param tag - The Tag to remove.
+     */
+    public removeTag(tag: Tag): void {
+        this.tags = this.tags.filter((t) => t !== tag);
+    }
+
+    /**
      * Adds a Thing to the Calendar.
      * @param thing - The Thing to add.
      */

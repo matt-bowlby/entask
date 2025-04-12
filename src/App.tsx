@@ -18,7 +18,7 @@ function App() {
     }, []);
 
     // If calendar not loaded, return loading component
-    if (!calendarStore.calendar) return <div className="bg-dark text-white w-[100%] h-[100%]">Loading...</div>;
+    if (!calendarStore.calendar) return <div className="bg-dark text-white w-[100vw] h-[100vh]">Loading...</div>;
 
     return (
         <>
