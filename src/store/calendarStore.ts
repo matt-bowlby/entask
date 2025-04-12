@@ -52,5 +52,22 @@ const useCalendarOffsetStore = create<CalendarOffsetStore>((set) => ({
         set((state) => ({ dayOffset: state.dayOffset - 1 })),
 }));
 
+type CalendarScrollStore = {
+    resetScrollHeight: () => void;
+}
+
+const useCalendarScrollStore = create<CalendarScrollStore>((set) => ({
+    resetScrollHeight: () => {
+        const scrollElement = document.getElementById("calendar-body");
+        if (scrollElement) {
+            const date = new Date();
+            const hourIndicator = document.getElementById(`hour-marker-${date.getHours()}`);
+
+            scrollElement.scrollTop = hourIndicator?.offsetTop || 0;
+        }
+    },
+}));
+
+
 export default useCalendarStore;
-export { useCalendarOffsetStore };
+export { useCalendarOffsetStore, useCalendarScrollStore };

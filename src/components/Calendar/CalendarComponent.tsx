@@ -1,8 +1,8 @@
 import { CalendarDays } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 
-import useCalendarStore, { useCalendarOffsetStore } from "@/store/calendarStore";
+import useCalendarStore, { useCalendarOffsetStore, useCalendarScrollStore } from "@/store/calendarStore";
 
 import { meridiem } from "@/utils/timeString";
 
@@ -20,6 +20,7 @@ const CalendarComponent = ({
     numDaysInView = 5,
 }: CalendarInterface) => {
     const dayOffset = useCalendarOffsetStore((state) => state.dayOffset);
+    const resetScrollHeight = useCalendarScrollStore((state) => state.resetScrollHeight);
     const calendar = useCalendarStore().calendar;
 
     const { dates, events } = useMemo(() => {
@@ -49,6 +50,10 @@ const CalendarComponent = ({
 
         return { dates: calculatedDates, events: events };
     }, [calendar, dayOffset, numDaysInView]);
+
+    useEffect(() => {
+        resetScrollHeight();
+    }, []);
 
     return (
         <section id="calendar" className="bg-dark grow">
@@ -117,11 +122,16 @@ function HourMarkers() {
     const timeSlots = Array.from({ length: 25 }, (_, i) => {
         return (meridiem(i, 0)); // 0 minutes for simplicity
     });
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const milliseconds = Date.now() - startOfDay.getTime();
+
     return (
         <div className="absolute top-0 right-0 left-0 h-column-height p-2 py-4 select-none">
             <div className="relative">
                 {timeSlots.map((item, i) => (
                     <div
+                        id={`hour-marker-${i}`}
                         key={i}
                         className="flex flex-row absolute w-full gap-2"
                         style={{
@@ -136,6 +146,18 @@ function HourMarkers() {
                         <div className="border-b-[#00000022] border-b-[1px] w-full h-0"></div>
                     </div>
                 ))}
+                <div
+                    id="hour-indicator"
+                    className={`absolute w-full z-10`}
+                    style={{
+                        top: `calc(${milliseconds}/(24 * 1000 * 60 * 60) * var(--column-height))`,
+                    }}
+                >
+                    <div className="absolute -top-2 flex h-4 w-10 flex-shrink-0 text-xs items-center justify-center text-nowrap text-white bg-dark px-2 rounded-xs">
+                        {meridiem(new Date().getHours(), new Date().getMinutes(), false)}
+                    </div>
+                    <div className="border-b-2 border-dark w-full"></div>
+                </div>
             </div>
         </div>
     );

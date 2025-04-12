@@ -1,11 +1,12 @@
 import { Image, Settings, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import CreateNewComponent from "@/components/layout/CreateNewComponent";
-import { useCalendarOffsetStore } from "@/store/calendarStore";
+import { useCalendarOffsetStore, useCalendarScrollStore } from "@/store/calendarStore";
 import { useCreateDialogStore } from "@/store/TitleBarStore";
 
 export default function TitleBarComponent() {
     const { incrementDayOffset, decrementDayOffset } = useCalendarOffsetStore();
     const { setDayOffset } = useCalendarOffsetStore();
+    const resetScrollHeight = useCalendarScrollStore((state) => state.resetScrollHeight);
     const { isOpen, open: openCreateDialog } = useCreateDialogStore();
 
     return (
@@ -51,7 +52,10 @@ export default function TitleBarComponent() {
                     />
                     <h2
                         className="text-base font-regular cursor-pointer [app-region:no-drag] select-none"
-                        onClick={() => setDayOffset(0)} // Reset to today when clicked
+                        onClick={() => {
+                            setDayOffset(0);
+                            resetScrollHeight();
+                        }} // Reset to today when clicked
                     >
                         Today
                     </h2>
