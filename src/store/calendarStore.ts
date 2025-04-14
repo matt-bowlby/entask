@@ -70,4 +70,25 @@ const useCalendarStore = create<CalendarState>((set, get) => ({
     }
 }));
 
+type ScrollState = {
+    scrollTop: number;
+    setScrollTop: (scrollTop: number) => void;
+    resetScrollTop: () => void;
+}
+
+const useScrollStore = create<ScrollState>((set) => ({
+    scrollTop: 0,
+    setScrollTop: (scrollTop: number) => set({ scrollTop }),
+    resetScrollTop: () => {
+        var now = new Date();
+        var calendarBody = document.getElementById("calendar-body");
+        var hourMarker = document.getElementById(`hour-marker-${now.getHours()}`);
+        console.log(hourMarker);
+        if (calendarBody && hourMarker) {
+            calendarBody.scrollTo({ top: hourMarker.offsetTop, behavior: "smooth" });
+        }
+    }
+}));
+
 export default useCalendarStore;
+export { useScrollStore };

@@ -1,6 +1,6 @@
 import { Image, Settings, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import CreateNewComponent from "@/components/layout/CreateNewComponent";
-import useCalendarStore from "@/store/calendarStore";
+import useCalendarStore, { useScrollStore } from "@/store/calendarStore";
 import { useCreateDialogStore } from "@/store/TitleBarStore";
 import { useNowStore } from "../Updater/Updater";
 import { months } from "@/utils/timeString";
@@ -14,6 +14,7 @@ export default function TitleBarComponent() {
     const year = new Date(now).getFullYear();
 
     const { incrementOffset, decrementOffset, setOffset } = useCalendarStore();
+    const {resetScrollTop} = useScrollStore();
     const { isOpen, open: openCreateDialog } = useCreateDialogStore();
 
     return (
@@ -61,6 +62,7 @@ export default function TitleBarComponent() {
                         className="text-base font-regular cursor-pointer [app-region:no-drag] select-none"
                         onClick={() => {
                             setOffset(0);
+                            resetScrollTop();
                         }} // Reset to today when clicked
                     >
                         Today
@@ -74,8 +76,8 @@ export default function TitleBarComponent() {
                     />
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2 select-none">
-                    <h1 className="font-bold text-lg">September</h1>
-                    <h1 className="font-regular text-lg">2025</h1>
+                    <h1 className="font-bold text-lg">{month}</h1>
+                    <h1 className="font-regular text-lg">{year}</h1>
                 </div>
             </div>
             {isOpen && (

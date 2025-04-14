@@ -1,7 +1,7 @@
 import { CalendarDays } from "lucide-react";
 import { useMemo, useEffect, useRef, useCallback } from "react";
 
-import useCalendarStore from "@/store/calendarStore";
+import useCalendarStore, { useScrollStore } from "@/store/calendarStore";
 
 import { meridiem } from "@/utils/timeString";
 
@@ -15,10 +15,18 @@ import { useNowStore } from "../Updater/Updater";
 const CalendarComponent = () => {
     const now = useNowStore((state) => state.now);
     const { offset, numDaysInView, getDatesInView } = useCalendarStore();
+    const scrollStore = useScrollStore();
 
     const { dates } = useMemo(() => {
         return { dates: getDatesInView(now) };
     }, [getDatesInView, now, offset, numDaysInView]);
+
+    useEffect(() => {
+        scrollStore.resetScrollTop();
+        console.log("bruh");
+    }, [new Date(now).getHours()]);
+
+    console.log(scrollStore.scrollTop);
 
     return (
         <section id="calendar" className="bg-dark grow">
@@ -132,7 +140,7 @@ function HourMarkers() {
                     <div className="absolute -top-2 flex h-4 w-10 flex-shrink-0 text-xs items-center justify-center text-nowrap text-white bg-dark px-2 rounded-xs">
                         {meridiem(new Date().getHours(), new Date().getMinutes(), false)}
                     </div>
-                    <div className="border-b-2 border-dark w-full"></div>
+                    <div className="border-b-2 border-dark w-full rounded-full"></div>
                 </div>
             </div>
         </div>
