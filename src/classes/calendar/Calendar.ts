@@ -333,6 +333,14 @@ class Calendar {
         return this.tags;
     }
 
+    /**
+     * Returns a reference to the list of TagBlocks.
+     * @returns A reference of the TagBlocks.
+     */
+    public getTagBlocks(): Array<TagBlock> {
+        return this.tagBlocks;
+    }
+
 
     public toJson(): object {
         return {

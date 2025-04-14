@@ -8,6 +8,7 @@ import { meridiem } from "@/utils/timeString";
 import DayLabel from "@/components/Calendar/DayLabelComponent";
 import EventComponent from "@/components/Calendar/CalendarEventComponent";
 import { useNowStore } from "../Updater/Updater";
+import CalendarTagBlock from "./CalendarTagBlock";
 
 const CalendarComponent = () => {
     const now = useNowStore((state) => state.now);
@@ -73,12 +74,22 @@ interface CalendarDayProps {
 }
 const CalendarDay = ({ date }: CalendarDayProps) => {
     const calendar = useCalendarStore().calendar;
+    if (calendar === undefined) return <></>
 
-    const events = calendar?.getActiveThings().filter((thing) => {
+    const events = calendar.getActiveThings().filter((thing) => {
         if (thing.getStartTime() !== 0) {
             return (
                 thing.getStartTime() >= date.getTime() &&
                 thing.getStartTime() <
+                    date.getTime() + 24 * 60 * 60 * 1000
+            );
+        }
+    });
+    const tagBlocks = calendar.getTagBlocks().filter((tagBlock) => {
+        if (tagBlock.getStartTime() !== 0) {
+            return (
+                tagBlock.getStartTime() >= date.getTime() &&
+                tagBlock.getStartTime() <
                     date.getTime() + 24 * 60 * 60 * 1000
             );
         }
@@ -88,9 +99,13 @@ const CalendarDay = ({ date }: CalendarDayProps) => {
         <div
             className="flex flex-col w-full h-column-height relative"
         >
-            {(events || []).map((item, j) => {
+            {tagBlocks.map((item, j) => {
+                return <CalendarTagBlock tagBlock={item} key={j} />;
+            })}
+            {events.map((item, j) => {
                 return <EventComponent event={item} key={j} />;
             })}
+
         </div>
     );
 }
