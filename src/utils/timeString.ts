@@ -18,8 +18,8 @@ export function military(hour: number, minute: number): string {
 	return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 }
 
-export function meridiem(hour: number, minute: number, includeMeridiem: boolean = true): string {
-	return `${hour % 12 || 12}${minute == 0 ? "" : ":" + minute.toString().padStart(2, '0')} ${hour % 24 >= 12 ? (includeMeridiem ? "pm" : "") : (includeMeridiem ? "am" : "")}`;
+export function meridiem(hour: number, minute: number, includeMeridiem: boolean = true, includeMinute: boolean = true): string {
+	return `${hour % 12 || 12}${includeMinute ? (":" + minute.toString().padStart(2, '0')) : ""} ${hour % 24 >= 12 ? (includeMeridiem ? "pm" : "") : (includeMeridiem ? "am" : "")}`;
 }
 
 export const months: string[] = [

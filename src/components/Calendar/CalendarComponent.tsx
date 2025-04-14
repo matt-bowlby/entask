@@ -1,12 +1,9 @@
 import { CalendarDays } from "lucide-react";
-import { useMemo, useEffect, useRef, useCallback } from "react";
+import { useMemo, useEffect } from "react";
 
 import useCalendarStore, { useScrollStore } from "@/store/calendarStore";
 
 import { meridiem } from "@/utils/timeString";
-
-// import Thing from "@/classes/thing/Thing";
-// import Calendar from "../../classes/calendar/Calendar";
 
 import DayLabel from "@/components/Calendar/DayLabelComponent";
 import EventComponent from "@/components/Calendar/CalendarEventComponent";
@@ -101,7 +98,7 @@ const CalendarDay = ({ date }: CalendarDayProps) => {
 function HourMarkers() {
     const { now } = useNowStore();
     const timeSlots = Array.from({ length: 25 }, (_, i) => {
-        return (meridiem(i, 0));
+        return (meridiem(i, 0, true, false));
     });
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
