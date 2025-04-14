@@ -26,9 +26,7 @@ function App() {
             <TitleBarComponent />
             <main className="flex h-[calc(100vh-var(--title-bar-height))] bg-dark p-2 gap-2 overflow-hidden">
                 <TodoList />
-                <CalendarComponent
-                    numDaysInView={5}
-                />
+                <CalendarComponent />
             </main>
         </div>
     );
