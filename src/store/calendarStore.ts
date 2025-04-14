@@ -83,7 +83,6 @@ const useScrollStore = create<ScrollState>((set) => ({
         var now = new Date();
         var calendarBody = document.getElementById("calendar-body");
         var hourMarker = document.getElementById(`hour-marker-${now.getHours()}`);
-        console.log(hourMarker);
         if (calendarBody && hourMarker) {
             calendarBody.scrollTo({ top: hourMarker.offsetTop, behavior: "smooth" });
         }

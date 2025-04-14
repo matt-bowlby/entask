@@ -23,10 +23,7 @@ const CalendarComponent = () => {
 
     useEffect(() => {
         scrollStore.resetScrollTop();
-        console.log("bruh");
     }, [new Date(now).getHours()]);
-
-    console.log(scrollStore.scrollTop);
 
     return (
         <section id="calendar" className="bg-dark grow">
