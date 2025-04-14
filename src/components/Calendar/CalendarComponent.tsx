@@ -1,64 +1,29 @@
 import { CalendarDays } from "lucide-react";
-import { useMemo, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useMemo, useEffect, useRef, useCallback } from "react";
 
-import useCalendarStore, { useCalendarOffsetStore, useCalendarScrollStore } from "@/store/calendarStore";
+import useCalendarStore from "@/store/calendarStore";
 
 import { meridiem } from "@/utils/timeString";
 
-import Thing from "@/classes/thing/Thing";
+// import Thing from "@/classes/thing/Thing";
 // import Calendar from "../../classes/calendar/Calendar";
 
 import DayLabel from "@/components/Calendar/DayLabelComponent";
 import EventComponent from "@/components/Calendar/CalendarEventComponent";
+import { useNowStore } from "../Updater/Updater";
 
-interface CalendarInterface {
-    numDaysInView: number;
-}
+const CalendarComponent = () => {
+    const now = useNowStore((state) => state.now);
+    const { offset, numDaysInView, getDatesInView } = useCalendarStore();
 
-const CalendarComponent = ({
-    numDaysInView = 5,
-}: CalendarInterface) => {
-    const dayOffset = useCalendarOffsetStore((state) => state.dayOffset);
-    const resetScrollHeight = useCalendarScrollStore((state) => state.resetScrollHeight);
-    const calendar = useCalendarStore().calendar;
-
-    const { dates, events } = useMemo(() => {
-        const calculatedDates: Array<Date> = [];
-        const events: Thing[][] = [];
-
-        for (let i = 0; i < numDaysInView; i++) {
-            const newDate = new Date(
-                Date.now() + (i + dayOffset) * 24 * 60 * 60 * 1000
-            );
-            newDate.setHours(0, 0, 0, 0);
-            calculatedDates.push(newDate);
-
-            if (calendar)
-                events.push(
-                    calendar.getActiveThings().filter((thing) => {
-                        if (thing.getStartTime() !== 0) {
-                            return (
-                                thing.getStartTime() >= newDate.getTime() &&
-                                thing.getStartTime() <
-                                    newDate.getTime() + 24 * 60 * 60 * 1000
-                            );
-                        }
-                    })
-                );
-        }
-
-        return { dates: calculatedDates, events: events };
-    }, [calendar, dayOffset, numDaysInView]);
-
-    useEffect(() => {
-        resetScrollHeight();
-    }, []);
+    const { dates } = useMemo(() => {
+        return { dates: getDatesInView(now) };
+    }, [getDatesInView, now, offset, numDaysInView]);
 
     return (
         <section id="calendar" className="bg-dark grow">
             <div className="bg-off-white h-full rounded-xl flex flex-col overflow-hidden">
-                <CalendarHeader numDaysInView={numDaysInView} dates={dates} />
+                <CalendarHeader />
                 <div
                     id="calendar-body"
                     className="flex p-2 pt-4 gap-2 overflow-y-scroll [scrollbar-width:none] relative"
@@ -67,25 +32,7 @@ const CalendarComponent = ({
                     <div className="w-10 flex-shrink-0 h-column-height"></div>
                     <div className="flex flex-row gap-2 w-full">
                         {Array.from({ length: numDaysInView }, (_, i) => {
-                            return (
-                                <div
-                                    key={i}
-                                    className="flex flex-col w-full h-column-height relative"
-                                >
-                                    {(events[i] || []).map((item, j) => {
-                                        return (
-                                            <motion.div
-                                                key={j}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ ease: "circOut", duration: 0.3, delay: j * 0.1 }}
-                                            >
-                                                <EventComponent event={item} />
-                                            </motion.div>
-                                        );
-                                    })}
-                                </div>
-                            );
+                            return <CalendarDay key={i} date={dates[i]} />;
                         })}
                     </div>
                 </div>
@@ -94,13 +41,14 @@ const CalendarComponent = ({
     );
 };
 
-const CalendarHeader = ({
-    dates,
-    numDaysInView,
-}: {
-    dates: Date[];
-    numDaysInView: number;
-}) => {
+const CalendarHeader = () => {
+        const now = useNowStore((state) => state.now);
+        const { offset, numDaysInView, getDatesInView } = useCalendarStore();
+
+        const { dates } = useMemo(() => {
+            return { dates: getDatesInView(now) };
+        }, [getDatesInView, now, offset, numDaysInView]);
+
     return (
         <div
             id="calendar-header"
@@ -118,13 +66,41 @@ const CalendarHeader = ({
     );
 }
 
+interface CalendarDayProps {
+    date: Date;
+}
+const CalendarDay = ({ date }: CalendarDayProps) => {
+    const calendar = useCalendarStore().calendar;
+
+    const events = calendar?.getActiveThings().filter((thing) => {
+        if (thing.getStartTime() !== 0) {
+            return (
+                thing.getStartTime() >= date.getTime() &&
+                thing.getStartTime() <
+                    date.getTime() + 24 * 60 * 60 * 1000
+            );
+        }
+    });
+
+    return (
+        <div
+            className="flex flex-col w-full h-column-height relative"
+        >
+            {(events || []).map((item, j) => {
+                return <EventComponent event={item} key={j} />;
+            })}
+        </div>
+    );
+}
+
 function HourMarkers() {
+    const { now } = useNowStore();
     const timeSlots = Array.from({ length: 25 }, (_, i) => {
-        return (meridiem(i, 0)); // 0 minutes for simplicity
+        return (meridiem(i, 0));
     });
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
-    const milliseconds = Date.now() - startOfDay.getTime();
+    const milliseconds = now - startOfDay.getTime();
 
     return (
         <div className="absolute top-0 right-0 left-0 h-column-height p-2 py-4 select-none">

@@ -1,12 +1,19 @@
 import { Image, Settings, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import CreateNewComponent from "@/components/layout/CreateNewComponent";
-import { useCalendarOffsetStore, useCalendarScrollStore } from "@/store/calendarStore";
+import useCalendarStore from "@/store/calendarStore";
 import { useCreateDialogStore } from "@/store/TitleBarStore";
+import { useNowStore } from "../Updater/Updater";
+import { months } from "@/utils/timeString";
 
 export default function TitleBarComponent() {
-    const { incrementDayOffset, decrementDayOffset } = useCalendarOffsetStore();
-    const { setDayOffset } = useCalendarOffsetStore();
-    const resetScrollHeight = useCalendarScrollStore((state) => state.resetScrollHeight);
+    const { offset, } = useCalendarStore();
+    const nowStore = useNowStore();
+    let now = nowStore.now;
+    now += offset * 24 * 60 * 60 * 1000;
+    const month = months[new Date(now).getMonth()];
+    const year = new Date(now).getFullYear();
+
+    const { incrementOffset, decrementOffset, setOffset } = useCalendarStore();
     const { isOpen, open: openCreateDialog } = useCreateDialogStore();
 
     return (
@@ -48,13 +55,12 @@ export default function TitleBarComponent() {
                         color="white"
                         strokeWidth={1.5}
                         className="cursor-pointer [app-region:no-drag]"
-                        onClick={incrementDayOffset}
+                        onClick={incrementOffset}
                     />
                     <h2
                         className="text-base font-regular cursor-pointer [app-region:no-drag] select-none"
                         onClick={() => {
-                            setDayOffset(0);
-                            resetScrollHeight();
+                            setOffset(0);
                         }} // Reset to today when clicked
                     >
                         Today
@@ -64,7 +70,7 @@ export default function TitleBarComponent() {
                         color="white"
                         strokeWidth={1.5}
                         className="cursor-pointer [app-region:no-drag]"
-                        onClick={decrementDayOffset}
+                        onClick={decrementOffset}
                     />
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2 select-none">

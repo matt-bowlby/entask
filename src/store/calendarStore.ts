@@ -9,6 +9,16 @@ type CalendarState = {
     removeThing: (thing: Thing) => void;
     getAllThingsBetween: (from: number, to: number) => Thing[] | undefined;
     getTagThingsBetween: (from: number, to: number, now: number) => Thing[] | undefined;
+
+    offset: number;
+    setOffset: (offset: number) => void;
+    incrementOffset: () => void;
+    decrementOffset: () => void;
+
+    numDaysInView: number;
+    setNumDaysInView: (numDaysInView: number) => void;
+
+    getDatesInView: (now: number) => Date[];
 };
 
 const useCalendarStore = create<CalendarState>((set, get) => ({
@@ -34,40 +44,30 @@ const useCalendarStore = create<CalendarState>((set, get) => ({
         const state = get();
         return state?.calendar?.getTagThingsBetween(from, to, now);
     },
-}));
 
-type CalendarOffsetStore = {
-    dayOffset: number;
-    setDayOffset: (offset: number) => void;
-    incrementDayOffset: () => void;
-    decrementDayOffset: () => void;
-};
+    offset: 0,
+    setOffset: (offset: number) => set({ offset }),
+    incrementOffset: () => set((state) => ({ offset: state.offset + 1 })),
+    decrementOffset: () => set((state) => ({ offset: state.offset - 1 })),
 
-const useCalendarOffsetStore = create<CalendarOffsetStore>((set) => ({
-    dayOffset: 0,
-    setDayOffset: (offset: number) => set({ dayOffset: offset }),
-    incrementDayOffset: () =>
-        set((state) => ({ dayOffset: state.dayOffset + 1 })),
-    decrementDayOffset: () =>
-        set((state) => ({ dayOffset: state.dayOffset - 1 })),
-}));
+    numDaysInView: 5,
+    setNumDaysInView: (numDaysInView: number) => set({ numDaysInView }),
 
-type CalendarScrollStore = {
-    resetScrollHeight: () => void;
-}
+    getDatesInView: (now: number) => {
+        const state = get();
+        const { numDaysInView, offset } = state;
+        const dates: Date[] = [];
 
-const useCalendarScrollStore = create<CalendarScrollStore>((set) => ({
-    resetScrollHeight: () => {
-        const scrollElement = document.getElementById("calendar-body");
-        if (scrollElement) {
-            const date = new Date();
-            const hourIndicator = document.getElementById(`hour-marker-${date.getHours()}`);
-
-            scrollElement.scrollTop = hourIndicator?.offsetTop || 0;
+        for (let i = 0; i < numDaysInView; i++) {
+            const newDate = new Date(
+                now + (i + offset) * 24 * 60 * 60 * 1000
+            );
+            newDate.setHours(0, 0, 0, 0);
+            dates.push(newDate);
         }
-    },
-}));
 
+        return dates;
+    }
+}));
 
 export default useCalendarStore;
-export { useCalendarOffsetStore, useCalendarScrollStore };

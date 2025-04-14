@@ -9,13 +9,13 @@ interface EventProps {
 export default function EventComponent({ event }: EventProps) {
     const startTime = new Date(event.getStartTime());
     const endTime = new Date(event.getEndTime());
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const dayStart = new Date(startTime);
+    dayStart.setHours(0, 0, 0, 0);
 
     const root = document.documentElement;
     const columnHeight = parseFloat(getComputedStyle(root).getPropertyValue('--column-height'));
 
-    const top: number = ((event.getStartTime() - today.getTime()) / (24 * 1000 * 60 * 60)) * columnHeight;
+    const top: number = ((event.getStartTime() - dayStart.getTime()) / (24 * 1000 * 60 * 60)) * columnHeight;
     const height: number = (event.getDuration() / (24 * 1000 * 60 * 60)) * columnHeight;
 
     const containerRef = useRef<HTMLDivElement>(null);

@@ -3,12 +3,11 @@ import CalendarComponent from "@/components/Calendar/CalendarComponent";
 import TitleBarComponent from "./components/layout/TitleBarComponent";
 import useCalendarStore from "./store/calendarStore";
 import Calendar from "./classes/calendar/Calendar";
-import Update, { useNowStore } from "./components/Updater/Updater";
+import Update from "./components/Updater/Updater";
 import { useEffect } from "react";
 
 function App() {
     const calendarStore = useCalendarStore();
-    const nowStore = useNowStore();
     useEffect(() => {
         const loadCalendar = async () => {
             const calendarJson = await window.electronAPI.loadCalendar("Calendar");
@@ -25,7 +24,7 @@ function App() {
         <div>
             <Update />
             <TitleBarComponent />
-            <main key={nowStore.now} className="flex h-[calc(100vh-var(--title-bar-height))] bg-dark p-2 gap-2 overflow-hidden">
+            <main className="flex h-[calc(100vh-var(--title-bar-height))] bg-dark p-2 gap-2 overflow-hidden">
                 <TodoList />
                 <CalendarComponent
                     numDaysInView={5}
