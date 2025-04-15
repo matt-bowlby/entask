@@ -86,9 +86,20 @@ app.on("activate", () => {
     }
 });
 
-ipcMain.handle("load-calendar", (event: IpcMainInvokeEvent, calendarName: string) => {
-    let calendar: object = DataManager.loadDatabase(calendarName).toJson();
-    return calendar;
-});
+ipcMain.handle(
+    "load-calendar",
+    (_: IpcMainInvokeEvent, calendarName: string) => {
+        const calendar: object =
+            DataManager.loadDatabase(calendarName).toJson();
+        return calendar;
+    }
+);
 
+ipcMain.handle(
+    "save-calendar",
+    (_: IpcMainInvokeEvent, calendar_json: object) => {
+        const new_calendar = Calendar.fromJson(calendar_json);
+        DataManager.saveDatabaseOverwrite(new_calendar);
+    }
+);
 app.whenReady().then(createWindow);

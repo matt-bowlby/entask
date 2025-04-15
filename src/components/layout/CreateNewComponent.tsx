@@ -144,6 +144,7 @@ export default function CreateNewComponent() {
                     tags
                 );
                 calendarStore.addThing(task);
+
                 break;
             }
             case Menu.Event: {
