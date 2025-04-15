@@ -28,5 +28,3 @@ dist-electron
 # Custom
 .hintrc
 database
-
-er.name Work Name
