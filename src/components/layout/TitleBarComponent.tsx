@@ -6,7 +6,7 @@ import { useNowStore } from "../Updater/Updater";
 import { months } from "@/utils/timeString";
 
 export default function TitleBarComponent() {
-    const { offset, } = useCalendarStore();
+    const { offset } = useCalendarStore();
     const nowStore = useNowStore();
     let now = nowStore.now;
     now += offset * 24 * 60 * 60 * 1000;
@@ -14,7 +14,7 @@ export default function TitleBarComponent() {
     const year = new Date(now).getFullYear();
 
     const { incrementOffset, decrementOffset, setOffset } = useCalendarStore();
-    const {resetScrollTop} = useScrollStore();
+    const { resetScrollTop } = useScrollStore();
     const { isOpen, open: openCreateDialog } = useCreateDialogStore();
 
     return (
@@ -46,17 +46,14 @@ export default function TitleBarComponent() {
                     Create New <Plus size={16} strokeWidth={2} />
                 </button>
             </div>
-            <div
-                id="right-side"
-                className="flex items-center grow m-4 text-white gap-6"
-            >
+            <div id="right-side" className="flex items-center grow m-4 text-white gap-6">
                 <div className="flex gap-4 items-center">
                     <ChevronLeft
                         size={24}
                         color="white"
                         strokeWidth={1.5}
                         className="cursor-pointer [app-region:no-drag]"
-                        onClick={incrementOffset}
+                        onClick={decrementOffset}
                     />
                     <h2
                         className="text-base font-regular cursor-pointer [app-region:no-drag] select-none"
@@ -72,7 +69,7 @@ export default function TitleBarComponent() {
                         color="white"
                         strokeWidth={1.5}
                         className="cursor-pointer [app-region:no-drag]"
-                        onClick={decrementOffset}
+                        onClick={incrementOffset}
                     />
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2 select-none">
@@ -80,9 +77,7 @@ export default function TitleBarComponent() {
                     <h1 className="font-regular text-lg">{year}</h1>
                 </div>
             </div>
-            {isOpen && (
-                <CreateNewComponent/>
-            )}
+            {isOpen && <CreateNewComponent />}
         </div>
     );
 }
