@@ -341,7 +341,6 @@ class Calendar {
         return this.tagBlocks;
     }
 
-
     public toJson(): object {
         return {
             name: this.name,

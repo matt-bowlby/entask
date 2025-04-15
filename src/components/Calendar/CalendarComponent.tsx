@@ -45,12 +45,12 @@ const CalendarComponent = () => {
 };
 
 const CalendarHeader = () => {
-        const now = useNowStore((state) => state.now);
-        const { offset, numDaysInView, getDatesInView } = useCalendarStore();
+    const now = useNowStore((state) => state.now);
+    const { offset, numDaysInView, getDatesInView } = useCalendarStore();
 
-        const { dates } = useMemo(() => {
-            return { dates: getDatesInView(now) };
-        }, [getDatesInView, now, offset, numDaysInView]);
+    const { dates } = useMemo(() => {
+        return { dates: getDatesInView(now) };
+    }, [getDatesInView, now, offset, numDaysInView]);
 
     return (
         <div
@@ -67,21 +67,20 @@ const CalendarHeader = () => {
             </div>
         </div>
     );
-}
+};
 
 interface CalendarDayProps {
     date: Date;
 }
 const CalendarDay = ({ date }: CalendarDayProps) => {
     const calendar = useCalendarStore().calendar;
-    if (calendar === undefined) return <></>
+    if (calendar === undefined) return <></>;
 
     const events = calendar.getActiveThings().filter((thing) => {
         if (thing.getStartTime() !== 0) {
             return (
                 thing.getStartTime() >= date.getTime() &&
-                thing.getStartTime() <
-                    date.getTime() + 24 * 60 * 60 * 1000
+                thing.getStartTime() < date.getTime() + 24 * 60 * 60 * 1000
             );
         }
     });
@@ -89,31 +88,27 @@ const CalendarDay = ({ date }: CalendarDayProps) => {
         if (tagBlock.getStartTime() !== 0) {
             return (
                 tagBlock.getStartTime() >= date.getTime() &&
-                tagBlock.getStartTime() <
-                    date.getTime() + 24 * 60 * 60 * 1000
+                tagBlock.getStartTime() < date.getTime() + 24 * 60 * 60 * 1000
             );
         }
     });
 
     return (
-        <div
-            className="flex flex-col w-full h-column-height relative"
-        >
+        <div className="flex flex-col w-full h-column-height relative">
             {tagBlocks.map((item, j) => {
                 return <CalendarTagBlock tagBlock={item} key={j} />;
             })}
             {events.map((item, j) => {
                 return <EventComponent event={item} key={j} />;
             })}
-
         </div>
     );
-}
+};
 
 function HourMarkers() {
     const { now } = useNowStore();
     const timeSlots = Array.from({ length: 25 }, (_, i) => {
-        return (meridiem(i, 0, true, false));
+        return meridiem(i, 0, true, false);
     });
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
@@ -147,7 +142,11 @@ function HourMarkers() {
                     }}
                 >
                     <div className="absolute -top-2 flex h-4 w-10 flex-shrink-0 text-xs items-center justify-center text-nowrap text-white bg-dark px-2 rounded-xs">
-                        {meridiem(new Date().getHours(), new Date().getMinutes(), false)}
+                        {meridiem(
+                            new Date().getHours(),
+                            new Date().getMinutes(),
+                            false
+                        )}
                     </div>
                     <div className="border-b-2 border-dark w-full rounded-full"></div>
                 </div>
