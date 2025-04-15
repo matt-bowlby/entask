@@ -86,7 +86,6 @@ class Tag {
 	}
 
 	public static fromJson(json: any): Tag {
-		console.log(json);
 		return new Tag(json.name, json.description, json.color, json.id);
 	}
 }

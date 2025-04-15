@@ -15,7 +15,6 @@ describe('DataManager', () =>  {
     //     // myDataManager.saveEvent(myEvent);
     //     let thing_list: Array<Thing> = [];
     //     myDataManager.loadActiveEvents(thing_list);
-    //     console.log(thing_list[0].getTags()[0].getName());
     // })
 
     // test('LoadTask', () => {
@@ -23,12 +22,10 @@ describe('DataManager', () =>  {
     //     // myDataManager.saveTask(myTask);
     //     let thing_list: Array<Thing> = [];
     //     myDataManager.loadActiveEvents(thing_list);
-    //     console.log(thing_list[0].getTags()[0].getName());
     // })
 
     // test('LoadDatabase', () => {
     //     let calendar: Calendar = DataManager.loadDatabase("newCal");
-    //     console.log(calendar.getName());
     // })
 
     test('savestuff', () => {

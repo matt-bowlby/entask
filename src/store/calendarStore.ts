@@ -102,7 +102,6 @@ async function triggerSave(calendarState: Calendar | undefined) {
         console.warn("attempting to save blank calendar state");
         return;
     } else {
-        console.log("SAVING CALENDAR STATE");
         await window.electronAPI.saveCalendar(calendarState.toJson());
     }
 }

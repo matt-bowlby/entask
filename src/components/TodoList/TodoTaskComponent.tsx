@@ -19,7 +19,7 @@ export default function TodoTaskComponent({ task }: TaskProps) {
     const isClose = task.getDuration() > (task.getDueDate() - Date.now());
 
     return (
-        <div className="bg-white h-auto max-w-full drop-shadow-md  p-2 flex rounded-xl gap-2 relative">
+        <div className="bg-white h-auto max-w-full drop-shadow-md p-2 flex rounded-xl gap-2 relative">
             <div className="tag-bar min-w-2 rounded-full overflow-hidden flex flex-col">
                 {task.getTags().length === 0 ? (
                     <div className="w-full h-full bg-dark"></div>

@@ -1,8 +1,9 @@
 import TodoTaskComponent from "@/components/TodoList/TodoTaskComponent";
-import { Task } from "@/classes/thing/Thing";
+import { Task,Event } from "@/classes/thing/Thing";
 import useCalendarStore from "@/store/calendarStore";
 import { useNowStore } from "../Updater/Updater";
 import { abbreviatedDayNames } from "@/utils/timeString";
+import TodoEvent from "./TodoEventComponent";
 
 export default function TodoList() {
     return (
@@ -23,7 +24,7 @@ const TodoHeader = () => {
 
     const calendar = useCalendarStore().calendar;
 
-    let title: JSX.Element[] = [<div>Today</div>];
+    let title: JSX.Element[] = [<div key={0}>Today</div>];
 
     if (calendar) {
         const tagBlocks = calendar.getActiveTagBlocks(nowStore.now);
@@ -62,17 +63,17 @@ const TodoActiveContent = () => {
     dayEnd.setHours(23, 59, 59, 999);
 
     const calendar = useCalendarStore().calendar;
-    const activeThings = calendar?.getTagThingsBetween(dayStart.getTime(), dayEnd.getTime() + 24 * 60 * 60 * 1000);
+    const activeThings = calendar?.getTagThingsBetween(dayStart.getTime(), dayStart.getTime() + 24 * 60 * 60 * 1000);
 
     if (!activeThings) return <p>No tasks available at this time.</p>;
 
     return Array.from({length: activeThings.length }, (_, i) =>  {
-            if (activeThings[i] instanceof Task) {
+            if (activeThings[i] instanceof Task)
                 return <TodoTaskComponent key={i} task={activeThings[i]} />;
-            }
             else if (activeThings[i] instanceof Event) {
-                // return <TodoEvent key={i} event={activeThings[i]} />;
-            }
+                return <TodoEvent key={i} event={activeThings[i]} />;
+            } else
+                return null;
         }
     );
 }
