@@ -216,6 +216,7 @@ class Calendar {
         things: Array<Thing>,
         ...tags: Array<Tag>
     ): Array<Thing> {
+        if (tags.length === 0) return things;
         const sortedThings: Array<Thing> = things.filter((thing) =>
             tags.every((tag) => thing.getTags().includes(tag))
         );
@@ -226,20 +227,27 @@ class Calendar {
      * Returns a list of Things that need to be completed within a certain time period.
      * @param from - The start of the time period (in milliseconds).
      * @param to - The end of the time period (in milliseconds).tagBlock.
+     * @param now - The current time (in milliseconds).
      * @returns A list of Things that should be done within the specified time period.
      */
-    public getAllThingsBetween(from: number, to: number): Array<Thing> {
+    public getAllThingsBetween(from: number, to: number, now: number): Array<Thing> {
         const timeLength: number = to - from;
-        const sortedActive = Calendar.sortByPriority(from, this.active);
+        const sortedActive = Calendar.sortByPriority(now, this.active);
         const things: Array<Thing> = [];
 
         let totalTime: number = 0;
-        let i: number = 0;
-        while (totalTime <= timeLength && i < sortedActive.length) {
-            if (totalTime + sortedActive[i].getDuration() > timeLength) break;
-            things.push(sortedActive[i]);
-            totalTime += sortedActive[i].getDuration();
-            i++;
+        for (let i = 0; i < sortedActive.length; i++) {
+            // Handling Events
+            if (sortedActive[i].getStartTime() !== 0) {
+                if (sortedActive[i].getEndTime() < now) continue;
+                things.push(sortedActive[i]);
+                totalTime += sortedActive[i].getDuration();
+            // Handling Tasks
+            } else {
+                if (totalTime + sortedActive[i].getDuration() > timeLength) break;
+                things.push(sortedActive[i]);
+                totalTime += sortedActive[i].getDuration();
+            }
         }
 
         return things;
@@ -265,7 +273,7 @@ class Calendar {
 
         // Apply tag blocks
         return Calendar.sortForTags(
-            this.getAllThingsBetween(from, to),
+            this.getAllThingsBetween(from, to, now),
             ...activeTags
         );
     }
