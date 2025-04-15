@@ -32,16 +32,14 @@ const CalendarTagBlock = ({ tagBlock }: CalendarTagBlockProps) => {
             outlineOffset: "-2px",
         }}
     >
-        <div className="flex flex-col w-full overflow-auto [scrollbar-width:none]">
-            <div className="flex flex-col justify-center items-start w-full overflow-hidden h-fit flex-shrink-0">
-                <div
-                    className="font-bold text-sm w-fit px-2 h-fit text-ellipsis whitespace-nowrap overflow-hidden text-white rounded-md"
-                    style={{
-                        backgroundColor: colors[0],
-                    }}
-                >
-                    {tagName}
-                </div>
+        <div className="flex flex-col justify-center items-start w-full overflow-hidden h-fit flex-shrink-0">
+            <div
+                className="font-bold text-sm w-fit max-w-full px-2 h-fit text-ellipsis whitespace-nowrap overflow-hidden text-white rounded-md"
+                style={{
+                    backgroundColor: colors[0],
+                }}
+            >
+                {tagName}
             </div>
         </div>
     </div>
