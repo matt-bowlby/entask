@@ -687,7 +687,7 @@ const NewTagField = () => {
                                         placeholder="Search Tags..."
                                     />
                                 </div>
-                                <div className="flex flex-col h-40 w-full overflow-hidden p-2 gap-2 ">
+                                <div className="flex flex-col h-40 w-full overflow-auto p-2 gap-2 [scrollbar-width:none]">
                                     {Array.from(
                                         {
                                             length: calendarStore.calendar.getTags()

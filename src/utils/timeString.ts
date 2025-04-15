@@ -37,6 +37,16 @@ export const months: string[] = [
     "December"
 ]
 
+export const abbreviatedDayNames = [
+	"Sun",
+	"Mon",
+	"Tue",
+	"Wed",
+	"Thu",
+	"Fri",
+	"Sat"
+];
+
 export function getDaysInMonth(year: number, month: number) {
 	return new Date(year, month, 0).getDate();
 }

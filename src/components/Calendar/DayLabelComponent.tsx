@@ -1,4 +1,5 @@
 import useCalendarStore from "@/store/calendarStore";
+import { abbreviatedDayNames } from "@/utils/timeString";
 
 interface Day {
     date: Date;
@@ -6,7 +7,7 @@ interface Day {
 
 export default function DayLabel({ date }: Day) {
     const calendar = useCalendarStore().calendar;
-    const tagBlocks = calendar?.getTagBlocks().filter((tagBlock) => {
+    let tagBlocks = calendar?.getTagBlocks().filter((tagBlock) => {
         if (tagBlock.getStartTime() !== 0) {
             return (
                 tagBlock.getStartTime() >= date.getTime() &&
@@ -14,14 +15,15 @@ export default function DayLabel({ date }: Day) {
                     date.getTime() + 24 * 60 * 60 * 1000
             );
         }
+        return false;
     }) || [];
 
     const tagColors = tagBlocks.map((tagBlock) => {
         const colors = tagBlock.getTags().map(tag => `#${tag.getColor()}`);
         return colors[0];
     });
+    const uniqueTagColors = [...new Set(tagColors)];
 
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     return (
         <div className="flex flex-col gap-2 w-full h-full">
             <div
@@ -32,17 +34,17 @@ export default function DayLabel({ date }: Day) {
                 }
             >
                 <h2 className="font-bold text-xl select-none">{date.getDate()}</h2>
-                <p className="font-regular text-base select-none">{dayNames[date.getDay()]}</p>
+                <p className="font-regular text-base select-none">{abbreviatedDayNames[date.getDay()]}</p>
             </div>
             {
-                tagBlocks.length > 0 ? (
+                uniqueTagColors.length > 0 ? (
                 <div className="px-2">
                     <div className="w-full self-center rounded-full h-fit overflow-hidden flex flex-row">
                         {
-                            tagColors.map((color, index) => {
+                            uniqueTagColors.map((color, index) => {
                                 return <div
                                     key={index}
-                                    className=" h-2 w-full bg-accent-1"
+                                    className=" h-2 w-full"
                                     style ={{ backgroundColor: color }}
                                 ></div>;
                             })

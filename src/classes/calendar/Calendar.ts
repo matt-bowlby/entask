@@ -258,10 +258,7 @@ class Calendar {
         now: number = Date.now()
     ): Array<Thing> {
         // Getting currently active tags
-        const activeTagBlocks: Array<Thing> = this.tagBlocks.filter(
-            (tagBlock) =>
-                tagBlock.getEndTime() > now && tagBlock.getStartTime() < now
-        );
+        const activeTagBlocks: Array<TagBlock> = this.getActiveTagBlocks(now);
         const activeTags: Array<Tag> = activeTagBlocks
             .map((tagBlock) => tagBlock.getTags())
             .flat();
@@ -340,6 +337,20 @@ class Calendar {
     public getTagBlocks(): Array<TagBlock> {
         return this.tagBlocks;
     }
+
+    /**
+     * Returns the currently active tag blocks.
+     * @returns A reference to the currently active tag blocks.
+     * @param now - The current time (in milliseconds).
+     * @returns
+     */
+    public getActiveTagBlocks(now: number): Array<TagBlock> {
+        return this.tagBlocks.filter(
+            (tagBlock) =>
+                tagBlock.getEndTime() > now && tagBlock.getStartTime() < now
+        );
+    }
+
 
     public toJson(): object {
         return {

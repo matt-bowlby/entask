@@ -1,10 +1,7 @@
 import { CalendarDays } from "lucide-react";
 import { useMemo, useEffect } from "react";
-
 import useCalendarStore, { useScrollStore } from "@/store/calendarStore";
-
 import { meridiem } from "@/utils/timeString";
-
 import DayLabel from "@/components/Calendar/DayLabelComponent";
 import EventComponent from "@/components/Calendar/CalendarEventComponent";
 import { useNowStore } from "../Updater/Updater";
