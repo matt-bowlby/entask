@@ -8,50 +8,66 @@ import IdHandler from "../calendar/IdHandler";
 
 class DataManager {
     //File paths & names
+    private static source_path: string = "src/database";
     private static event_comp_file_name: string =
         "event-completed-database.json";
     private static event_comp_file_path = path.join(
-        "src/database",
+        this.source_path,
         this.event_comp_file_name
     );
     private static task_comp_file_name: string = "task-completed-database.json";
     private static task_comp_file_path = path.join(
-        "src/database",
+        this.source_path,
         this.task_comp_file_name
     );
     private static event_act_file_name: string = "event-active-database.json";
     private static event_act_file_path = path.join(
-        "src/database",
+        this.source_path,
         this.event_act_file_name
     );
     private static task_act_file_name: string = "task-active-database.json";
     private static task_act_file_path = path.join(
-        "src/database",
+        this.source_path,
         this.task_act_file_name
     );
     private static tags_name: string = "tags.json";
-    private static tags_file_path = path.join("src/database", this.tags_name);
+    private static tags_file_path = path.join(this.source_path, this.tags_name);
 
     ///////////////// Load Calender /////////////////
-    public static loadDatabase(calendar_name: string): Calendar {
-        //TODO: read database and load Events and Tasks into calender type.
-        const comp_thing_list: Array<Thing> = [];
-        const act_thing_list: Array<Thing> = [];
-        const tag_list: Array<Tag> = [];
+    public static loadCalendar(calendar_name: string): object {
+        try {
+            const calendarPath = path.join(
+                this.source_path,
+                calendar_name + ".json"
+            );
+            if (!fs.existsSync(calendarPath)) {
+                fs.writeFileSync(calendarPath, JSON.stringify(new Calendar(calendar_name).toJson()));
+            }
 
-        this.loadTags(tag_list);
-        this.loadCompletedEvents(comp_thing_list);
-        this.loadCompletedTasks(comp_thing_list);
-        this.loadActiveEvents(act_thing_list);
-        this.loadActiveTasks(act_thing_list);
-        const dataCalendar = new Calendar(
-            calendar_name,
-            act_thing_list,
-            comp_thing_list,
-            undefined,
-            tag_list
-        );
-        return dataCalendar;
+            const json_string = fs.readFileSync(calendarPath, "utf8");
+            let calendar_json: object;
+            try {
+                calendar_json = JSON.parse(json_string);
+            } catch (error) {
+                calendar_json = {};
+            }
+            return calendar_json;
+        } catch (error) {
+            console.error("Error loading calendar:", error);
+        }
+        return {};
+    }
+
+    public static saveCalendar(calendar_json: object, calendar_name: string): void {
+        try {
+            const calendarPath = path.join(
+                this.source_path,
+                calendar_name + ".json"
+            );
+            fs.writeFileSync(calendarPath, JSON.stringify(calendar_json, null, 2));
+        } catch (error) {
+            console.error("Error saving calendar:", error);
+        }
     }
 
     public static saveDatabaseOverwrite(calendar_instance: Calendar) {

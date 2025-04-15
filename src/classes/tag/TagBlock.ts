@@ -36,7 +36,7 @@ class TagBlock extends Thing {
             duration: this.duration,
             startTime: this.startTime,
             description: this.description,
-            tags: this.tags.map(tag => tag.getName()),
+            tags: this.tags.map(tag => tag.toJson()),
             completed: this.completed,
             id: this.id
         };
@@ -47,7 +47,7 @@ class TagBlock extends Thing {
             json.duration,
             json.startTime,
             json.description,
-            json.tags.map((tag: string) => new Tag(tag)),
+            json.tags.map((tag: any) => Tag.fromJson(tag)),
             json.completed,
             json.id
         );

@@ -120,24 +120,24 @@ export default function CreateNewComponent() {
         switch (activeMenu) {
             case Menu.Task: {
                 // Only tasks have durations
-                const durationDays = (
-                    document.getElementById("duration-days") as HTMLInputElement
-                ).valueAsNumber;
-                const durationHours = (
+                const durationDays = parseInt(
+                    (document.getElementById("duration-days") as HTMLInputElement
+                ).value) || 0;
+                const durationHours = parseInt((
                     document.getElementById(
                         "duration-hours"
                     ) as HTMLInputElement
-                ).valueAsNumber;
-                const durationMinutes = (
+                ).value) || 1;
+                const durationMinutes = parseInt((
                     document.getElementById(
                         "duration-minutes"
                     ) as HTMLInputElement
-                ).valueAsNumber;
+                ).value) || 0;
                 const task = new Task(
                     name,
-                    (durationDays || 0) * 86400000 +
-                        (durationHours || 1) * 3600000 +
-                        (durationMinutes || 0) * 60000,
+                    durationDays * 86400000 +
+                        durationHours * 3600000 +
+                        durationMinutes * 60000,
                     date1,
                     undefined,
                     description,

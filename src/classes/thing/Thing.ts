@@ -242,7 +242,7 @@ abstract class Thing {
                 json.duration,
                 json.startTime,
                 json.description,
-                json.tags.map((tag: string) => new Tag(tag)),
+                json.tags.map((tag: string) => Tag.fromJson(tag)),
                 json.completed,
                 json.id
             );
@@ -253,7 +253,7 @@ abstract class Thing {
                 json.dueDate,
                 json.startTime,
                 json.description,
-                json.tags.map((tag: string) => new Tag(tag)),
+                json.tags.map((tag: string) => Tag.fromJson(tag)),
                 json.completed,
                 json.id
             );
@@ -287,7 +287,7 @@ class Event extends Thing {
             duration: this.duration,
             startTime: this.startTime,
             description: this.description,
-            tags: this.tags.map(tag => tag.getName()),
+            tags: this.tags.map(tag => tag.toJson()),
             completed: this.completed,
             id: this.id
         };
@@ -381,7 +381,7 @@ class Task extends Thing {
             dueDate: this.dueDate,
             startTime: this.startTime,
             description: this.description,
-            tags: this.tags.map(tag => tag.getName()),
+            tags: this.tags.map(tag => tag.toJson()),
             completed: this.completed,
             id: this.id
         };

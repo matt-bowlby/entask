@@ -90,16 +90,16 @@ ipcMain.handle(
     "load-calendar",
     (_: IpcMainInvokeEvent, calendarName: string) => {
         const calendar: object =
-            DataManager.loadDatabase(calendarName).toJson();
+            DataManager.loadCalendar(calendarName);
         return calendar;
     }
 );
 
 ipcMain.handle(
     "save-calendar",
-    (_: IpcMainInvokeEvent, calendar_json: object) => {
-        const new_calendar = Calendar.fromJson(calendar_json);
-        DataManager.saveDatabaseOverwrite(new_calendar);
+    (_: IpcMainInvokeEvent, calendar_json: any) => {
+        DataManager.saveCalendar(calendar_json, calendar_json.name);
     }
 );
+
 app.whenReady().then(createWindow);

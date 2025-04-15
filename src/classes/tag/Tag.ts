@@ -76,7 +76,7 @@ class Tag {
 		return this.color;
 	}
 
-	public toJson(): object {
+	public toJson(): any {
 		return {
 			name: this.name,
 			description: this.description,
@@ -86,6 +86,7 @@ class Tag {
 	}
 
 	public static fromJson(json: any): Tag {
+		console.log(json);
 		return new Tag(json.name, json.description, json.color, json.id);
 	}
 }
