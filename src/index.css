@@ -4,8 +4,6 @@
     src: url("/src/assets/fonts/Onest-VariableFont_wght.ttf") format("ttf");
 } */
 
-@import url("https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap");
-
 @import "tailwindcss";
 @theme {
     --color-dark: #323339;
@@ -22,4 +20,11 @@
     --main-bg-color: brown;
     --column-height: 2000px;
     --title-bar-height: 40px;
+}
+
+@font-face {
+    font-family: "Onest";
+    src: url("/src/assets/fonts/Onest-VariableFont_wght.ttf") format("truetype");
+    font-weight: 100 900;
+    font-display: normal;
 }
