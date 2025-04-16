@@ -4,12 +4,15 @@ import useCalendarStore, { useScrollStore } from "@/store/calendarStore";
 import { meridiem } from "@/utils/timeString";
 import DayLabel from "@/components/Calendar/DayLabelComponent";
 import EventComponent from "@/components/Calendar/CalendarEventComponent";
-import { useNowStore } from "../Updater/Updater";
+import { useNowStore } from "../updater/Updater";
 import CalendarTagBlock from "./CalendarTagBlock";
 
 const CalendarComponent = () => {
     const now = useNowStore((state) => state.now);
-    const { offset, numDaysInView, getDatesInView } = useCalendarStore();
+    const offset = useCalendarStore((state) => state.offset);
+    const numDaysInView = useCalendarStore((state) => state.numDaysInView);
+    const getDatesInView = useCalendarStore((state) => state.getDatesInView);
+
     const scrollStore = useScrollStore();
 
     const { dates } = useMemo(() => {
