@@ -8,12 +8,10 @@ type CalendarState = {
     setCalendar: (calendar: Calendar | undefined) => void;
     addThing: (thing: Thing) => void;
     removeThing: (thing: Thing) => void;
-    getAllThingsBetween: (from: number, to: number) => Thing[] | undefined;
-    getTagThingsBetween: (
-        from: number,
-        to: number,
-        now: number
-    ) => Thing[] | undefined;
+    getAllThingsBetween: (from: number, to: number, now: number) => Thing[] | undefined;
+    getTagThingsBetween: (from: number, to: number, now: number) => Thing[] | undefined;
+    completeThing: (thing: Thing) => void;
+    uncompleteThing: (thing: Thing) => void;
 
     offset: number;
     setOffset: (offset: number) => void;
@@ -22,32 +20,43 @@ type CalendarState = {
 
     numDaysInView: number;
     setNumDaysInView: (numDaysInView: number) => void;
-
     getDatesInView: (now: number) => Date[];
+
+    calendarUpdate: number;
+    updateCalendar: () => void;
 };
 
 const useCalendarStore = create<CalendarState>((set, get) => ({
     calendar: undefined,
-    setCalendar: (calendar: Calendar | undefined) => set({ calendar }),
-    addThing: (thing: Thing) =>
-        set((state) => {
-            const newCalendar = state?.calendar?.clone();
-            newCalendar?.addThing(thing);
-            return { calendar: newCalendar };
-        }),
-    removeThing: (thing: Thing) =>
-        set((state) => {
-            const newCalendar = state?.calendar?.clone();
-            newCalendar?.removeThing(thing);
-            return { calendar: newCalendar };
-        }),
-    getAllThingsBetween: (from: number, to: number) => {
-        const state = get();
-        return state?.calendar?.getAllThingsBetween(from, to);
+    setCalendar: (calendar: Calendar | undefined) => {
+        set({ calendar });
+        get().updateCalendar();
+    },
+
+    addThing: (thing: Thing) => {
+        get().calendar?.addThing(thing);
+        get().updateCalendar();
+    },
+
+    removeThing: (thing: Thing) => {
+        get().calendar?.removeThing(thing);
+        get().updateCalendar();
+    },
+
+    getAllThingsBetween: (from: number, to: number, now: number) => {
+        return get().calendar?.getAllThingsBetween(from, to, now);
     },
     getTagThingsBetween: (from: number, to: number, now: number) => {
         const state = get();
         return state?.calendar?.getTagThingsBetween(from, to, now);
+    },
+    completeThing: (thing: Thing) => {
+        get().calendar?.completeThing(thing);
+        get().updateCalendar();
+    },
+    uncompleteThing: (thing: Thing) => {
+        get().calendar?.uncompleteThing(thing);
+        get().updateCalendar();
     },
 
     offset: 0,
@@ -57,7 +66,6 @@ const useCalendarStore = create<CalendarState>((set, get) => ({
 
     numDaysInView: 5,
     setNumDaysInView: (numDaysInView: number) => set({ numDaysInView }),
-
     getDatesInView: (now: number) => {
         const state = get();
         const { numDaysInView, offset } = state;
@@ -71,6 +79,11 @@ const useCalendarStore = create<CalendarState>((set, get) => ({
 
         return dates;
     },
+
+    calendarUpdate: 0,
+    updateCalendar: () => {
+        set((state) => ({ calendarUpdate: state.calendarUpdate + 1 }));
+    }
 }));
 
 type ScrollState = {
@@ -85,9 +98,7 @@ const useScrollStore = create<ScrollState>((set) => ({
     resetScrollTop: () => {
         const now = new Date();
         const calendarBody = document.getElementById("calendar-body");
-        const hourMarker = document.getElementById(
-            `hour-marker-${now.getHours()}`
-        );
+        const hourMarker = document.getElementById(`hour-marker-${now.getHours()}`);
         if (calendarBody && hourMarker) {
             calendarBody.scrollTo({
                 top: hourMarker.offsetTop,
@@ -110,13 +121,13 @@ async function triggerSave(calendarState: Calendar | undefined) {
 const debouncedSave = debounce(triggerSave, 1000);
 
 // subscription to track if calendar state ever updates
-let previousCalendarState = useCalendarStore.getState().calendar;
+let previousCalendarVersion = 0;
 useCalendarStore.subscribe((state) => {
-    const currentCalendarState = state.calendar;
+    const currentCalendarState = state.calendarUpdate;
 
-    if (currentCalendarState !== previousCalendarState) {
-        debouncedSave(currentCalendarState);
-        previousCalendarState = currentCalendarState;
+    if (currentCalendarState !== previousCalendarVersion) {
+        debouncedSave(state.calendar);
+        previousCalendarVersion = currentCalendarState;
     }
 });
 
