@@ -6,6 +6,7 @@ import DayLabel from "@/components/Calendar/DayLabelComponent";
 import EventComponent from "@/components/Calendar/CalendarEventComponent";
 import { useNowStore } from "../updater/Updater";
 import CalendarTagBlock from "./CalendarTagBlock";
+import EditDialog from "../EditMenus/EditDialog";
 
 const CalendarComponent = () => {
     const now = useNowStore((state) => state.now);
@@ -32,6 +33,7 @@ const CalendarComponent = () => {
                     className="flex p-2 pt-4 gap-2 overflow-y-scroll [scrollbar-width:none] relative"
                 >
                     <HourMarkers />
+                    <EditDialog />
                     <div className="w-10 flex-shrink-0 h-column-height"></div>
                     <div className="flex flex-row gap-2 w-full">
                         {Array.from({ length: numDaysInView }, (_, i) => {
