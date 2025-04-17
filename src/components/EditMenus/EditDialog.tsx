@@ -132,7 +132,7 @@ function EditTask() {
                     </div>
                 </div>
                 {/* Tag */}
-                <NewTagField />
+                <NewTagField initialTags={data.getTags()} />
             </div>
         </div>
     );
@@ -193,7 +193,7 @@ function EditEvent() {
                     </div>
                 </div>
                 {/* Tag */}
-                <NewTagField />
+                <NewTagField initialTags={data.getTags()} />
             </div>
         </div>
     );
@@ -241,7 +241,7 @@ function EditTagBlock() {
                     </div>
                 </div>
                 {/* Tag */}
-                <NewTagField />
+                <NewTagField initialTags={data.getTags()} />
             </div>
         </div>
     );

@@ -5,6 +5,7 @@ interface useTagsArrayStore {
     addTag: (tag: Tag) => void;
     removeTag: (tag: Tag) => void;
     setTags: (tags: Tag[]) => void;
+    clear: () => void;
 }
 export const useTagsArrayStore = create<useTagsArrayStore>((set) => ({
     tags: [] as Tag[],
@@ -12,4 +13,5 @@ export const useTagsArrayStore = create<useTagsArrayStore>((set) => ({
     removeTag: (tag: Tag) =>
         set((state) => ({ tags: state.tags.filter((t) => t !== tag) })),
     setTags: (tags: Tag[]) => set(() => ({ tags })),
+    clear: () => set({ tags: [] }),
 }));

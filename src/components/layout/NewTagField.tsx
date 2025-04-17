@@ -1,12 +1,15 @@
 import Tag from "@/classes/tag/Tag";
 import { Plus, X } from "lucide-react";
 import { useTagsArrayStore } from "@/store/TagsArrayStore";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useCalendarStore from "@/store/calendarStore";
 
-const NewTagField = () => {
-    const calendarStore = useCalendarStore();
+interface NewTagFieldProps {
+    initialTags?: Tag[];
+}
 
+const NewTagField = ({ initialTags = [] }: NewTagFieldProps) => {
+    const calendarStore = useCalendarStore();
     const [tagMenuOpen, setTagMenuOpen] = useState(false);
     const [useExisting, setUseExisting] = useState(true);
 
@@ -14,6 +17,16 @@ const NewTagField = () => {
     const tags = tagsStore.tags as Tag[];
     const addTag = tagsStore.addTag;
     const removeTag = tagsStore.removeTag;
+
+    useEffect(() => {
+        // Clear existing tags first
+        tagsStore.clear(); // You'll need to add this method to your store
+
+        // Add initial tags
+        initialTags.forEach((tag) => {
+            addTag(tag);
+        });
+    }, []); // Empty dependency array means this runs once on mount
 
     const [newColor, setNewColor] = useState("#000000");
 
