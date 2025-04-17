@@ -22,19 +22,25 @@ export default function TodoTaskComponent({ task }: TaskProps) {
 
     return (
         <motion.div
-            className="h-auto w-full flex rounded-xl overflow-hidden drop-shadow-md bg-white"
+            className="h-auto w-full flex rounded-xl overflow-hidden bg-white"
             style={{
                 opacity: task.isCompleted() ? 0.5 : 1,
             }}
             initial={{
                 scale: 1,
+                filter: "drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.2))",
             }}
             animate={{
                 scale: 1,
+                filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.2))",
+            }}
+            whileHover={{
+                filter: "drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.4))",
             }}
             whileTap={{
                 scale: 0.98,
             }}
+            transition={{ duration: 0.15 }}
         >
             <div className="flex flex-row h-auto w-full p-2 gap-2 bg-white">
                 <div className="tag-bar min-w-2 rounded-full overflow-hidden flex flex-col">
@@ -82,7 +88,7 @@ export default function TodoTaskComponent({ task }: TaskProps) {
                 }}
                 whileHover=
                 {{ filter: "drop-shadow(0px 0px 6px rgba(0, 0, 0, 0.2))" }}
-                transition={{ duration: 0.25 }}
+                transition={{ duration: 0.15 }}
             >
                 <Check size={20} strokeWidth={3} />
             </motion.button>

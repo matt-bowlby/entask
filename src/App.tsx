@@ -15,7 +15,6 @@ function App() {
             setCalendar(Calendar.fromJson(calendarJson));
         };
         loadCalendar();
-        // calendarStore.setCalendar(new Calendar("Calendar"));
     }, []);
 
     // If calendar not loaded, return loading component

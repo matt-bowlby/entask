@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Plus, X } from "lucide-react";
 import { useCreateDialogStore } from "@/store/TitleBarStore";
@@ -9,6 +9,7 @@ import Tag from "@/classes/tag/Tag";
 import DropdownMenu from "../items/DropdownMenu";
 import { createStore, useStore } from "zustand";
 import { getDaysInMonth, months } from "@/utils/timeString";
+import { motion, useAnimation } from "framer-motion";
 
 enum Menu {
     Task,
@@ -21,6 +22,8 @@ export default function CreateNewComponent() {
     const tagsStore = useStore(tagsArray);
     const calendarStore = useCalendarStore();
     const [activeMenu, setActiveMenu] = useState<Menu>(Menu.Task);
+    const backdropAnimation = useAnimation();
+    const panelAnimation = useAnimation();
 
     // const [tagsArray, setTagsArray] = useState<Tag[]>([]);
 
@@ -33,75 +36,51 @@ export default function CreateNewComponent() {
             name = (document.getElementById("name") as HTMLInputElement).value;
 
         // Get date1 (All components have a date1)
-        const year1: string = (
-            document.getElementById("date-year-1") as HTMLInputElement
-        ).value;
+        const year1: string = (document.getElementById("date-year-1") as HTMLInputElement).value;
         const month1: string = (
-            months.indexOf(
-                (document.getElementById("date-month-1") as HTMLInputElement)
-                    .value
-            ) + 1
+            months.indexOf((document.getElementById("date-month-1") as HTMLInputElement).value) + 1
         ).toString();
-        const day1: string = (
-            document.getElementById("date-day-1") as HTMLInputElement
-        ).value;
+        const day1: string = (document.getElementById("date-day-1") as HTMLInputElement).value;
         const pm1: boolean =
-            (document.getElementById("date-pm-1") as HTMLInputElement).value ===
-            "true";
+            (document.getElementById("date-pm-1") as HTMLInputElement).value === "true";
         let hour1: number = parseInt(
             (document.getElementById("date-hour-1") as HTMLInputElement).value
         );
         if (hour1 === 12) hour1 = 0;
         if (pm1) hour1 += 12;
-        const minute1: string = (
-            document.getElementById("date-minute-1") as HTMLInputElement
-        ).value;
+        const minute1: string = (document.getElementById("date-minute-1") as HTMLInputElement)
+            .value;
         const date1: number = new Date(
-            `${year1}-${month1.padStart(2, "0")}-${day1.padStart(
-                2,
-                "0"
-            )}T${hour1.toString().padStart(2, "0")}:${minute1.padStart(2, "0")}`
+            `${year1}-${month1.padStart(2, "0")}-${day1.padStart(2, "0")}T${hour1
+                .toString()
+                .padStart(2, "0")}:${minute1.padStart(2, "0")}`
         ).getTime();
 
         // Get date2 (Only events and tag blocks have date2)
         let date2: Date = new Date();
         if (document.getElementById("date-year-2")) {
-            const year2: string = (
-                document.getElementById("date-year-2") as HTMLInputElement
-            ).value;
+            const year2: string = (document.getElementById("date-year-2") as HTMLInputElement)
+                .value;
             const month2: number =
                 months.indexOf(
-                    (
-                        document.getElementById(
-                            "date-month-2"
-                        ) as HTMLInputElement
-                    ).value
+                    (document.getElementById("date-month-2") as HTMLInputElement).value
                 ) + 1;
-            const day2: string = (
-                document.getElementById("date-day-2") as HTMLInputElement
-            ).value;
+            const day2: string = (document.getElementById("date-day-2") as HTMLInputElement).value;
 
             const pm2: boolean =
-                (document.getElementById("date-pm-2") as HTMLInputElement)
-                    .value === "true";
+                (document.getElementById("date-pm-2") as HTMLInputElement).value === "true";
             let hour2: number = parseInt(
-                (document.getElementById("date-hour-2") as HTMLInputElement)
-                    .value
+                (document.getElementById("date-hour-2") as HTMLInputElement).value
             );
             if (hour2 === 12) hour2 = 0;
             if (pm2) hour2 += 12;
 
-            const minute2: string = (
-                document.getElementById("date-minute-2") as HTMLInputElement
-            ).value;
+            const minute2: string = (document.getElementById("date-minute-2") as HTMLInputElement)
+                .value;
             date2 = new Date(
-                `${year2}-${month2.toString().padStart(2, "0")}-${day2.padStart(
-                    2,
-                    "0"
-                )}T${hour2.toString().padStart(2, "0")}:${minute2.padStart(
-                    2,
-                    "0"
-                )}`
+                `${year2}-${month2.toString().padStart(2, "0")}-${day2.padStart(2, "0")}T${hour2
+                    .toString()
+                    .padStart(2, "0")}:${minute2.padStart(2, "0")}`
             );
             // If second date is set to be 12 AM, it can be assumed they mean the end of the day
             // and not the start
@@ -109,9 +88,8 @@ export default function CreateNewComponent() {
         }
 
         // Get description (All components have a description)
-        const description: string = (
-            document.getElementById("description") as HTMLTextAreaElement
-        ).value;
+        const description: string = (document.getElementById("description") as HTMLTextAreaElement)
+            .value;
 
         // Get tags (All components have tags)
         const tags = tagsStore.tags as Tag[];
@@ -120,24 +98,21 @@ export default function CreateNewComponent() {
         switch (activeMenu) {
             case Menu.Task: {
                 // Only tasks have durations
-                const durationDays = parseInt(
-                    (document.getElementById("duration-days") as HTMLInputElement
-                ).value) || 0;
-                const durationHours = parseInt((
-                    document.getElementById(
-                        "duration-hours"
-                    ) as HTMLInputElement
-                ).value) || 1;
-                const durationMinutes = parseInt((
-                    document.getElementById(
-                        "duration-minutes"
-                    ) as HTMLInputElement
-                ).value) || 0;
+                const durationDays =
+                    parseInt(
+                        (document.getElementById("duration-days") as HTMLInputElement).value
+                    ) || 0;
+                const durationHours =
+                    parseInt(
+                        (document.getElementById("duration-hours") as HTMLInputElement).value
+                    ) || 1;
+                const durationMinutes =
+                    parseInt(
+                        (document.getElementById("duration-minutes") as HTMLInputElement).value
+                    ) || 0;
                 const task = new Task(
                     name,
-                    durationDays * 86400000 +
-                        durationHours * 3600000 +
-                        durationMinutes * 60000,
+                    durationDays * 86400000 + durationHours * 3600000 + durationMinutes * 60000,
                     date1,
                     undefined,
                     description,
@@ -148,13 +123,7 @@ export default function CreateNewComponent() {
                 break;
             }
             case Menu.Event: {
-                const event = new Event(
-                    name,
-                    date2.getTime() - date1,
-                    date1,
-                    description,
-                    tags
-                );
+                const event = new Event(name, date2.getTime() - date1, date1, description, tags);
                 calendarStore.addThing(event);
                 break;
             }
@@ -163,28 +132,54 @@ export default function CreateNewComponent() {
                     console.log("No tags selected for tag block.");
                     return;
                 }
-                const tagBlock = new TagBlock(
-                    date2.getTime() - date1,
-                    date1,
-                    description,
-                    tags
-                );
+                const tagBlock = new TagBlock(date2.getTime() - date1, date1, description, tags);
                 calendarStore.addThing(tagBlock);
                 break;
             }
         }
-        close();
-        tagsStore.setTags([]);
+        handleClose();
     };
 
+    const handleClose = () => {
+        backdropAnimation.start({ opacity: 0, transition: { duration: 0.3 } });
+        panelAnimation.start({
+            scale: 0.9,
+            opacity: 0,
+            transition: { duration: 0.3, ease: "backIn" },
+        });
+        setTimeout(() => {
+            close();
+            tagsStore.setTags([]);
+        }, 300);
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            backdropAnimation.start({ opacity: 1, transition: { duration: 0.3 } });
+            panelAnimation.start({
+                scale: 1,
+                opacity: 1,
+                transition: { duration: 0.3, ease: "backOut" },
+            });
+        }
+    }, [isOpen]);
+
     return (
-        <Dialog open={isOpen} onClose={close} className="relative z-10">
-            <DialogBackdrop className="fixed inset-0 backdrop-blur-sm" />
+        <Dialog open={isOpen} onClose={handleClose} className="relative z-10" static>
+            <DialogBackdrop
+                as={motion.div}
+                className="fixed inset-0 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={backdropAnimation}
+            />
             <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
                 <div className="flex h-full justify-center p-0">
                     <DialogPanel
+                        as={motion.div}
                         className="relative flex flex-col gap-2 overflow-hidden rounded-lg bg-off-white text-left shadow-xl w-[650px] h-fit"
                         style={{ top: "10%" }}
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={panelAnimation}
                     >
                         {/* Dialog Content */}
                         <div className="bg-white drop-shadow-md flex justify-between p-2 gap-2 flex-shrink-0">
@@ -225,23 +220,31 @@ export default function CreateNewComponent() {
                         <div className="h-full max-h-full p-2 flex">
                             {activeMenu === Menu.Task && <CreateTaskDialog />}
                             {activeMenu === Menu.Event && <CreateEventDialog />}
-                            {activeMenu === Menu.TagBlock && (
-                                <CreateTagBlockDialog />
-                            )}
+                            {activeMenu === Menu.TagBlock && <CreateTagBlockDialog />}
                         </div>
                         <div className="flex flex-row h-fit p-2 w-full gap-2 justify-end items-center">
-                            <button
+                            <motion.button
                                 className="h-10 w-20 bg-white text-dark rounded-md flex items-center justify-center cursor-pointer"
-                                onClick={close}
+                                onClick={handleClose}
+                                initial={{ scale: 1 }}
+                                animate={{ scale: 1 }}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                transition={{ duration: 0.15 }}
                             >
                                 Cancel
-                            </button>
-                            <button
+                            </motion.button>
+                            <motion.button
                                 className="h-10 w-20 bg-dark text-white rounded-md flex items-center justify-center cursor-pointer"
                                 onClick={handleCreate}
+                                initial={{ scale: 1 }}
+                                animate={{ scale: 1 }}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                transition={{ duration: 0.15 }}
                             >
                                 Create
-                            </button>
+                            </motion.button>
                         </div>
                     </DialogPanel>
                 </div>
@@ -254,31 +257,13 @@ const CreateTaskDialog = () => {
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Name
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Duration
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Due Date
-                </div>
-                <div
-                    className={`text-right flex justify-end items-start py-1 h-20`}
-                >
+                <div className={`text-right flex items-center justify-end h-10`}>Name</div>
+                <div className={`text-right flex items-center justify-end h-10`}>Duration</div>
+                <div className={`text-right flex items-center justify-end h-10`}>Due Date</div>
+                <div className={`text-right flex justify-end items-start py-1 h-20`}>
                     Description
                 </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Tags
-                </div>
+                <div className={`text-right flex items-center justify-end h-10`}>Tags</div>
             </div>
             <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Name */}
@@ -299,9 +284,7 @@ const CreateTaskDialog = () => {
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
-                        <div className="text-right text-sm flex items-center">
-                            Days
-                        </div>
+                        <div className="text-right text-sm flex items-center">Days</div>
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
@@ -310,9 +293,7 @@ const CreateTaskDialog = () => {
                             placeholder="1"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
-                        <div className="text-right text-sm flex items-center">
-                            Hours
-                        </div>
+                        <div className="text-right text-sm flex items-center">Hours</div>
                     </div>
 
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
@@ -322,9 +303,7 @@ const CreateTaskDialog = () => {
                             placeholder="0"
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
-                        <div className="text-right text-sm flex items-center">
-                            Minutes
-                        </div>
+                        <div className="text-right text-sm flex items-center">Minutes</div>
                     </div>
                 </div>
                 {/* Due Date */}
@@ -350,31 +329,13 @@ const CreateEventDialog = () => {
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Name
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Start Time
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    End Time
-                </div>
-                <div
-                    className={`text-right flex justify-end items-start py-1 h-20`}
-                >
+                <div className={`text-right flex items-center justify-end h-10`}>Name</div>
+                <div className={`text-right flex items-center justify-end h-10`}>Start Time</div>
+                <div className={`text-right flex items-center justify-end h-10`}>End Time</div>
+                <div className={`text-right flex justify-end items-start py-1 h-20`}>
                     Description
                 </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Tags
-                </div>
+                <div className={`text-right flex items-center justify-end h-10`}>Tags</div>
             </div>
             <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Name */}
@@ -411,26 +372,12 @@ const CreateTagBlockDialog = () => {
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Start Time
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    End Time
-                </div>
-                <div
-                    className={`text-right flex justify-end items-start py-1 h-20`}
-                >
+                <div className={`text-right flex items-center justify-end h-10`}>Start Time</div>
+                <div className={`text-right flex items-center justify-end h-10`}>End Time</div>
+                <div className={`text-right flex justify-end items-start py-1 h-20`}>
                     Description
                 </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Tags
-                </div>
+                <div className={`text-right flex items-center justify-end h-10`}>Tags</div>
             </div>
             <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Starts */}
@@ -463,9 +410,7 @@ const DateField = ({ id }: DateFieldProps) => {
 
     const [month, setMonth] = useState<number>(now.getMonth());
     const [year, setYear] = useState<number>(now.getFullYear());
-    const [amPm, setAmPm] = useState<string>(
-        now.getHours() >= 12 ? "PM" : "AM"
-    );
+    const [amPm, setAmPm] = useState<string>(now.getHours() >= 12 ? "PM" : "AM");
 
     return (
         <div className="text-right h-10 flex flex-row gap-2">
@@ -474,8 +419,7 @@ const DateField = ({ id }: DateFieldProps) => {
                     id={`date-year-${id}`}
                     options={Array.from(
                         {
-                            length:
-                                now.getFullYear() + 6 - (now.getFullYear() - 5),
+                            length: now.getFullYear() + 6 - (now.getFullYear() - 5),
                         },
                         (_, i) => (now.getFullYear() - 5 + i).toString()
                     )}
@@ -496,9 +440,8 @@ const DateField = ({ id }: DateFieldProps) => {
             <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                 <DropdownMenu
                     id={`date-day-${id}`}
-                    options={Array.from(
-                        { length: getDaysInMonth(year, month + 1) },
-                        (_, i) => (i + 1).toString()
+                    options={Array.from({ length: getDaysInMonth(year, month + 1) }, (_, i) =>
+                        (i + 1).toString()
                     )}
                     defaultOption={now.getDate()}
                     className="w-full text-sm [scroll-bar:none]"
@@ -510,9 +453,7 @@ const DateField = ({ id }: DateFieldProps) => {
             <div className="w-fit flex-shrink-0 p-2 gap-1 text-right rounded-md bg-white flex truncate">
                 <DropdownMenu
                     id={`date-hour-${id}`}
-                    options={Array.from({ length: 12 }, (_, i) =>
-                        (i + 1).toString()
-                    )}
+                    options={Array.from({ length: 12 }, (_, i) => (i + 1).toString())}
                     defaultOption={now.getHours() ? now.getHours() % 12 : "12"}
                     className="w-12 flex-shrink-0 text-sm"
                 />
@@ -566,8 +507,7 @@ interface TagsArray {
 const tagsArray = createStore<TagsArray>((set) => ({
     tags: [] as Tag[],
     addTag: (tag: Tag) => set((state) => ({ tags: [...state.tags, tag] })),
-    removeTag: (tag: Tag) =>
-        set((state) => ({ tags: state.tags.filter((t) => t !== tag) })),
+    removeTag: (tag: Tag) => set((state) => ({ tags: state.tags.filter((t) => t !== tag) })),
     setTags: (tags: Tag[]) => set(() => ({ tags })),
 }));
 
@@ -594,13 +534,10 @@ const NewTagField = () => {
     const handleCreateTag = () => {
         if (calendarStore.calendar === undefined) return;
 
-        const name = (document.getElementById("tag-name") as HTMLInputElement)
+        const name = (document.getElementById("tag-name") as HTMLInputElement).value;
+        const color = (document.getElementById("tag-color") as HTMLInputElement).value;
+        const description = (document.getElementById("tag-description") as HTMLTextAreaElement)
             .value;
-        const color = (document.getElementById("tag-color") as HTMLInputElement)
-            .value;
-        const description = (
-            document.getElementById("tag-description") as HTMLTextAreaElement
-        ).value;
         if (!name) return;
 
         const tag = new Tag(name, description, color);
@@ -640,14 +577,19 @@ const NewTagField = () => {
                         );
                     })}
                 </div>
-                <button
+                <motion.button
                     className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center cursor-pointer"
                     onClick={() => {
                         setTagMenuOpen(!tagMenuOpen);
                     }}
+                    initial={{ scale: 1 }}
+                    animate={{ scale: 1 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.15 }}
                 >
                     <Plus size={20} strokeWidth={1.5} />
-                </button>
+                </motion.button>
             </div>
             {tagMenuOpen ? (
                 <div className="flex flex-col h-fit w-full rounded-md overflow-hidden bg-white">
@@ -690,34 +632,21 @@ const NewTagField = () => {
                                 <div className="flex flex-col h-40 w-full overflow-auto p-2 gap-2 [scrollbar-width:none]">
                                     {Array.from(
                                         {
-                                            length: calendarStore.calendar.getTags()
-                                                .length,
+                                            length: calendarStore.calendar.getTags().length,
                                         },
                                         (_, i) => {
-                                            if (
-                                                calendarStore.calendar ===
-                                                undefined
-                                            )
-                                                return <></>;
-                                            const tag =
-                                                calendarStore.calendar.getTags()[
-                                                    i
-                                                ];
+                                            if (calendarStore.calendar === undefined) return <></>;
+                                            const tag = calendarStore.calendar.getTags()[i];
                                             return (
                                                 <div
                                                     className="flex min-h-10 w-full bg-white text-dark rounded-md px-2 items-center justify-start gap-2 cursor-pointer drop-shadow-md"
                                                     key={tag.getName()}
-                                                    onClick={handleAddTag.bind(
-                                                        this,
-                                                        tag
-                                                    )}
+                                                    onClick={handleAddTag.bind(this, tag)}
                                                 >
                                                     <div
                                                         className="w-4 h-4 rounded-full flex-shrink-0"
                                                         style={{
-                                                            backgroundColor:
-                                                                "#" +
-                                                                tag.getColor(),
+                                                            backgroundColor: "#" + tag.getColor(),
                                                         }}
                                                     />
                                                     <div className="flex-grow overflow-hidden text-ellipsis whitespace-nowrap">
@@ -761,11 +690,7 @@ const NewTagField = () => {
                                                     id="tag-color"
                                                     type="color"
                                                     className="w-full h-full rounded-md opacity-0"
-                                                    onChange={(e) =>
-                                                        setNewColor(
-                                                            e.target.value
-                                                        )
-                                                    }
+                                                    onChange={(e) => setNewColor(e.target.value)}
                                                 />
                                             </div>
                                         </div>
