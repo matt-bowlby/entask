@@ -88,7 +88,10 @@ export default function TodoTaskComponent({ task }: TaskProps) {
             </div>
             <motion.button
                 className="flex justify-center items-center w-12 h-full cursor-pointer bg-white"
-                onClick={handleToggleComplete}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleComplete();
+                }}
                 initial={{
                     scale: 1,
                     filter: "drop-shadow(0px 0px 6px rgba(0, 0, 0, 0))",
