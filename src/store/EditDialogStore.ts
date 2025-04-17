@@ -1,4 +1,5 @@
 import Thing from "@/classes/thing/Thing";
+import { Task } from "@/classes/thing/Thing";
 import { create } from "zustand";
 
 export enum DialogType {
@@ -13,7 +14,7 @@ type EditDialogStoreType = {
     open: (dialogType: DialogType) => void;
     close: () => void;
     setData: (arg0: Thing) => void;
-    data: Thing | undefined;
+    data: Thing;
 };
 
 export const useEditDialogStore = create<EditDialogStoreType>((set) => ({
@@ -22,5 +23,5 @@ export const useEditDialogStore = create<EditDialogStoreType>((set) => ({
     open: (dialogType: DialogType) => set({ isOpen: true, type: dialogType }),
     close: () => set({ isOpen: false }),
     setData: (t: Thing) => set({ data: t }),
-    data: undefined,
+    data: new Task("placeholder"),
 }));
