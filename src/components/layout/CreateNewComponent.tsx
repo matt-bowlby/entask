@@ -1,14 +1,17 @@
-import { useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { Plus, X } from "lucide-react";
+import DateField from "@/components/layout/DateField";
+import NewTagField from "./NewTagField";
+
 import { useCreateDialogStore } from "@/store/TitleBarStore";
 import useCalendarStore from "@/store/calendarStore";
+import { useTagsArrayStore } from "@/store/TagsArrayStore";
+import { useState } from "react";
+
 import { Task, Event } from "@/classes/thing/Thing";
 import TagBlock from "@/classes/tag/TagBlock";
 import Tag from "@/classes/tag/Tag";
-import DropdownMenu from "../items/DropdownMenu";
-import { createStore, useStore } from "zustand";
-import { getDaysInMonth, months } from "@/utils/timeString";
+
+import { months } from "@/utils/timeString";
 
 enum Menu {
     Task,
@@ -18,11 +21,11 @@ enum Menu {
 
 export default function CreateNewComponent() {
     const { isOpen, close } = useCreateDialogStore();
-    const tagsStore = useStore(tagsArray);
+    const tagsStore = useTagsArrayStore();
     const calendarStore = useCalendarStore();
     const [activeMenu, setActiveMenu] = useState<Menu>(Menu.Task);
 
-    // const [tagsArray, setTagsArray] = useState<Tag[]>([]);
+    // const [useTagsArrayStore, setuseTagsArrayStore] = useState<Tag[]>([]);
 
     const handleCreate = () => {
         if (calendarStore === undefined) return;
@@ -120,19 +123,30 @@ export default function CreateNewComponent() {
         switch (activeMenu) {
             case Menu.Task: {
                 // Only tasks have durations
-                const durationDays = parseInt(
-                    (document.getElementById("duration-days") as HTMLInputElement
-                ).value) || 0;
-                const durationHours = parseInt((
-                    document.getElementById(
-                        "duration-hours"
-                    ) as HTMLInputElement
-                ).value) || 1;
-                const durationMinutes = parseInt((
-                    document.getElementById(
-                        "duration-minutes"
-                    ) as HTMLInputElement
-                ).value) || 0;
+                const durationDays =
+                    parseInt(
+                        (
+                            document.getElementById(
+                                "duration-days"
+                            ) as HTMLInputElement
+                        ).value
+                    ) || 0;
+                const durationHours =
+                    parseInt(
+                        (
+                            document.getElementById(
+                                "duration-hours"
+                            ) as HTMLInputElement
+                        ).value
+                    ) || 1;
+                const durationMinutes =
+                    parseInt(
+                        (
+                            document.getElementById(
+                                "duration-minutes"
+                            ) as HTMLInputElement
+                        ).value
+                    ) || 0;
                 const task = new Task(
                     name,
                     durationDays * 86400000 +
@@ -450,347 +464,6 @@ const CreateTagBlockDialog = () => {
                 {/* Tag */}
                 <NewTagField />
             </div>
-        </div>
-    );
-};
-
-interface DateFieldProps {
-    id: string;
-}
-
-const DateField = ({ id }: DateFieldProps) => {
-    const now = new Date();
-
-    const [month, setMonth] = useState<number>(now.getMonth());
-    const [year, setYear] = useState<number>(now.getFullYear());
-    const [amPm, setAmPm] = useState<string>(
-        now.getHours() >= 12 ? "PM" : "AM"
-    );
-
-    return (
-        <div className="text-right h-10 flex flex-row gap-2">
-            <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                <DropdownMenu
-                    id={`date-year-${id}`}
-                    options={Array.from(
-                        {
-                            length:
-                                now.getFullYear() + 6 - (now.getFullYear() - 5),
-                        },
-                        (_, i) => (now.getFullYear() - 5 + i).toString()
-                    )}
-                    optionReaction={(_: string, i: number) => setYear(i)}
-                    defaultOption={now.getFullYear().toString()}
-                    className="w-full text-sm"
-                />
-            </div>
-            <div className="w-fit flex-shrink-0 px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                <DropdownMenu
-                    id={`date-month-${id}`}
-                    options={months}
-                    optionReaction={(_: string, i: number) => setMonth(i)}
-                    defaultOption={months[now.getMonth()]}
-                    className="w-full text-sm"
-                />
-            </div>
-            <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                <DropdownMenu
-                    id={`date-day-${id}`}
-                    options={Array.from(
-                        { length: getDaysInMonth(year, month + 1) },
-                        (_, i) => (i + 1).toString()
-                    )}
-                    defaultOption={now.getDate()}
-                    className="w-full text-sm [scroll-bar:none]"
-                />
-            </div>
-
-            <div className="flex items-center justify-center">:</div>
-
-            <div className="w-fit flex-shrink-0 p-2 gap-1 text-right rounded-md bg-white flex truncate">
-                <DropdownMenu
-                    id={`date-hour-${id}`}
-                    options={Array.from({ length: 12 }, (_, i) =>
-                        (i + 1).toString()
-                    )}
-                    defaultOption={now.getHours() ? now.getHours() % 12 : "12"}
-                    className="w-12 flex-shrink-0 text-sm"
-                />
-            </div>
-            <div className="w-auto flex-shrink-0 px-2 gap-2 text-right rounded-md bg-white flex truncate">
-                <DropdownMenu
-                    id={`date-minute-${id}`}
-                    options={Array.from({ length: 12 }, (_, i) =>
-                        (i * 5).toString().padStart(2, "0")
-                    )}
-                    defaultOption={"0"}
-                    className="w-12 flex-shrink-0 text-sm"
-                />
-            </div>
-            <div className="flex flex-col w-8 flex-shrink-0 rounded-md overflow-hidden select-none">
-                <button
-                    id={`date-am-${id}`}
-                    value={amPm === "PM" ? "true" : "false"}
-                    className={
-                        amPm === "AM"
-                            ? "justify-center text-xs flex items-center bg-dark text-white h-full"
-                            : "justify-center text-xs flex items-center bg-white text-dark outline-1 outline-[#7772720a] h-full"
-                    }
-                    onClick={() => setAmPm(amPm === "AM" ? "PM" : "AM")}
-                >
-                    am
-                </button>
-                <button
-                    id={`date-pm-${id}`}
-                    value={amPm === "PM" ? "true" : "false"}
-                    className={
-                        amPm === "PM"
-                            ? "justify-center text-xs flex items-center bg-dark text-white h-full"
-                            : "justify-center text-xs flex items-center bg-white text-dark outline-1 outline-[#0000000a] h-full"
-                    }
-                    onClick={() => setAmPm(amPm === "AM" ? "PM" : "AM")}
-                >
-                    pm
-                </button>
-            </div>
-        </div>
-    );
-};
-
-interface TagsArray {
-    tags: Tag[];
-    addTag: (tag: Tag) => void;
-    removeTag: (tag: Tag) => void;
-    setTags: (tags: Tag[]) => void;
-}
-const tagsArray = createStore<TagsArray>((set) => ({
-    tags: [] as Tag[],
-    addTag: (tag: Tag) => set((state) => ({ tags: [...state.tags, tag] })),
-    removeTag: (tag: Tag) =>
-        set((state) => ({ tags: state.tags.filter((t) => t !== tag) })),
-    setTags: (tags: Tag[]) => set(() => ({ tags })),
-}));
-
-const NewTagField = () => {
-    const calendarStore = useCalendarStore();
-
-    const [tagMenuOpen, setTagMenuOpen] = useState(false);
-    const [useExisting, setUseExisting] = useState(true);
-
-    const tagsStore = useStore(tagsArray);
-    const tags = tagsStore.tags as Tag[];
-    const addTag = tagsStore.addTag;
-    const removeTag = tagsStore.removeTag;
-
-    const [newColor, setNewColor] = useState("#000000");
-
-    if (calendarStore.calendar === undefined) return <></>;
-
-    const handleAddTag = (tag: Tag) => {
-        if (tags.find((t) => t === tag)) return;
-        addTag(tag);
-    };
-
-    const handleCreateTag = () => {
-        if (calendarStore.calendar === undefined) return;
-
-        const name = (document.getElementById("tag-name") as HTMLInputElement)
-            .value;
-        const color = (document.getElementById("tag-color") as HTMLInputElement)
-            .value;
-        const description = (
-            document.getElementById("tag-description") as HTMLTextAreaElement
-        ).value;
-        if (!name) return;
-
-        const tag = new Tag(name, description, color);
-        handleAddTag(tag);
-        calendarStore.calendar.addTag(tag);
-        setTagMenuOpen(false);
-        setUseExisting(true);
-    };
-
-    return (
-        <div className="flex flex-col h-fit w-full gap-2">
-            <div className="flex flex-row h-fit w-full gap-2">
-                <div className="flex w-full max-w-full max-h-50 flex-wrap items-start gap-2 rounded-md">
-                    {Array.from({ length: tags.length }, (_, i) => {
-                        const tag = tags[i];
-                        return (
-                            <div
-                                className="flex w-fit h-10 rounded-md px-3 items-center justify-center gap-2 bg-white overflow-hidden flex-shrink-0"
-                                key={tag.getName()}
-                            >
-                                <div
-                                    className="w-4 h-4 rounded-full flex-shrink-0"
-                                    style={{
-                                        backgroundColor: "#" + tag.getColor(),
-                                    }}
-                                />
-                                <div className="text-nowrap w-fit max-w-40 overflow-ellipsis overflow-hidden">
-                                    {tag.getName()}
-                                </div>
-                                <X
-                                    size={16}
-                                    strokeWidth={1.5}
-                                    className="cursor-pointer flex-shrink-0"
-                                    onClick={() => removeTag(tag)}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
-                <button
-                    className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center cursor-pointer"
-                    onClick={() => {
-                        setTagMenuOpen(!tagMenuOpen);
-                    }}
-                >
-                    <Plus size={20} strokeWidth={1.5} />
-                </button>
-            </div>
-            {tagMenuOpen ? (
-                <div className="flex flex-col h-fit w-full rounded-md overflow-hidden bg-white">
-                    <div className="h-fit flex-shrink-0 select-none">
-                        <div className="flex flex-row justify-between">
-                            <div
-                                className={
-                                    useExisting
-                                        ? "flex justify-center items-center w-full h-10 bg-dark text-white"
-                                        : "flex justify-center items-center w-full h-10 text-dark cursor-pointer"
-                                }
-                                onClick={() => setUseExisting(true)}
-                            >
-                                Use Existing
-                            </div>
-                            <div
-                                className={
-                                    !useExisting
-                                        ? "flex justify-center items-center w-full h-10 bg-dark text-white"
-                                        : "flex justify-center items-center w-full h-10 text-dark cursor-pointer"
-                                }
-                                onClick={() => setUseExisting(false)}
-                            >
-                                Create New
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        {useExisting ? (
-                            <div>
-                                <div className="flex flex-col h-fit w-full p-2">
-                                    <input
-                                        id="search-tags"
-                                        type="text"
-                                        className="w-full h-10 bg-white text-dark rounded-md px-2 outline-none drop-shadow-md"
-                                        placeholder="Search Tags..."
-                                    />
-                                </div>
-                                <div className="flex flex-col h-40 w-full overflow-auto p-2 gap-2 [scrollbar-width:none]">
-                                    {Array.from(
-                                        {
-                                            length: calendarStore.calendar.getTags()
-                                                .length,
-                                        },
-                                        (_, i) => {
-                                            if (
-                                                calendarStore.calendar ===
-                                                undefined
-                                            )
-                                                return <></>;
-                                            const tag =
-                                                calendarStore.calendar.getTags()[
-                                                    i
-                                                ];
-                                            return (
-                                                <div
-                                                    className="flex min-h-10 w-full bg-white text-dark rounded-md px-2 items-center justify-start gap-2 cursor-pointer drop-shadow-md"
-                                                    key={tag.getName()}
-                                                    onClick={handleAddTag.bind(
-                                                        this,
-                                                        tag
-                                                    )}
-                                                >
-                                                    <div
-                                                        className="w-4 h-4 rounded-full flex-shrink-0"
-                                                        style={{
-                                                            backgroundColor:
-                                                                "#" +
-                                                                tag.getColor(),
-                                                        }}
-                                                    />
-                                                    <div className="flex-grow overflow-hidden text-ellipsis whitespace-nowrap">
-                                                        {tag.getName()}
-                                                    </div>
-                                                </div>
-                                            );
-                                        }
-                                    )}
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col w-full h-fit p-2 gap-2">
-                                <div className="flex flex-row w-full h-fit gap-2">
-                                    <div className="flex flex-col h-fit w-fit gap-2 items-end justify-end">
-                                        <p className="flex w-fit h-10 text-dark items-center justify-end text-right">
-                                            Name
-                                        </p>
-                                        <p className="flex w-fit h-10 text-dark items-center justify-end text-right">
-                                            Color
-                                        </p>
-                                        <p className="flex w-fit h-20 text-dark items-center justify-end text-right">
-                                            Description
-                                        </p>
-                                    </div>
-                                    <div className="flex flex-col h-fit w-full gap-2">
-                                        <input
-                                            id="tag-name"
-                                            type="text"
-                                            className="w-full h-10 bg-white text-dark rounded-md px-2 outline-none drop-shadow-md"
-                                            placeholder="Tag Name"
-                                        />
-                                        <div className="flex flex-row w-full h-10 bg-white rounded-md drop-shadow-md overflow-hidden p-2">
-                                            <div
-                                                className="rounded-md overflow-hidden w-full h-full"
-                                                style={{
-                                                    backgroundColor: newColor,
-                                                }}
-                                            >
-                                                <input
-                                                    id="tag-color"
-                                                    type="color"
-                                                    className="w-full h-full rounded-md opacity-0"
-                                                    onChange={(e) =>
-                                                        setNewColor(
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                        <textarea
-                                            id="tag-description"
-                                            className="w-full h-20 bg-white text-dark rounded-md p-2 outline-none drop-shadow-md overflow-y-auto resize-none"
-                                            placeholder="Description"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-row w-full justify-end h-10">
-                                    <button
-                                        className="h-10 w-fit bg-white text-dark rounded-md flex items-center justify-center drop-shadow-md cursor-pointer px-4"
-                                        onClick={handleCreateTag}
-                                    >
-                                        Create Tag
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            ) : (
-                <></>
-            )}
         </div>
     );
 };
