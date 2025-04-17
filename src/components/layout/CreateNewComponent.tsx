@@ -155,12 +155,14 @@ export default function CreateNewComponent() {
 
     useEffect(() => {
         if (isOpen) {
-            backdropAnimation.start({ opacity: 1, transition: { duration: 0.3 } });
-            panelAnimation.start({
-                scale: 1,
-                opacity: 1,
-                transition: { duration: 0.3, ease: "backOut" },
-            });
+            setTimeout(() => {
+                backdropAnimation.start({ opacity: 1, transition: { duration: 0.3 } });
+                panelAnimation.start({
+                    scale: 1,
+                    opacity: 1,
+                    transition: { duration: 0.3, ease: "backOut" },
+                });
+            }, 1);
         }
     }, [isOpen]);
 
