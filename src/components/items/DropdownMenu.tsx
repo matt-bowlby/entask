@@ -1,14 +1,20 @@
-import {useState} from "react";
+import { useState } from "react";
 
 interface DropdownMenuProps {
-  options: string[];
-  optionReaction?: CallableFunction;
-  defaultOption?: any;
-  className?: string;
-  id?: string;
+    options: string[];
+    optionReaction?: CallableFunction;
+    defaultOption?: any;
+    className?: string;
+    id?: string;
 }
 
-const DropdownMenu = ({ options, optionReaction, defaultOption, className, id }: DropdownMenuProps) => {
+const DropdownMenu = ({
+    options,
+    optionReaction,
+    defaultOption,
+    className,
+    id,
+}: DropdownMenuProps) => {
     const [selectedOption, setSelectedOption] = useState<string>(
         defaultOption !== undefined ? defaultOption : options[0]
     );
@@ -23,6 +29,7 @@ const DropdownMenu = ({ options, optionReaction, defaultOption, className, id }:
 
     return (
         <select
+            title="Select option"
             id={id}
             style={{ outline: "none" }}
             className={className}
@@ -40,6 +47,6 @@ const DropdownMenu = ({ options, optionReaction, defaultOption, className, id }:
             ))}
         </select>
     );
-}
+};
 
 export default DropdownMenu;

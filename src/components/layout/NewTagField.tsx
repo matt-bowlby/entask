@@ -74,6 +74,7 @@ const NewTagField = () => {
                     })}
                 </div>
                 <button
+                    title="Toggle tag menu"
                     className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center cursor-pointer"
                     onClick={() => {
                         setTagMenuOpen(!tagMenuOpen);
@@ -180,6 +181,7 @@ const NewTagField = () => {
                                         <input
                                             id="tag-name"
                                             type="text"
+                                            title="Tag Name"
                                             className="w-full h-10 bg-white text-dark rounded-md px-2 outline-none drop-shadow-md"
                                             placeholder="Tag Name"
                                         />
@@ -193,6 +195,7 @@ const NewTagField = () => {
                                                 <input
                                                     id="tag-color"
                                                     type="color"
+                                                    title="Tag Color"
                                                     className="w-full h-full rounded-md opacity-0"
                                                     onChange={(e) =>
                                                         setNewColor(
@@ -204,6 +207,7 @@ const NewTagField = () => {
                                         </div>
                                         <textarea
                                             id="tag-description"
+                                            title="Tag Description"
                                             className="w-full h-20 bg-white text-dark rounded-md p-2 outline-none drop-shadow-md overflow-y-auto resize-none"
                                             placeholder="Description"
                                         />
