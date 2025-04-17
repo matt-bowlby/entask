@@ -4,10 +4,13 @@ import { getDaysInMonth, months } from "@/utils/timeString";
 
 interface DateFieldProps {
     id: string;
+    defaultValue?: Date; // for use in the EditDialog
 }
 
-export default function DateField({ id }: DateFieldProps) {
-    const now = new Date();
+export default function DateField({ id, defaultValue }: DateFieldProps) {
+    // const now = useNowStore((state) => state.now);
+    // const nowDate = defaultValue ? defaultValue : new Date(now);
+    const now = defaultValue ? defaultValue : new Date();
 
     const [month, setMonth] = useState<number>(now.getMonth());
     const [year, setYear] = useState<number>(now.getFullYear());
@@ -61,7 +64,11 @@ export default function DateField({ id }: DateFieldProps) {
                     options={Array.from({ length: 12 }, (_, i) =>
                         (i + 1).toString()
                     )}
-                    defaultOption={now.getHours() ? now.getHours() % 12 : "12"}
+                    defaultOption={
+                        defaultValue
+                            ? (now.getHours() % 12 || 12).toString()
+                            : "12"
+                    }
                     className="w-12 flex-shrink-0 text-sm"
                 />
             </div>
@@ -71,7 +78,9 @@ export default function DateField({ id }: DateFieldProps) {
                     options={Array.from({ length: 12 }, (_, i) =>
                         (i * 5).toString().padStart(2, "0")
                     )}
-                    defaultOption={"0"}
+                    defaultOption={
+                        defaultValue ? now.getMinutes().toString() : "0"
+                    }
                     className="w-12 flex-shrink-0 text-sm"
                 />
             </div>
@@ -84,7 +93,7 @@ export default function DateField({ id }: DateFieldProps) {
                             ? "justify-center text-xs flex items-center bg-dark text-white h-full"
                             : "justify-center text-xs flex items-center bg-white text-dark outline-1 outline-[#7772720a] h-full"
                     }
-                    onClick={() => setAmPm(amPm === "AM" ? "PM" : "AM")}
+                    onClick={() => setAmPm("AM")}
                 >
                     am
                 </button>
@@ -96,7 +105,7 @@ export default function DateField({ id }: DateFieldProps) {
                             ? "justify-center text-xs flex items-center bg-dark text-white h-full"
                             : "justify-center text-xs flex items-center bg-white text-dark outline-1 outline-[#0000000a] h-full"
                     }
-                    onClick={() => setAmPm(amPm === "AM" ? "PM" : "AM")}
+                    onClick={() => setAmPm("PM")}
                 >
                     pm
                 </button>
