@@ -4,11 +4,141 @@ import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 
 import { useEditDialogStore } from "@/store/EditDialogStore";
 import { DialogType } from "@/store/EditDialogStore";
+import useCalendarStore from "@/store/calendarStore";
 
 import { Task } from "@/classes/thing/Thing";
+import { months } from "@/utils/timeString";
 
 export default function EditDialog() {
-    const thingType = useEditDialogStore().type;
+    const editDialogStore = useEditDialogStore();
+    const thingType = editDialogStore.type;
+    const close = editDialogStore.close;
+    const updateCalendar = useCalendarStore.getState().updateCalendar;
+
+    const handleSave = () => {
+        const data = editDialogStore.data;
+
+        if (thingType === DialogType.Task) {
+            const name = (document.getElementById("name") as HTMLInputElement)
+                .value;
+            const days =
+                parseInt(
+                    (
+                        document.getElementById(
+                            "duration-days"
+                        ) as HTMLInputElement
+                    ).value
+                ) || 0;
+            const hours =
+                parseInt(
+                    (
+                        document.getElementById(
+                            "duration-hours"
+                        ) as HTMLInputElement
+                    ).value
+                ) || 0;
+            const minutes =
+                parseInt(
+                    (
+                        document.getElementById(
+                            "duration-minutes"
+                        ) as HTMLInputElement
+                    ).value
+                ) || 0;
+            const description = (
+                document.getElementById("description") as HTMLTextAreaElement
+            ).value;
+
+            // Fix: Use correct date field IDs
+            const year1 = (
+                document.getElementById("date-year-1") as HTMLInputElement
+            ).value;
+            const month1 = (
+                months.indexOf(
+                    (
+                        document.getElementById(
+                            "date-month-1"
+                        ) as HTMLInputElement
+                    ).value
+                ) + 1
+            ).toString();
+            const day1 = (
+                document.getElementById("date-day-1") as HTMLInputElement
+            ).value;
+            const pm1 =
+                (document.getElementById("date-pm-1") as HTMLInputElement)
+                    .value === "true";
+            let hour1 = parseInt(
+                (document.getElementById("date-hour-1") as HTMLInputElement)
+                    .value
+            );
+            if (hour1 === 12) hour1 = 0;
+            if (pm1) hour1 += 12;
+            const minute1 = (
+                document.getElementById("date-minute-1") as HTMLInputElement
+            ).value;
+
+            const dueDate = new Date(
+                `${year1}-${month1.padStart(2, "0")}-${day1.padStart(
+                    2,
+                    "0"
+                )}T${hour1.toString().padStart(2, "0")}:${minute1.padStart(
+                    2,
+                    "0"
+                )}`
+            ).getTime();
+
+            const duration =
+                (days * 24 * 60 + hours * 60 + minutes) * 60 * 1000;
+
+            data.setName(name);
+            data.setDuration(duration);
+            data.setDescription(description);
+            (data as Task).setDueDate(dueDate);
+        } else if (thingType === DialogType.Event) {
+            const name = (
+                document.getElementById("event-name") as HTMLInputElement
+            ).value;
+            const description = (
+                document.getElementById(
+                    "event-description"
+                ) as HTMLTextAreaElement
+            ).value;
+            const startTime = new Date(
+                (
+                    document.getElementById("event-start") as HTMLInputElement
+                ).value
+            ).getTime();
+            const endTime = new Date(
+                (document.getElementById("event-end") as HTMLInputElement).value
+            ).getTime();
+
+            data.setName(name);
+            data.setDescription(description);
+            data.setStartTime(startTime);
+            data.setDuration(endTime - startTime);
+        } else if (thingType === DialogType.TagBlock) {
+            const description = (
+                document.getElementById(
+                    "tagblock-description"
+                ) as HTMLTextAreaElement
+            ).value;
+            const startTime = new Date(
+                (document.getElementById("1") as HTMLInputElement).value
+            ).getTime();
+            const endTime = new Date(
+                (document.getElementById("2") as HTMLInputElement).value
+            ).getTime();
+
+            data.setDescription(description);
+            data.setStartTime(startTime);
+            data.setDuration(endTime - startTime);
+        }
+
+        updateCalendar();
+        close();
+    };
+
     return (
         <Dialog
             open={useEditDialogStore().isOpen}
@@ -22,11 +152,28 @@ export default function EditDialog() {
                         className="relative flex flex-col gap-2 overflow-hidden rounded-lg bg-off-white text-left shadow-xl w-[650px] h-fit p-3"
                         style={{ top: "10%" }}
                     >
-                        <h1 className="font-bold text-2xl">
-                            Edit {thingType === DialogType.Task && "Task"}
-                            {thingType === DialogType.Event && "Event"}
-                            {thingType === DialogType.TagBlock && "Tag Block"}
-                        </h1>
+                        <div className="flex justify-between items-center">
+                            <h1 className="font-bold text-2xl">
+                                Edit {thingType === DialogType.Task && "Task"}
+                                {thingType === DialogType.Event && "Event"}
+                                {thingType === DialogType.TagBlock &&
+                                    "Tag Block"}
+                            </h1>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={close}
+                                    className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSave}
+                                    className="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </div>
                         {thingType === DialogType.Task && <EditTask />}
                         {thingType === DialogType.Event && <EditEvent />}
                         {thingType === DialogType.TagBlock && <EditTagBlock />}
