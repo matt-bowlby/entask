@@ -8,8 +8,10 @@ import useCalendarStore from "@/store/calendarStore";
 
 import { Task } from "@/classes/thing/Thing";
 import { months } from "@/utils/timeString";
+import { useTagsArrayStore } from "@/store/TagsArrayStore";
 
 export default function EditDialog() {
+    const { tags } = useTagsArrayStore();
     const editDialogStore = useEditDialogStore();
     const thingType = editDialogStore.type;
     const close = editDialogStore.close;
@@ -94,6 +96,7 @@ export default function EditDialog() {
             data.setName(name);
             data.setDuration(duration);
             data.setDescription(description);
+            data.setTags(tags);
             (data as Task).setDueDate(dueDate);
         } else if (thingType === DialogType.Event) {
             const name = (
@@ -116,6 +119,7 @@ export default function EditDialog() {
             data.setName(name);
             data.setDescription(description);
             data.setStartTime(startTime);
+            data.setTags(tags);
             data.setDuration(endTime - startTime);
         } else if (thingType === DialogType.TagBlock) {
             const description = (
