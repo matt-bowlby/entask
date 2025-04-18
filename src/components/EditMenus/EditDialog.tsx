@@ -107,13 +107,83 @@ export default function EditDialog() {
                     "event-description"
                 ) as HTMLTextAreaElement
             ).value;
+
+            // Get start time (date1)
+            const year1 = (
+                document.getElementById("date-year-1") as HTMLInputElement
+            ).value;
+            const month1 = (
+                months.indexOf(
+                    (
+                        document.getElementById(
+                            "date-month-1"
+                        ) as HTMLInputElement
+                    ).value
+                ) + 1
+            ).toString();
+            const day1 = (
+                document.getElementById("date-day-1") as HTMLInputElement
+            ).value;
+            const pm1 =
+                (document.getElementById("date-pm-1") as HTMLInputElement)
+                    .value === "true";
+            let hour1 = parseInt(
+                (document.getElementById("date-hour-1") as HTMLInputElement)
+                    .value
+            );
+            if (hour1 === 12) hour1 = 0;
+            if (pm1) hour1 += 12;
+            const minute1 = (
+                document.getElementById("date-minute-1") as HTMLInputElement
+            ).value;
+
             const startTime = new Date(
-                (
-                    document.getElementById("event-start") as HTMLInputElement
-                ).value
+                `${year1}-${month1.padStart(2, "0")}-${day1.padStart(
+                    2,
+                    "0"
+                )}T${hour1.toString().padStart(2, "0")}:${minute1.padStart(
+                    2,
+                    "0"
+                )}`
             ).getTime();
+
+            // Get end time (date2)
+            const year2 = (
+                document.getElementById("date-year-2") as HTMLInputElement
+            ).value;
+            const month2 = (
+                months.indexOf(
+                    (
+                        document.getElementById(
+                            "date-month-2"
+                        ) as HTMLInputElement
+                    ).value
+                ) + 1
+            ).toString();
+            const day2 = (
+                document.getElementById("date-day-2") as HTMLInputElement
+            ).value;
+            const pm2 =
+                (document.getElementById("date-pm-2") as HTMLInputElement)
+                    .value === "true";
+            let hour2 = parseInt(
+                (document.getElementById("date-hour-2") as HTMLInputElement)
+                    .value
+            );
+            if (hour2 === 12) hour2 = 0;
+            if (pm2) hour2 += 12;
+            const minute2 = (
+                document.getElementById("date-minute-2") as HTMLInputElement
+            ).value;
+
             const endTime = new Date(
-                (document.getElementById("event-end") as HTMLInputElement).value
+                `${year2}-${month2.padStart(2, "0")}-${day2.padStart(
+                    2,
+                    "0"
+                )}T${hour2.toString().padStart(2, "0")}:${minute2.padStart(
+                    2,
+                    "0"
+                )}`
             ).getTime();
 
             data.setName(name);
@@ -123,20 +193,91 @@ export default function EditDialog() {
             data.setDuration(endTime - startTime);
         } else if (thingType === DialogType.TagBlock) {
             const description = (
-                document.getElementById(
-                    "tagblock-description"
-                ) as HTMLTextAreaElement
+                document.getElementById("description") as HTMLTextAreaElement
             ).value;
+
+            // Get start time (date1)
+            const year1 = (
+                document.getElementById("date-year-1") as HTMLInputElement
+            ).value;
+            const month1 = (
+                months.indexOf(
+                    (
+                        document.getElementById(
+                            "date-month-1"
+                        ) as HTMLInputElement
+                    ).value
+                ) + 1
+            ).toString();
+            const day1 = (
+                document.getElementById("date-day-1") as HTMLInputElement
+            ).value;
+            const pm1 =
+                (document.getElementById("date-pm-1") as HTMLInputElement)
+                    .value === "true";
+            let hour1 = parseInt(
+                (document.getElementById("date-hour-1") as HTMLInputElement)
+                    .value
+            );
+            if (hour1 === 12) hour1 = 0;
+            if (pm1) hour1 += 12;
+            const minute1 = (
+                document.getElementById("date-minute-1") as HTMLInputElement
+            ).value;
+
             const startTime = new Date(
-                (document.getElementById("1") as HTMLInputElement).value
+                `${year1}-${month1.padStart(2, "0")}-${day1.padStart(
+                    2,
+                    "0"
+                )}T${hour1.toString().padStart(2, "0")}:${minute1.padStart(
+                    2,
+                    "0"
+                )}`
             ).getTime();
+
+            // Get end time (date2)
+            const year2 = (
+                document.getElementById("date-year-2") as HTMLInputElement
+            ).value;
+            const month2 = (
+                months.indexOf(
+                    (
+                        document.getElementById(
+                            "date-month-2"
+                        ) as HTMLInputElement
+                    ).value
+                ) + 1
+            ).toString();
+            const day2 = (
+                document.getElementById("date-day-2") as HTMLInputElement
+            ).value;
+            const pm2 =
+                (document.getElementById("date-pm-2") as HTMLInputElement)
+                    .value === "true";
+            let hour2 = parseInt(
+                (document.getElementById("date-hour-2") as HTMLInputElement)
+                    .value
+            );
+            if (hour2 === 12) hour2 = 0;
+            if (pm2) hour2 += 12;
+            const minute2 = (
+                document.getElementById("date-minute-2") as HTMLInputElement
+            ).value;
+
             const endTime = new Date(
-                (document.getElementById("2") as HTMLInputElement).value
+                `${year2}-${month2.padStart(2, "0")}-${day2.padStart(
+                    2,
+                    "0"
+                )}T${hour2.toString().padStart(2, "0")}:${minute2.padStart(
+                    2,
+                    "0"
+                )}`
             ).getTime();
 
             data.setDescription(description);
             data.setStartTime(startTime);
             data.setDuration(endTime - startTime);
+            data.setTags(tags);
         }
 
         updateCalendar();
@@ -323,12 +464,12 @@ function EditEvent() {
                 </div>
                 {/* Start Time */}
                 <DateField
-                    id={"event-start"}
+                    id={"1"}
                     defaultValue={new Date(data.getStartTime())}
                 />
                 {/* End Time */}
                 <DateField
-                    id={"event-end"}
+                    id={"2"}
                     defaultValue={new Date(data.getEndTime())}
                 />
                 {/* Description */}

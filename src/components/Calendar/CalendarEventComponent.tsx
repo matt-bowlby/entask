@@ -1,6 +1,9 @@
 import { Event } from "@/classes/thing/Thing";
-import { meridiem } from "@/utils/timeString";
+import { useEditDialogStore } from "@/store/EditDialogStore";
 import { useEffect, useRef, useState } from "react";
+
+import { meridiem } from "@/utils/timeString";
+import { DialogType } from "@/store/EditDialogStore";
 
 interface EventProps {
     event: Event;
@@ -13,10 +16,15 @@ export default function EventComponent({ event }: EventProps) {
     dayStart.setHours(0, 0, 0, 0);
 
     const root = document.documentElement;
-    const columnHeight = parseFloat(getComputedStyle(root).getPropertyValue('--column-height'));
+    const columnHeight = parseFloat(
+        getComputedStyle(root).getPropertyValue("--column-height")
+    );
 
-    const top: number = ((event.getStartTime() - dayStart.getTime()) / (24 * 1000 * 60 * 60)) * columnHeight;
-    const height: number = (event.getDuration() / (24 * 1000 * 60 * 60)) * columnHeight;
+    const top: number =
+        ((event.getStartTime() - dayStart.getTime()) / (24 * 1000 * 60 * 60)) *
+        columnHeight;
+    const height: number =
+        (event.getDuration() / (24 * 1000 * 60 * 60)) * columnHeight;
 
     const containerRef = useRef<HTMLDivElement>(null);
     const descriptionTextRef = useRef<HTMLParagraphElement>(null);
@@ -25,7 +33,7 @@ export default function EventComponent({ event }: EventProps) {
 
     useEffect(() => {
         const observerCallback = (entries: IntersectionObserverEntry[]) => {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 // Set visibility to true only if the element is fully visible
                 setIsDescriptionVisible(entry.intersectionRatio >= 0.6);
             });
@@ -47,6 +55,8 @@ export default function EventComponent({ event }: EventProps) {
         };
     }, []);
 
+    const editDialogStore = useEditDialogStore();
+
     // Abbreviated event for short duration (less than 45 minutes)
     if (event.getDuration() < 40 * 60 * 1000) {
         return (
@@ -56,25 +66,31 @@ export default function EventComponent({ event }: EventProps) {
                     top: `${top}px`,
                     height: `${height}px`,
                 }}
+                onClick={() => {
+                    editDialogStore.open(DialogType.Event);
+                    editDialogStore.setData(event);
+                }}
             >
                 <div className="flex flex-row justify-between items-center h-full w-full">
                     <div className="flex flex-col justify-center items-start h-full flex-shrink overflow-hidden">
-                        <h1 className="font-bold text-dark text-sm w-full text-ellipsis overflow-hidden whitespace-nowrap">{event.getName()}</h1>
+                        <h1 className="font-bold text-dark text-sm w-full text-ellipsis overflow-hidden whitespace-nowrap">
+                            {event.getName()}
+                        </h1>
                     </div>
                     <div className="flex flex-row h-2 gap-1 w-auto rounded-full overflow-hidden flex-shrink-0">
-                        {
-                            event.getTags().length === 0 ? (
-                                <div className="w-2 h-full bg-dark"></div>
-                            ) : (
-                                event.getTags().map((tag, i) => (
-                                    <div
-                                        key={i}
-                                        className="w-2 h-full rounded-full"
-                                        style={{ backgroundColor: `#${tag.getColor()}` }}
-                                    />
-                                ))
-                            )
-                        }
+                        {event.getTags().length === 0 ? (
+                            <div className="w-2 h-full bg-dark"></div>
+                        ) : (
+                            event.getTags().map((tag, i) => (
+                                <div
+                                    key={i}
+                                    className="w-2 h-full rounded-full"
+                                    style={{
+                                        backgroundColor: `#${tag.getColor()}`,
+                                    }}
+                                />
+                            ))
+                        )}
                     </div>
                 </div>
             </div>
@@ -90,6 +106,10 @@ export default function EventComponent({ event }: EventProps) {
                 height: `${height}px`,
             }}
             ref={containerRef}
+            onClick={() => {
+                editDialogStore.open(DialogType.Event);
+                editDialogStore.setData(event);
+            }}
         >
             <div className="flex flex-row h-2 w-full rounded-full overflow-hidden flex-shrink-0">
                 {event.getTags().length === 0 ? (
@@ -99,22 +119,29 @@ export default function EventComponent({ event }: EventProps) {
                         <div
                             key={i}
                             className="w-full h-2"
-                            style={{ backgroundColor: `#${tag.getColor()}` }}
+                            style={{
+                                backgroundColor: `#${tag.getColor()}`,
+                            }}
                         />
                     ))
                 )}
             </div>
             <div className="flex flex-col w-full overflow-auto [scrollbar-width:none]">
                 <div className="flex flex-col justify-center items-center w-full overflow-hidden h-fit flex-shrink-0">
-                    <h1 className="font-bold text-dark text-sm w-full text-ellipsis whitespace-nowrap overflow-hidden">{event.getName()}</h1>
+                    <h1 className="font-bold text-dark text-sm w-full text-ellipsis whitespace-nowrap overflow-hidden">
+                        {event.getName()}
+                    </h1>
                 </div>
 
                 <div className="flex flex-col w-full">
-                    <p
-                        id="hour-text"
-                        className="text-sm"
-                    >
-                        {`${meridiem(startTime.getHours(), startTime.getMinutes())} - ${meridiem(endTime.getHours(), endTime.getMinutes())}`}
+                    <p id="hour-text" className="text-sm">
+                        {`${meridiem(
+                            startTime.getHours(),
+                            startTime.getMinutes()
+                        )} - ${meridiem(
+                            endTime.getHours(),
+                            endTime.getMinutes()
+                        )}`}
                     </p>
                     {isDescriptionVisible && (
                         <p
