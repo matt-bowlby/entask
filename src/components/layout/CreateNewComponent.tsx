@@ -10,6 +10,7 @@ import DropdownMenu from "../items/DropdownMenu";
 import { createStore, useStore } from "zustand";
 import { getDaysInMonth, months } from "@/utils/timeString";
 import { motion, useAnimation } from "framer-motion";
+import ErrorMessage from "../items/ErrorMessage";
 
 enum Menu {
     Task,
@@ -24,11 +25,13 @@ export default function CreateNewComponent() {
     const [activeMenu, setActiveMenu] = useState<Menu>(Menu.Task);
     const backdropAnimation = useAnimation();
     const panelAnimation = useAnimation();
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
     // const [tagsArray, setTagsArray] = useState<Tag[]>([]);
 
     const handleCreate = () => {
         if (calendarStore === undefined) return;
+        setErrorMessage("");
 
         // Get name, if applicable (Tag Blocks don't have names)
         let name: string = "";
@@ -87,6 +90,11 @@ export default function CreateNewComponent() {
             if (hour2 === 0 && !pm2) date2.setDate(date2.getDate() + 1);
         }
 
+        if (date2.getTime() < date1) {
+            setErrorMessage("End date cannot be before start date.");
+            return;
+        }
+
         // Get description (All components have a description)
         const description: string = (document.getElementById("description") as HTMLTextAreaElement)
             .value;
@@ -129,7 +137,10 @@ export default function CreateNewComponent() {
             }
             case Menu.TagBlock: {
                 if (tags.length === 0) {
-                    console.log("No tags selected for tag block.");
+                    setErrorMessage("Tag Block must have a tag.");
+                    return;
+                } else if (date2.getTime() - date1 < 30 * 60 * 1000) {
+                    setErrorMessage("Tag Block must be at least 30 minutes long.");
                     return;
                 }
                 const tagBlock = new TagBlock(date2.getTime() - date1, date1, description, tags);
@@ -150,12 +161,13 @@ export default function CreateNewComponent() {
         setTimeout(() => {
             close();
             tagsStore.setTags([]);
+            setErrorMessage("");
         }, 300);
     };
 
     useEffect(() => {
         if (isOpen) {
-            setTimeout(() => {
+            const id = setTimeout(() => {
                 backdropAnimation.start({ opacity: 1, transition: { duration: 0.3 } });
                 panelAnimation.start({
                     scale: 1,
@@ -163,6 +175,8 @@ export default function CreateNewComponent() {
                     transition: { duration: 0.3, ease: "backOut" },
                 });
             }, 1);
+
+            return () => clearTimeout(id);
         }
     }, [isOpen]);
 
@@ -178,7 +192,7 @@ export default function CreateNewComponent() {
                 <div className="flex h-full justify-center p-0">
                     <DialogPanel
                         as={motion.div}
-                        className="relative flex flex-col gap-2 overflow-hidden rounded-lg bg-off-white text-left shadow-xl w-[650px] h-fit"
+                        className="relative flex flex-col gap-2 overflow-hidden rounded-xl bg-off-white text-left shadow-xl w-[650px] h-fit"
                         style={{ top: "10%" }}
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={panelAnimation}
@@ -225,8 +239,14 @@ export default function CreateNewComponent() {
                             {activeMenu === Menu.TagBlock && <CreateTagBlockDialog />}
                         </div>
                         <div className="flex flex-row h-fit p-2 w-full gap-2 justify-end items-center">
+                            {errorMessage ? (
+                                <ErrorMessage
+                                    message={errorMessage}
+                                    className="flex w-full h-fit p-2 items-center justify-end"
+                                />
+                            ) : null}
                             <motion.button
-                                className="h-10 w-20 bg-white text-dark rounded-md flex items-center justify-center cursor-pointer"
+                                className="h-10 w-20 bg-white text-dark rounded-md flex items-center justify-center cursor-pointer flex-shrink-0"
                                 onClick={handleClose}
                                 initial={{ scale: 1 }}
                                 animate={{ scale: 1 }}
@@ -237,7 +257,7 @@ export default function CreateNewComponent() {
                                 Cancel
                             </motion.button>
                             <motion.button
-                                className="h-10 w-20 bg-dark text-white rounded-md flex items-center justify-center cursor-pointer"
+                                className="h-10 w-20 bg-dark text-white rounded-md flex items-center justify-center cursor-pointer flex-shrink-0"
                                 onClick={handleCreate}
                                 initial={{ scale: 1 }}
                                 animate={{ scale: 1 }}
@@ -256,6 +276,12 @@ export default function CreateNewComponent() {
 }
 
 const CreateTaskDialog = () => {
+    const numericInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // Allow only numeric input
+        const value = e.target.value.replace(/[^0-9]/g, "");
+        e.target.value = value;
+    };
+
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
@@ -284,6 +310,7 @@ const CreateTaskDialog = () => {
                             id="duration-days"
                             type="text"
                             placeholder="0"
+                            onChange={numericInputHandler}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
                         <div className="text-right text-sm flex items-center">Days</div>
@@ -293,6 +320,7 @@ const CreateTaskDialog = () => {
                             id="duration-hours"
                             type="text"
                             placeholder="1"
+                            onChange={numericInputHandler}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
                         <div className="text-right text-sm flex items-center">Hours</div>
@@ -303,6 +331,7 @@ const CreateTaskDialog = () => {
                             id="duration-minutes"
                             type="text"
                             placeholder="0"
+                            onChange={numericInputHandler}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
                         <div className="text-right text-sm flex items-center">Minutes</div>
@@ -470,7 +499,7 @@ const DateField = ({ id }: DateFieldProps) => {
                     className="w-12 flex-shrink-0 text-sm"
                 />
             </div>
-            <div className="flex flex-col w-8 flex-shrink-0 rounded-md overflow-hidden select-none">
+            <div className="flex flex-col w-10 flex-shrink-0 rounded-md overflow-hidden select-none">
                 <button
                     id={`date-am-${id}`}
                     value={amPm === "PM" ? "true" : "false"}
@@ -552,33 +581,36 @@ const NewTagField = () => {
     return (
         <div className="flex flex-col h-fit w-full gap-2">
             <div className="flex flex-row h-fit w-full gap-2">
-                <div className="flex w-full max-w-full max-h-50 flex-wrap items-start gap-2 rounded-md">
-                    {Array.from({ length: tags.length }, (_, i) => {
-                        const tag = tags[i];
-                        return (
-                            <div
-                                className="flex w-fit h-10 rounded-md px-3 items-center justify-center gap-2 bg-white overflow-hidden flex-shrink-0"
-                                key={tag.getName()}
-                            >
+                {tags.length > 0 ? (
+                    <div className="flex w-fit max-w-full max-h-50 flex-wrap items-start gap-2 rounded-md">
+                        {Array.from({ length: tags.length }, (_, i) => {
+                            const tag = tags[i];
+                            return (
                                 <div
-                                    className="w-4 h-4 rounded-full flex-shrink-0"
-                                    style={{
-                                        backgroundColor: "#" + tag.getColor(),
-                                    }}
-                                />
-                                <div className="text-nowrap w-fit max-w-40 overflow-ellipsis overflow-hidden">
-                                    {tag.getName()}
+                                    className="flex w-fit h-10 rounded-md px-3 items-center justify-center gap-2 bg-white overflow-hidden flex-shrink-0"
+                                    key={tag.getName()}
+                                >
+                                    <div
+                                        className="w-4 h-4 rounded-full flex-shrink-0"
+                                        style={{
+                                            backgroundColor: "#" + tag.getColor(),
+                                        }}
+                                    />
+                                    <div className="text-nowrap w-fit max-w-40 overflow-ellipsis overflow-hidden">
+                                        {tag.getName()}
+                                    </div>
+                                    <X
+                                        size={16}
+                                        strokeWidth={1.5}
+                                        className="cursor-pointer flex-shrink-0"
+                                        onClick={() => removeTag(tag)}
+                                    />
                                 </div>
-                                <X
-                                    size={16}
-                                    strokeWidth={1.5}
-                                    className="cursor-pointer flex-shrink-0"
-                                    onClick={() => removeTag(tag)}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
+                            );
+                        })}
+                    </div>
+                ) : null}
+
                 <motion.button
                     className="h-10 w-10 flex-shrink-0 text-dark bg-white rounded-md flex items-center justify-center cursor-pointer"
                     onClick={() => {
@@ -594,14 +626,14 @@ const NewTagField = () => {
                 </motion.button>
             </div>
             {tagMenuOpen ? (
-                <div className="flex flex-col h-fit w-full rounded-md overflow-hidden bg-white">
+                <div className="flex flex-col h-fit w-full overflow-hidden gap-2">
                     <div className="h-fit flex-shrink-0 select-none">
-                        <div className="flex flex-row justify-between">
+                        <div className="flex flex-row justify-between gap-2">
                             <div
                                 className={
                                     useExisting
-                                        ? "flex justify-center items-center w-full h-10 bg-dark text-white"
-                                        : "flex justify-center items-center w-full h-10 text-dark cursor-pointer"
+                                        ? "flex justify-center items-center w-full h-10 bg-dark text-white rounded-md"
+                                        : "flex justify-center items-center w-full h-10 text-dark bg-white cursor-pointer rounded-md"
                                 }
                                 onClick={() => setUseExisting(true)}
                             >
@@ -610,8 +642,8 @@ const NewTagField = () => {
                             <div
                                 className={
                                     !useExisting
-                                        ? "flex justify-center items-center w-full h-10 bg-dark text-white"
-                                        : "flex justify-center items-center w-full h-10 text-dark cursor-pointer"
+                                        ? "flex justify-center items-center w-full h-10 bg-dark text-white rounded-md"
+                                        : "flex justify-center items-center w-full h-10 bg-white text-dark cursor-pointer rounded-md"
                                 }
                                 onClick={() => setUseExisting(false)}
                             >
@@ -622,7 +654,7 @@ const NewTagField = () => {
 
                     <div>
                         {useExisting ? (
-                            <div>
+                            <div className="flex flex-col bg-white rounded-md">
                                 <div className="flex flex-col h-fit w-full p-2">
                                     <input
                                         id="search-tags"
@@ -661,7 +693,7 @@ const NewTagField = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-col w-full h-fit p-2 gap-2">
+                            <div className="flex flex-col w-full h-fit p-2 gap-2 bg-white rounded-md">
                                 <div className="flex flex-row w-full h-fit gap-2">
                                     <div className="flex flex-col h-fit w-fit gap-2 items-end justify-end">
                                         <p className="flex w-fit h-10 text-dark items-center justify-end text-right">
@@ -715,9 +747,7 @@ const NewTagField = () => {
                         )}
                     </div>
                 </div>
-            ) : (
-                <></>
-            )}
+            ) : null}
         </div>
     );
 };
