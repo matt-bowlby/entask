@@ -156,31 +156,30 @@ export default function EditDialog() {
                         className="relative flex flex-col gap-2 overflow-hidden rounded-lg bg-off-white text-left shadow-xl w-[650px] h-fit p-3"
                         style={{ top: "10%" }}
                     >
-                        <div className="flex justify-between items-center">
-                            <h1 className="font-bold text-2xl">
-                                Edit {thingType === DialogType.Task && "Task"}
-                                {thingType === DialogType.Event && "Event"}
-                                {thingType === DialogType.TagBlock &&
-                                    "Tag Block"}
-                            </h1>
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={close}
-                                    className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleSave}
-                                    className="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors"
-                                >
-                                    Save
-                                </button>
-                            </div>
-                        </div>
+                        <h1 className="font-bold text-2xl">
+                            Edit {thingType === DialogType.Task && "Task"}
+                            {thingType === DialogType.Event && "Event"}
+                            {thingType === DialogType.TagBlock && "Tag Block"}
+                        </h1>
+
                         {thingType === DialogType.Task && <EditTask />}
                         {thingType === DialogType.Event && <EditEvent />}
                         {thingType === DialogType.TagBlock && <EditTagBlock />}
+
+                        <div className="flex justify-end gap-2 mt-2 pt-2 border-t border-gray-200">
+                            <button
+                                onClick={close}
+                                className="px-4 py-2 rounded-md bg-white hover:bg-gray-100 transition-colors text-sm"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                className="px-4 py-2 rounded-md bg-dark text-white hover:bg-opacity-80 transition-colors text-sm"
+                            >
+                                Save
+                            </button>
+                        </div>
                     </DialogPanel>
                 </div>
             </div>
