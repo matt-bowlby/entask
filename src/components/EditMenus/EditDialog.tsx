@@ -193,7 +193,9 @@ export default function EditDialog() {
             data.setDuration(endTime - startTime);
         } else if (thingType === DialogType.TagBlock) {
             const description = (
-                document.getElementById("description") as HTMLTextAreaElement
+                document.getElementById(
+                    "tagblock-description"
+                ) as HTMLTextAreaElement
             ).value;
 
             // Get start time (date1)
