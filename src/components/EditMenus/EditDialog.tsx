@@ -1,6 +1,7 @@
 import DateField from "@components/layout/DateField";
 import NewTagField from "@components/layout/NewTagField";
 import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
+import { Trash2 } from "lucide-react";
 
 import { useEditDialogStore } from "@/store/EditDialogStore";
 import { DialogType } from "@/store/EditDialogStore";
@@ -309,19 +310,40 @@ export default function EditDialog() {
                         {thingType === DialogType.Event && <EditEvent />}
                         {thingType === DialogType.TagBlock && <EditTagBlock />}
 
-                        <div className="flex justify-end gap-2 mt-2 pt-2 border-t border-gray-200">
+                        <div className="flex justify-between gap-2 mt-2 pt-2 border-t border-gray-200">
                             <button
-                                onClick={close}
-                                className="px-4 py-2 rounded-md bg-white hover:bg-gray-100 transition-colors text-sm"
+                                onClick={() => {
+                                    if (
+                                        confirm(
+                                            "Are you sure you want to delete this item?"
+                                        )
+                                    ) {
+                                        useCalendarStore
+                                            .getState()
+                                            .removeThing(editDialogStore.data);
+                                        updateCalendar();
+                                        close();
+                                    }
+                                }}
+                                title="Delete"
+                                className="p-2 text-red-400 hover:text-white hover:bg-red-400 rounded-full transition-colors text-sm flex items-center gap-2"
                             >
-                                Cancel
+                                <Trash2 size={24} />
                             </button>
-                            <button
-                                onClick={handleSave}
-                                className="px-4 py-2 rounded-md bg-dark text-white hover:bg-opacity-80 transition-colors text-sm"
-                            >
-                                Save
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={close}
+                                    className="px-4 py-2 rounded-md bg-white hover:bg-gray-100 transition-colors text-sm"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSave}
+                                    className="px-4 py-2 rounded-md bg-dark text-white hover:bg-opacity-80 transition-colors text-sm"
+                                >
+                                    Save
+                                </button>
+                            </div>
                         </div>
                     </DialogPanel>
                 </div>
