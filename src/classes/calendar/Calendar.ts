@@ -105,6 +105,9 @@ class Calendar {
         this.completed = this.completed.filter(
             (completedThing) => completedThing !== thing
         );
+        if (thing instanceof TagBlock) {
+            this.tagBlocks = this.tagBlocks.filter(t => t !== thing);
+        }
     }
 
     /**
