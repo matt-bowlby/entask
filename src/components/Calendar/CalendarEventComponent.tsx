@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { meridiem } from "@/utils/timeString";
 import { DialogType } from "@/store/EditDialogStore";
+import { motion } from "framer-motion";
 
 interface EventProps {
     event: Event;
@@ -60,8 +61,8 @@ export default function EventComponent({ event }: EventProps) {
     // Abbreviated event for short duration (less than 45 minutes)
     if (event.getDuration() < 40 * 60 * 1000) {
         return (
-            <div
-                className="bg-white rounded-md drop-shadow-md absolute left-0 right-0 flex-col px-2 overflow-hidden items-center justify-center"
+            <motion.div
+                className="bg-white rounded-md absolute left-0 right-0 flex-col px-2 overflow-hidden items-center justify-center"
                 style={{
                     top: `${top}px`,
                     height: `${height}px`,
@@ -70,8 +71,23 @@ export default function EventComponent({ event }: EventProps) {
                     editDialogStore.open(DialogType.Event);
                     editDialogStore.setData(event);
                 }}
+                initial={{
+                    scale: 1,
+                    filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.2))",
+                }}
+                animate={{
+                    scale: 1,
+                    filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.2))",
+                }}
+                whileTap={{
+                    scale: 0.98,
+                }}
+                whileHover={{
+                    filter: "drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.4))",
+                }}
+                transition={{ duration: 0.15 }}
             >
-                <div className="flex flex-row justify-between items-center h-full w-full">
+                <div className="flex flex-row justify-between items-center h-full w-full overflow-hidden">
                     <div className="flex flex-col justify-center items-start h-full flex-shrink overflow-hidden">
                         <h1 className="font-bold text-dark text-sm w-full text-ellipsis overflow-hidden whitespace-nowrap">
                             {event.getName()}
@@ -93,14 +109,14 @@ export default function EventComponent({ event }: EventProps) {
                         )}
                     </div>
                 </div>
-            </div>
+            </motion.div>
         );
     }
 
     // Non-abbreviated event
     return (
-        <div
-            className="absolute flex flex-col bg-white rounded-xl gap-1 drop-shadow-md left-0 right-0 p-2 overflow-clip"
+        <motion.div
+            className="absolute flex flex-col bg-white rounded-xl gap-1 left-0 right-0 p-2 overflow-clip"
             style={{
                 top: `${top}px`,
                 height: `${height}px`,
@@ -110,6 +126,21 @@ export default function EventComponent({ event }: EventProps) {
                 editDialogStore.open(DialogType.Event);
                 editDialogStore.setData(event);
             }}
+            initial={{
+                scale: 1,
+                filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.2))",
+            }}
+            animate={{
+                scale: 1,
+                filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.2))",
+            }}
+            whileTap={{
+                scale: 0.98,
+            }}
+            whileHover={{
+                filter: "drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.4))",
+            }}
+            transition={{ duration: 0.15 }}
         >
             <div className="flex flex-row h-2 w-full rounded-full overflow-hidden flex-shrink-0">
                 {event.getTags().length === 0 ? (
@@ -154,6 +185,6 @@ export default function EventComponent({ event }: EventProps) {
                     )}
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }

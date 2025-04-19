@@ -2,8 +2,9 @@ import { Image, Settings, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import CreateNewComponent from "@/components/layout/CreateNewComponent";
 import useCalendarStore, { useScrollStore } from "@/store/calendarStore";
 import { useCreateDialogStore } from "@/store/TitleBarStore";
-import { useNowStore } from "../Updater/Updater";
+import { useNowStore } from "../updater/Updater";
 import { months } from "@/utils/timeString";
+import { motion } from "framer-motion";
 
 export default function TitleBarComponent() {
     const { offset } = useCalendarStore();
@@ -38,13 +39,18 @@ export default function TitleBarComponent() {
                     />
                 </div>
 
-                <button
+                <motion.button
                     id="create-new-btn"
                     className="bg-white text-black font-semibold rounded-xl p-1 px-3 flex gap-1 cursor-pointer text-sm [app-region:no-drag] items-center justify-center select-none"
                     onClick={openCreateDialog}
+                    initial={{ scale: 1 }}
+                    animate={{ scale: 1 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.15 }}
                 >
                     Create New <Plus size={16} strokeWidth={2} />
-                </button>
+                </motion.button>
             </div>
             <div id="right-side" className="flex items-center grow m-4 text-white gap-6">
                 <div className="flex gap-4 items-center">

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import DateField from "@/components/layout/DateField";
 import NewTagField from "./NewTagField";
@@ -5,13 +6,14 @@ import NewTagField from "./NewTagField";
 import { useCreateDialogStore } from "@/store/TitleBarStore";
 import useCalendarStore from "@/store/calendarStore";
 import { useTagsArrayStore } from "@/store/TagsArrayStore";
-import { useState } from "react";
 
 import { Task, Event } from "@/classes/thing/Thing";
 import TagBlock from "@/classes/tag/TagBlock";
 import Tag from "@/classes/tag/Tag";
 
 import { months } from "@/utils/timeString";
+import { motion, useAnimation } from "framer-motion";
+import ErrorMessage from "../items/ErrorMessage";
 
 enum Menu {
     Task,
@@ -24,11 +26,15 @@ export default function CreateNewComponent() {
     const tagsStore = useTagsArrayStore();
     const calendarStore = useCalendarStore();
     const [activeMenu, setActiveMenu] = useState<Menu>(Menu.Task);
+    const backdropAnimation = useAnimation();
+    const panelAnimation = useAnimation();
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
     // const [useTagsArrayStore, setuseTagsArrayStore] = useState<Tag[]>([]);
 
     const handleCreate = () => {
         if (calendarStore === undefined) return;
+        setErrorMessage("");
 
         // Get name, if applicable (Tag Blocks don't have names)
         let name: string = "";
@@ -111,6 +117,11 @@ export default function CreateNewComponent() {
             if (hour2 === 0 && !pm2) date2.setDate(date2.getDate() + 1);
         }
 
+        if (date2.getTime() < date1) {
+            setErrorMessage("End date cannot be before start date.");
+            return;
+        }
+
         // Get description (All components have a description)
         const description: string = (
             document.getElementById("description") as HTMLTextAreaElement
@@ -174,7 +185,12 @@ export default function CreateNewComponent() {
             }
             case Menu.TagBlock: {
                 if (tags.length === 0) {
-                    console.log("No tags selected for tag block.");
+                    setErrorMessage("Tag Block must have a tag.");
+                    return;
+                } else if (date2.getTime() - date1 < 30 * 60 * 1000) {
+                    setErrorMessage(
+                        "Tag Block must be at least 30 minutes long."
+                    );
                     return;
                 }
                 const tagBlock = new TagBlock(
@@ -187,18 +203,62 @@ export default function CreateNewComponent() {
                 break;
             }
         }
-        close();
-        tagsStore.setTags([]);
+        handleClose();
     };
 
+    const handleClose = () => {
+        backdropAnimation.start({ opacity: 0, transition: { duration: 0.3 } });
+        panelAnimation.start({
+            scale: 0.9,
+            opacity: 0,
+            transition: { duration: 0.3, ease: "backIn" },
+        });
+        setTimeout(() => {
+            close();
+            tagsStore.setTags([]);
+            setErrorMessage("");
+        }, 300);
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            const id = setTimeout(() => {
+                backdropAnimation.start({
+                    opacity: 1,
+                    transition: { duration: 0.3 },
+                });
+                panelAnimation.start({
+                    scale: 1,
+                    opacity: 1,
+                    transition: { duration: 0.3, ease: "backOut" },
+                });
+            }, 1);
+
+            return () => clearTimeout(id);
+        }
+    }, [isOpen]);
+
     return (
-        <Dialog open={isOpen} onClose={close} className="relative z-10">
-            <DialogBackdrop className="fixed inset-0 backdrop-blur-sm" />
+        <Dialog
+            open={isOpen}
+            onClose={handleClose}
+            className="relative z-10"
+            static
+        >
+            <DialogBackdrop
+                as={motion.div}
+                className="fixed inset-0 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={backdropAnimation}
+            />
             <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
                 <div className="flex h-full justify-center p-0">
                     <DialogPanel
-                        className="relative flex flex-col gap-2 overflow-hidden rounded-lg bg-off-white text-left shadow-xl w-[650px] h-fit"
+                        as={motion.div}
+                        className="relative flex flex-col gap-2 overflow-hidden rounded-xl bg-off-white text-left shadow-xl w-[650px] h-fit"
                         style={{ top: "10%" }}
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={panelAnimation}
                     >
                         {/* Dialog Content */}
                         <div className="bg-white drop-shadow-md flex justify-between p-2 gap-2 flex-shrink-0">
@@ -244,18 +304,34 @@ export default function CreateNewComponent() {
                             )}
                         </div>
                         <div className="flex flex-row h-fit p-2 w-full gap-2 justify-end items-center">
-                            <button
-                                className="h-10 w-20 bg-white text-dark rounded-md flex items-center justify-center cursor-pointer"
-                                onClick={close}
+                            {errorMessage ? (
+                                <ErrorMessage
+                                    message={errorMessage}
+                                    className="flex w-full h-fit p-2 items-center justify-end"
+                                />
+                            ) : null}
+                            <motion.button
+                                className="h-10 w-20 bg-white text-dark rounded-md flex items-center justify-center cursor-pointer flex-shrink-0"
+                                onClick={handleClose}
+                                initial={{ scale: 1 }}
+                                animate={{ scale: 1 }}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                transition={{ duration: 0.15 }}
                             >
                                 Cancel
-                            </button>
-                            <button
-                                className="h-10 w-20 bg-dark text-white rounded-md flex items-center justify-center cursor-pointer"
+                            </motion.button>
+                            <motion.button
+                                className="h-10 w-20 bg-dark text-white rounded-md flex items-center justify-center cursor-pointer flex-shrink-0"
                                 onClick={handleCreate}
+                                initial={{ scale: 1 }}
+                                animate={{ scale: 1 }}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                transition={{ duration: 0.15 }}
                             >
                                 Create
-                            </button>
+                            </motion.button>
                         </div>
                     </DialogPanel>
                 </div>
@@ -265,6 +341,12 @@ export default function CreateNewComponent() {
 }
 
 const CreateTaskDialog = () => {
+    const numericInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // Allow only numeric input
+        const value = e.target.value.replace(/[^0-9]/g, "");
+        e.target.value = value;
+    };
+
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
@@ -311,6 +393,7 @@ const CreateTaskDialog = () => {
                             id="duration-days"
                             type="text"
                             placeholder="0"
+                            onChange={numericInputHandler}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
                         <div className="text-right text-sm flex items-center">
@@ -322,6 +405,7 @@ const CreateTaskDialog = () => {
                             id="duration-hours"
                             type="text"
                             placeholder="1"
+                            onChange={numericInputHandler}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
                         <div className="text-right text-sm flex items-center">
@@ -334,6 +418,7 @@ const CreateTaskDialog = () => {
                             id="duration-minutes"
                             type="text"
                             placeholder="0"
+                            onChange={numericInputHandler}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
                         <div className="text-right text-sm flex items-center">

@@ -33,7 +33,7 @@ const Update = () => {
     const setNow = useNowStore((state) => state.setNow);
 
     useEffect(() => {
-        const syncToNextSecond = () => {
+        const startUpdate = () => {
             const now = Date.now();
             const millisecondsUntilNextSecond = 1000 - (now % 1000);
 
@@ -41,12 +41,10 @@ const Update = () => {
             const timeout = setTimeout(() => {
                 setNow(Date.now()); // Update the store with the current time
 
-                if (!interval) {
-                    // Start a regular interval to update every second
-                    interval = setInterval(() => {
-                        setNow(Date.now());
-                    }, 1000);
-                }
+                // Start a regular interval to update every second
+                interval = setInterval(() => {
+                    setNow(Date.now());
+                }, 1000);
 
                 // Clear the interval when the component unmounts
                 return () => clearInterval(interval);
@@ -56,7 +54,9 @@ const Update = () => {
             return () => clearTimeout(timeout);
         };
 
-        syncToNextSecond();
+        if (!interval) {
+            startUpdate();
+        }
     }, []);
 
     return <></>;
