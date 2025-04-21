@@ -1,5 +1,5 @@
 import DateField from "@components/layout/DateField";
-import NewTagField from "@components/layout/NewTagField";
+import TagField, { ChooseTagField, TagBlockTagField, useCreateTagMenuStore } from "@components/layout/NewTagField";
 import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 import { Trash2 } from "lucide-react";
 
@@ -13,6 +13,7 @@ import { useTagsArrayStore } from "@/store/TagsArrayStore";
 
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
+import Tag from "@/classes/tag/Tag";
 
 export default function EditDialog() {
     const tagsStore = useTagsArrayStore();
@@ -179,7 +180,7 @@ export default function EditDialog() {
         }
 
         updateCalendar();
-        close();
+        handleClose();
     };
 
     const handleClose = () => {
@@ -301,6 +302,14 @@ function EditTask() {
     const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
 
+    const { isOpen, setTagMenuOpen } = useCreateTagMenuStore();
+    const addTag = useTagsArrayStore((state) => state.addTag);
+
+    const handleAddTag = (tag: Tag) => {
+        addTag(tag);
+        setTagMenuOpen(false);
+    };
+
     return (
         <div className="flex flex-row h-fit w-full gap-2 p-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
@@ -368,7 +377,10 @@ function EditTask() {
                     </div>
                 </div>
                 {/* Tag */}
-                <NewTagField initialTags={data.getTags()} />
+                <div className="flex flex-col h-fit w-full gap-2">
+                    <TagField initialTags={data.getTags()} />
+                    {isOpen ? <ChooseTagField onAddTag={handleAddTag} /> : null}
+                </div>
             </div>
         </div>
     );
@@ -377,8 +389,16 @@ function EditTask() {
 function EditEvent() {
     const data = useEditDialogStore().data;
 
+    const { isOpen, setTagMenuOpen } = useCreateTagMenuStore();
+    const addTag = useTagsArrayStore((state) => state.addTag);
+
+    const handleAddTag = (tag: Tag) => {
+        addTag(tag);
+        setTagMenuOpen(false);
+    };
+
     return (
-        <div className="flex flex-row h-fit w-full gap-2">
+        <div className="flex flex-row h-fit w-full gap-2 p-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
                 <div className="text-right flex items-center justify-end h-10">Name</div>
                 <div className="text-right flex items-center justify-end h-10">Start Time</div>
@@ -413,7 +433,10 @@ function EditEvent() {
                     </div>
                 </div>
                 {/* Tag */}
-                <NewTagField initialTags={data.getTags()} />
+                <div className="flex flex-col h-fit w-full gap-2">
+                    <TagField initialTags={data.getTags()}/>
+                    {isOpen ? <ChooseTagField onAddTag={handleAddTag} /> : null}
+                </div>
             </div>
         </div>
     );
@@ -422,8 +445,18 @@ function EditEvent() {
 function EditTagBlock() {
     const data = useEditDialogStore().data;
 
+    const { isOpen, setTagMenuOpen } = useCreateTagMenuStore();
+    const { addTag, clear } = useTagsArrayStore((state) => state);
+
+
+    const handleAddTag = (tag: Tag) => {
+        clear()
+        addTag(tag);
+        setTagMenuOpen(false);
+    };
+
     return (
-        <div className="flex flex-row h-fit w-full gap-2">
+        <div className="flex flex-row h-fit w-full gap-2 p-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
                 <div className="text-right flex items-center justify-end h-10">Start Time</div>
                 <div className="text-right flex items-center justify-end h-10">End Time</div>
@@ -447,7 +480,10 @@ function EditTagBlock() {
                     </div>
                 </div>
                 {/* Tag */}
-                <NewTagField initialTags={data.getTags()} />
+                <div className="flex flex-col h-fit w-full gap-2">
+                    <TagBlockTagField initialTags={data.getTags()}/>
+                    {isOpen ? <ChooseTagField onAddTag={handleAddTag} /> : null}
+                </div>
             </div>
         </div>
     );

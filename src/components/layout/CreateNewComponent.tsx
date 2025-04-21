@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import DateField from "@/components/layout/DateField";
-import NewTagField from "./NewTagField";
 
 import { useCreateDialogStore } from "@/store/TitleBarStore";
 import useCalendarStore from "@/store/calendarStore";
@@ -14,6 +13,9 @@ import Tag from "@/classes/tag/Tag";
 import { months } from "@/utils/timeString";
 import { motion, useAnimation } from "framer-motion";
 import ErrorMessage from "../items/ErrorMessage";
+import { useStore } from "zustand";
+import TagField, { ChooseTagField, TagBlockTagField } from "./NewTagField";
+import { useCreateTagMenuStore } from "./NewTagField";
 
 enum Menu {
     Task,
@@ -23,12 +25,18 @@ enum Menu {
 
 export default function CreateNewComponent() {
     const { isOpen, close } = useCreateDialogStore();
+    const { setTagMenuOpen } = useCreateTagMenuStore();
     const tagsStore = useTagsArrayStore();
     const calendarStore = useCalendarStore();
+
     const [activeMenu, setActiveMenu] = useState<Menu>(Menu.Task);
-    const backdropAnimation = useAnimation();
-    const panelAnimation = useAnimation();
     const [errorMessage, setErrorMessage] = useState<string>("");
+
+    const panelAnimation = useAnimation();
+    const backdropAnimation = useAnimation();
+    const taskTitleAnimation = useAnimation();
+    const eventTitleAnimation = useAnimation();
+    const tagBlockTitleAnimation = useAnimation();
 
     // const [useTagsArrayStore, setuseTagsArrayStore] = useState<Tag[]>([]);
 
@@ -223,6 +231,7 @@ export default function CreateNewComponent() {
     useEffect(() => {
         if (isOpen) {
             const id = setTimeout(() => {
+                handleChangeType(activeMenu); // Set the initial menu type
                 backdropAnimation.start({
                     opacity: 1,
                     transition: { duration: 0.3 },
@@ -237,6 +246,67 @@ export default function CreateNewComponent() {
             return () => clearTimeout(id);
         }
     }, [isOpen]);
+
+    const handleChangeType = (type: Menu) => {
+        console.log("Changing type to: ", type);
+        switch (type) {
+            case Menu.Task:
+                taskTitleAnimation.start({
+                    backgroundColor: "var(--color-dark)",
+                    color: "#ffffff",
+                    transition: { duration: 0.2 },
+                });
+                eventTitleAnimation.start({
+                    backgroundColor: "#ffffff",
+                    color: "var(--color-dark)",
+                    transition: { duration: 0.2 },
+                });
+                tagBlockTitleAnimation.start({
+                    backgroundColor: "#ffffff",
+                    color: "var(--color-dark)",
+                    transition: { duration: 0.2 },
+                });
+                break;
+            case Menu.Event:
+                taskTitleAnimation.start({
+                    backgroundColor: "#ffffff",
+                    color: "var(--color-dark)",
+                    transition: { duration: 0.2 },
+                });
+                eventTitleAnimation.start({
+                    backgroundColor: "var(--color-dark)",
+                    color: "#ffffff",
+                    transition: { duration: 0.2 },
+                });
+                tagBlockTitleAnimation.start({
+                    backgroundColor: "#ffffff",
+                    color: "var(--color-dark)",
+                    transition: { duration: 0.2 },
+                });
+                break;
+            case Menu.TagBlock:
+                taskTitleAnimation.start({
+                    backgroundColor: "#ffffff",
+                    color: "var(--color-dark)",
+                    transition: { duration: 0.2 },
+                });
+                eventTitleAnimation.start({
+                    backgroundColor: "#ffffff",
+                    color: "var(--color-dark)",
+                    transition: { duration: 0.2 },
+                });
+                tagBlockTitleAnimation.start({
+                    backgroundColor: "var(--color-dark)",
+                    color: "#ffffff",
+                    transition: { duration: 0.2 },
+                });
+                break;
+        }
+        setActiveMenu(type);
+        setErrorMessage(""); // Reset error message when changing type
+        tagsStore.setTags([]); // Clear tags when changing type
+        setTagMenuOpen(false); // Close tag menu if it was open
+    };
 
     return (
         <Dialog
@@ -262,39 +332,45 @@ export default function CreateNewComponent() {
                     >
                         {/* Dialog Content */}
                         <div className="bg-white drop-shadow-md flex justify-between p-2 gap-2 flex-shrink-0">
-                            <button
+                            <motion.button
                                 type="button"
-                                onClick={() => setActiveMenu(Menu.Task)}
+                                onClick={() => handleChangeType(Menu.Task)}
                                 className={
                                     activeMenu === Menu.Task
                                         ? "h-16 bg-dark text-white font-semibold w-full text-xl rounded-md"
                                         : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md cursor-pointer"
                                 }
+                                initial={{ backgroundColor: "#ffffff", color: "var(--color-dark)" }}
+                                animate={taskTitleAnimation}
                             >
                                 Task
-                            </button>
-                            <button
+                            </motion.button>
+                            <motion.button
                                 type="button"
-                                onClick={() => setActiveMenu(Menu.Event)}
+                                onClick={() => handleChangeType(Menu.Event)}
                                 className={
                                     activeMenu === Menu.Event
                                         ? "h-16 bg-dark text-white font-semibold w-full text-xl rounded-md"
                                         : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md cursor-pointer"
                                 }
+                                initial={{ backgroundColor: "#ffffff", color: "var(--color-dark)" }}
+                                animate={eventTitleAnimation}
                             >
                                 Event
-                            </button>
-                            <button
+                            </motion.button>
+                            <motion.button
                                 type="button"
-                                onClick={() => setActiveMenu(Menu.TagBlock)}
+                                onClick={() => handleChangeType(Menu.TagBlock)}
                                 className={
                                     activeMenu === Menu.TagBlock
                                         ? "h-16 bg-dark text-white font-semibold w-full text-xl rounded-md"
                                         : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md cursor-pointer"
                                 }
+                                initial={{ backgroundColor: "#ffffff", color: "var(--color-dark)" }}
+                                animate={tagBlockTitleAnimation}
                             >
                                 Tag Block
-                            </button>
+                            </motion.button>
                         </div>
                         <div className="h-full max-h-full p-2 flex">
                             {activeMenu === Menu.Task && <CreateTaskDialog />}
@@ -345,6 +421,13 @@ const CreateTaskDialog = () => {
         // Allow only numeric input
         const value = e.target.value.replace(/[^0-9]/g, "");
         e.target.value = value;
+    };
+    const { addTag } = useTagsArrayStore();
+    const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
+
+    const handleAddTag = (tag: Tag) => {
+        addTag(tag);
+        setTagMenuOpen(false);
     };
 
     return (
@@ -439,13 +522,24 @@ const CreateTaskDialog = () => {
                     </div>
                 </div>
                 {/* Tag */}
-                <NewTagField />
+                <div className="flex flex-col h-fit w-full gap-2">
+                    <TagField />
+                    {isOpen ? <ChooseTagField onAddTag={handleAddTag} /> : null}
+                </div>
             </div>
         </div>
     );
 };
 
 const CreateEventDialog = () => {
+    const { addTag } = useTagsArrayStore();
+    const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
+
+    const handleAddTag = (tag: Tag) => {
+        addTag(tag);
+        setTagMenuOpen(false);
+    };
+
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
@@ -500,13 +594,25 @@ const CreateEventDialog = () => {
                     </div>
                 </div>
                 {/* Tag */}
-                <NewTagField />
+                <div className="flex flex-col h-fit w-full gap-2">
+                    <TagField />
+                    {isOpen ? <ChooseTagField onAddTag={handleAddTag} /> : null}
+                </div>
             </div>
         </div>
     );
 };
 
 const CreateTagBlockDialog = () => {
+    const { addTag, setTags } = useTagsArrayStore();
+    const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
+
+    const handleAddTag = (tag: Tag) => {
+        setTags([]); // Clear existing tags to avoid duplicates
+        addTag(tag);
+        setTagMenuOpen(false);
+    };
+
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
@@ -525,11 +631,7 @@ const CreateTagBlockDialog = () => {
                 >
                     Description
                 </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Tags
-                </div>
+                <div className={`text-right flex items-center justify-end h-10`}>Tag</div>
             </div>
             <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Starts */}
@@ -547,8 +649,12 @@ const CreateTagBlockDialog = () => {
                     </div>
                 </div>
                 {/* Tag */}
-                <NewTagField />
+                <div className="flex flex-col h-fit w-full gap-2">
+                    <TagBlockTagField />
+                    {isOpen ? <ChooseTagField onAddTag={handleAddTag} /> : null}
+                </div>
             </div>
         </div>
     );
 };
+
