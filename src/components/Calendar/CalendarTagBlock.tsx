@@ -1,6 +1,7 @@
 import TagBlock from "@/classes/tag/TagBlock";
 // import { meridiem } from "@/utils/timeString";
 import { useEditDialogStore, DialogType } from "@/store/EditDialogStore";
+import { motion } from "framer-motion";
 
 interface CalendarTagBlockProps {
     tagBlock: TagBlock;
@@ -31,7 +32,7 @@ const CalendarTagBlock = ({ tagBlock }: CalendarTagBlockProps) => {
     const colors = tagBlock.getTags().map((tag) => `#${tag.getColor()}`);
 
     return (
-        <div
+        <motion.div
             className={`absolute flex flex-col outline-2 rounded-xl gap-1 left-0 right-0 p-2 overflow-clip`}
             style={{
                 top: `${top}px`,
@@ -44,6 +45,21 @@ const CalendarTagBlock = ({ tagBlock }: CalendarTagBlockProps) => {
                 editDialogStore.open(DialogType.TagBlock);
                 editDialogStore.setData(tagBlock);
             }}
+            initial={{
+                scale: 1,
+                filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0))",
+            }}
+            animate={{
+                scale: 1,
+                filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0))",
+            }}
+            whileTap={{
+                scale: 0.98,
+            }}
+            whileHover={{
+                filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.4))",
+            }}
+            transition={{ duration: 0.15 }}
         >
             <div className="flex flex-col justify-center items-start w-full overflow-hidden h-fit flex-shrink-0">
                 <div
@@ -55,7 +71,7 @@ const CalendarTagBlock = ({ tagBlock }: CalendarTagBlockProps) => {
                     {tagName}
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
