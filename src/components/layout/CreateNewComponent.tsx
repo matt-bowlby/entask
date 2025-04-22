@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import DateField from "@/components/layout/DateField";
 
-import { useCreateDialogStore } from "@/store/TitleBarStore";
+import { useCreateDialogStore, Menu } from "@/store/TitleBarStore";
 import useCalendarStore from "@/store/calendarStore";
 import { useTagsArrayStore } from "@/store/TagsArrayStore";
 
@@ -17,19 +17,12 @@ import { useStore } from "zustand";
 import TagField, { ChooseTagField, TagBlockTagField } from "./NewTagField";
 import { useCreateTagMenuStore } from "./NewTagField";
 
-enum Menu {
-    Task,
-    Event,
-    TagBlock,
-}
-
 export default function CreateNewComponent() {
-    const { isOpen, close } = useCreateDialogStore();
+    const { isOpen, close, type, setType } = useCreateDialogStore();
     const { setTagMenuOpen } = useCreateTagMenuStore();
     const tagsStore = useTagsArrayStore();
     const calendarStore = useCalendarStore();
 
-    const [activeMenu, setActiveMenu] = useState<Menu>(Menu.Task);
     const [errorMessage, setErrorMessage] = useState<string>("");
 
     const panelAnimation = useAnimation();
@@ -37,8 +30,6 @@ export default function CreateNewComponent() {
     const taskTitleAnimation = useAnimation();
     const eventTitleAnimation = useAnimation();
     const tagBlockTitleAnimation = useAnimation();
-
-    // const [useTagsArrayStore, setuseTagsArrayStore] = useState<Tag[]>([]);
 
     const handleCreate = () => {
         if (calendarStore === undefined) return;
@@ -139,7 +130,7 @@ export default function CreateNewComponent() {
         const tags = tagsStore.tags as Tag[];
 
         // Create and add new thing to calendar
-        switch (activeMenu) {
+        switch (type) {
             case Menu.Task: {
                 // Only tasks have durations
                 const durationDays =
@@ -231,7 +222,11 @@ export default function CreateNewComponent() {
     useEffect(() => {
         if (isOpen) {
             const id = setTimeout(() => {
-                handleChangeType(activeMenu); // Set the initial menu type
+                if (type) {
+                    setType(type); // Set the initial menu type
+                }else {
+                    setType(Menu.Task); // Default to Task if type is undefined
+                }
                 backdropAnimation.start({
                     opacity: 1,
                     transition: { duration: 0.3 },
@@ -247,8 +242,7 @@ export default function CreateNewComponent() {
         }
     }, [isOpen]);
 
-    const handleChangeType = (type: Menu) => {
-        console.log("Changing type to: ", type);
+    useEffect(() => {
         switch (type) {
             case Menu.Task:
                 taskTitleAnimation.start({
@@ -302,11 +296,10 @@ export default function CreateNewComponent() {
                 });
                 break;
         }
-        setActiveMenu(type);
         setErrorMessage(""); // Reset error message when changing type
         tagsStore.setTags([]); // Clear tags when changing type
         setTagMenuOpen(false); // Close tag menu if it was open
-    };
+    }, [type])
 
     return (
         <Dialog
@@ -334,9 +327,9 @@ export default function CreateNewComponent() {
                         <div className="bg-white drop-shadow-md flex justify-between p-2 gap-2 flex-shrink-0">
                             <motion.button
                                 type="button"
-                                onClick={() => handleChangeType(Menu.Task)}
+                                onClick={() => setType(Menu.Task)}
                                 className={
-                                    activeMenu === Menu.Task
+                                    type === Menu.Task
                                         ? "h-16 bg-dark text-white font-semibold w-full text-xl rounded-md"
                                         : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md cursor-pointer"
                                 }
@@ -347,9 +340,9 @@ export default function CreateNewComponent() {
                             </motion.button>
                             <motion.button
                                 type="button"
-                                onClick={() => handleChangeType(Menu.Event)}
+                                onClick={() => setType(Menu.Event)}
                                 className={
-                                    activeMenu === Menu.Event
+                                    type === Menu.Event
                                         ? "h-16 bg-dark text-white font-semibold w-full text-xl rounded-md"
                                         : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md cursor-pointer"
                                 }
@@ -360,9 +353,9 @@ export default function CreateNewComponent() {
                             </motion.button>
                             <motion.button
                                 type="button"
-                                onClick={() => handleChangeType(Menu.TagBlock)}
+                                onClick={() => setType(Menu.TagBlock)}
                                 className={
-                                    activeMenu === Menu.TagBlock
+                                    type === Menu.TagBlock
                                         ? "h-16 bg-dark text-white font-semibold w-full text-xl rounded-md"
                                         : "h-16 bg-white text-dark font-semibold w-full text-xl rounded-md cursor-pointer"
                                 }
@@ -373,9 +366,9 @@ export default function CreateNewComponent() {
                             </motion.button>
                         </div>
                         <div className="h-full max-h-full p-2 flex">
-                            {activeMenu === Menu.Task && <CreateTaskDialog />}
-                            {activeMenu === Menu.Event && <CreateEventDialog />}
-                            {activeMenu === Menu.TagBlock && (
+                            {type === Menu.Task && <CreateTaskDialog />}
+                            {type === Menu.Event && <CreateEventDialog />}
+                            {type === Menu.TagBlock && (
                                 <CreateTagBlockDialog />
                             )}
                         </div>
