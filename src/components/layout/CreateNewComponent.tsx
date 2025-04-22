@@ -116,7 +116,7 @@ export default function CreateNewComponent() {
             if (hour2 === 0 && !pm2) date2.setDate(date2.getDate() + 1);
         }
 
-        if (date2.getTime() < date1) {
+        if (date2.getTime() < date1 && type !== Menu.Task) {
             setErrorMessage("End date cannot be before start date.");
             return;
         }
