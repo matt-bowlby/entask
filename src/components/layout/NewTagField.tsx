@@ -46,7 +46,7 @@ export const TagBlockTagField = ({ initialTags = [] }: TagBlockTagFieldProps) =>
     return (
         <div className="flex flex-col h-fit w-full gap-2">
             <button
-                className="flex w-fit h-10 max-w-full items-center justify-center max-h-50 rounded-md bg-white cursor-pointer px-2"
+                className="flex w-fit h-10 max-w-full items-center justify-center max-h-50 rounded-md bg-white cursor-pointer px-4"
                 onClick={() => {
                     setTagMenuOpen(!isOpen);
                 }}

@@ -2,6 +2,7 @@ import { Event } from "@/classes/thing/Thing";
 import { msDurationToString } from "@/utils/timeString";
 import { useNowStore } from "../updater/Updater";
 import { motion } from "framer-motion";
+import { useEditDialogStore, DialogType } from "@/store/EditDialogStore";
 
 interface TodoEventProps {
     event: Event;
@@ -21,10 +22,16 @@ export default function TodoEvent({ event }: TodoEventProps) {
         timingString = `Ends in ${msDurationToString(endTime.getTime() - now, false)}`;
     }
 
+    const editDialogStore = useEditDialogStore();
+
     return (
         <motion.div
             className="flex flex-col bg-white h-auto max-w-full p-2 rounded-xl gap-2 relative"
             transition={{ duration: 0.15 }}
+            onClick={() => {
+                editDialogStore.open(DialogType.Event);
+                editDialogStore.setData(event);
+            }}
             initial={{
                 scale: 1,
                 filter: "drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.2))",

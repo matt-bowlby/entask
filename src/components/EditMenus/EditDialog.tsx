@@ -254,7 +254,7 @@ export default function EditDialog() {
                                     }
                                 }}
                                 title="Delete"
-                                className="p-2 text-red-400 hover:text-white hover:bg-red-400 rounded-full transition-colors text-sm flex items-center gap-2"
+                                className="p-2 text-red-400 hover:text-white hover:bg-red-400 rounded-md transition-colors text-sm flex items-center gap-2 cursor-pointer"
                                 initial={{ scale: 1 }}
                                 animate={{ scale: 1 }}
                                 whileHover={{ scale: 1.02 }}
