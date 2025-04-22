@@ -54,29 +54,51 @@ export default function TitleBarComponent() {
             </div>
             <div id="right-side" className="flex items-center grow m-4 text-white gap-6">
                 <div className="flex gap-4 items-center">
-                    <ChevronLeft
-                        size={24}
-                        color="white"
-                        strokeWidth={1.5}
-                        className="cursor-pointer [app-region:no-drag]"
+                    <motion.button
+                        initial={{ scale: 1 }}
+                        animate={{ scale: 1 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
                         onClick={decrementOffset}
-                    />
-                    <h2
+                    >
+                        <ChevronLeft
+                            size={24}
+                            color="white"
+                            strokeWidth={1.5}
+                            className="cursor-pointer [app-region:no-drag]"
+                        />
+                    </motion.button>
+
+                    <motion.button
                         className="text-base font-regular cursor-pointer [app-region:no-drag] select-none"
                         onClick={() => {
                             setOffset(0);
                             resetScrollTop();
                         }} // Reset to today when clicked
+                        initial={{ scale: 1 }}
+                        animate={{ scale: 1 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
                     >
                         Today
-                    </h2>
-                    <ChevronRight
-                        size={24}
-                        color="white"
-                        strokeWidth={1.5}
-                        className="cursor-pointer [app-region:no-drag]"
+                    </motion.button>
+                    <motion.button
+                        initial={{ scale: 1 }}
+                        animate={{ scale: 1 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
                         onClick={incrementOffset}
-                    />
+                    >
+                        <ChevronRight
+                            size={24}
+                            color="white"
+                            strokeWidth={1.5}
+                            className="cursor-pointer [app-region:no-drag]"
+                        />
+                    </motion.button>
                 </div>
                 <div className="flex flex-row items-center justify-center gap-2 select-none">
                     <h1 className="font-bold text-lg">{month}</h1>
