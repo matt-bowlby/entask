@@ -24,8 +24,8 @@ export default function EventComponent({ event }: EventProps) {
     const top: number =
         ((event.getStartTime() - dayStart.getTime()) / (24 * 1000 * 60 * 60)) *
         columnHeight;
-    const height: number =
-        (event.getDuration() / (24 * 1000 * 60 * 60)) * columnHeight;
+    const height: number = Math.max(
+        (event.getDuration() / (24 * 1000 * 60 * 60)) * columnHeight, 10);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const descriptionTextRef = useRef<HTMLParagraphElement>(null);
@@ -89,7 +89,7 @@ export default function EventComponent({ event }: EventProps) {
             >
                 <div className="flex flex-row justify-between items-center h-full w-full overflow-hidden">
                     <div className="flex flex-col justify-center items-start h-full flex-shrink overflow-hidden">
-                        <h1 className="font-bold text-dark text-sm w-full text-ellipsis overflow-hidden whitespace-nowrap">
+                        <h1 className="flex font-bold text-dark text-xs w-full text-ellipsis overflow-hidden whitespace-nowrap h-full items-center">
                             {event.getName()}
                         </h1>
                     </div>
