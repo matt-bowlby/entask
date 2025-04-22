@@ -243,6 +243,18 @@ export default function CreateNewComponent() {
     }, [isOpen]);
 
     useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.ctrlKey && e.key == "Enter") {
+                e.preventDefault();
+                handleCreate();
+            }
+        };
+
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    }, []);
+
+    useEffect(() => {
         switch (type) {
             case Menu.Task:
                 taskTitleAnimation.start({

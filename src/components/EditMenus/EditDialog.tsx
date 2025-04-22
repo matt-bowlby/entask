@@ -215,6 +215,18 @@ export default function EditDialog() {
         }
     }, [isOpen]);
 
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.ctrlKey && e.key == "Enter") {
+                e.preventDefault();
+                handleSave();
+            }
+        };
+
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    }, []);
+
     return (
         <Dialog open={isOpen} onClose={handleClose} className="relative z-10">
             <DialogBackdrop
