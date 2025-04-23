@@ -16,6 +16,7 @@ import ErrorMessage from "../items/ErrorMessage";
 import { useStore } from "zustand";
 import TagField, { ChooseTagField, TagBlockTagField } from "./NewTagField";
 import { useCreateTagMenuStore } from "./NewTagField";
+import { useNowStore } from "../updater/Updater";
 
 export default function CreateNewComponent() {
     const { isOpen, close, type, setType } = useCreateDialogStore();
@@ -41,75 +42,51 @@ export default function CreateNewComponent() {
             name = (document.getElementById("name") as HTMLInputElement).value;
 
         // Get date1 (All components have a date1)
-        const year1: string = (
-            document.getElementById("date-year-1") as HTMLInputElement
-        ).value;
+        const year1: string = (document.getElementById("date-year-1") as HTMLInputElement).value;
         const month1: string = (
-            months.indexOf(
-                (document.getElementById("date-month-1") as HTMLInputElement)
-                    .value
-            ) + 1
+            months.indexOf((document.getElementById("date-month-1") as HTMLInputElement).value) + 1
         ).toString();
-        const day1: string = (
-            document.getElementById("date-day-1") as HTMLInputElement
-        ).value;
+        const day1: string = (document.getElementById("date-day-1") as HTMLInputElement).value;
         const pm1: boolean =
-            (document.getElementById("date-pm-1") as HTMLInputElement).value ===
-            "true";
+            (document.getElementById("date-pm-1") as HTMLInputElement).value === "true";
         let hour1: number = parseInt(
             (document.getElementById("date-hour-1") as HTMLInputElement).value
         );
         if (hour1 === 12) hour1 = 0;
         if (pm1) hour1 += 12;
-        const minute1: string = (
-            document.getElementById("date-minute-1") as HTMLInputElement
-        ).value;
+        const minute1: string = (document.getElementById("date-minute-1") as HTMLInputElement)
+            .value;
         const date1: number = new Date(
-            `${year1}-${month1.padStart(2, "0")}-${day1.padStart(
-                2,
-                "0"
-            )}T${hour1.toString().padStart(2, "0")}:${minute1.padStart(2, "0")}`
+            `${year1}-${month1.padStart(2, "0")}-${day1.padStart(2, "0")}T${hour1
+                .toString()
+                .padStart(2, "0")}:${minute1.padStart(2, "0")}`
         ).getTime();
 
         // Get date2 (Only events and tag blocks have date2)
         let date2: Date = new Date();
         if (document.getElementById("date-year-2")) {
-            const year2: string = (
-                document.getElementById("date-year-2") as HTMLInputElement
-            ).value;
+            const year2: string = (document.getElementById("date-year-2") as HTMLInputElement)
+                .value;
             const month2: number =
                 months.indexOf(
-                    (
-                        document.getElementById(
-                            "date-month-2"
-                        ) as HTMLInputElement
-                    ).value
+                    (document.getElementById("date-month-2") as HTMLInputElement).value
                 ) + 1;
-            const day2: string = (
-                document.getElementById("date-day-2") as HTMLInputElement
-            ).value;
+            const day2: string = (document.getElementById("date-day-2") as HTMLInputElement).value;
 
             const pm2: boolean =
-                (document.getElementById("date-pm-2") as HTMLInputElement)
-                    .value === "true";
+                (document.getElementById("date-pm-2") as HTMLInputElement).value === "true";
             let hour2: number = parseInt(
-                (document.getElementById("date-hour-2") as HTMLInputElement)
-                    .value
+                (document.getElementById("date-hour-2") as HTMLInputElement).value
             );
             if (hour2 === 12) hour2 = 0;
             if (pm2) hour2 += 12;
 
-            const minute2: string = (
-                document.getElementById("date-minute-2") as HTMLInputElement
-            ).value;
+            const minute2: string = (document.getElementById("date-minute-2") as HTMLInputElement)
+                .value;
             date2 = new Date(
-                `${year2}-${month2.toString().padStart(2, "0")}-${day2.padStart(
-                    2,
-                    "0"
-                )}T${hour2.toString().padStart(2, "0")}:${minute2.padStart(
-                    2,
-                    "0"
-                )}`
+                `${year2}-${month2.toString().padStart(2, "0")}-${day2.padStart(2, "0")}T${hour2
+                    .toString()
+                    .padStart(2, "0")}:${minute2.padStart(2, "0")}`
             );
             // If second date is set to be 12 AM, it can be assumed they mean the end of the day
             // and not the start
@@ -122,9 +99,8 @@ export default function CreateNewComponent() {
         }
 
         // Get description (All components have a description)
-        const description: string = (
-            document.getElementById("description") as HTMLTextAreaElement
-        ).value;
+        const description: string = (document.getElementById("description") as HTMLTextAreaElement)
+            .value;
 
         // Get tags (All components have tags)
         const tags = tagsStore.tags as Tag[];
@@ -135,33 +111,19 @@ export default function CreateNewComponent() {
                 // Only tasks have durations
                 const durationDays =
                     parseInt(
-                        (
-                            document.getElementById(
-                                "duration-days"
-                            ) as HTMLInputElement
-                        ).value
+                        (document.getElementById("duration-days") as HTMLInputElement).value
                     ) || 0;
                 const durationHours =
                     parseInt(
-                        (
-                            document.getElementById(
-                                "duration-hours"
-                            ) as HTMLInputElement
-                        ).value
+                        (document.getElementById("duration-hours") as HTMLInputElement).value
                     ) || 1;
                 const durationMinutes =
                     parseInt(
-                        (
-                            document.getElementById(
-                                "duration-minutes"
-                            ) as HTMLInputElement
-                        ).value
+                        (document.getElementById("duration-minutes") as HTMLInputElement).value
                     ) || 0;
                 const task = new Task(
                     name,
-                    durationDays * 86400000 +
-                        durationHours * 3600000 +
-                        durationMinutes * 60000,
+                    durationDays * 86400000 + durationHours * 3600000 + durationMinutes * 60000,
                     date1,
                     undefined,
                     description,
@@ -172,13 +134,7 @@ export default function CreateNewComponent() {
                 break;
             }
             case Menu.Event: {
-                const event = new Event(
-                    name,
-                    date2.getTime() - date1,
-                    date1,
-                    description,
-                    tags
-                );
+                const event = new Event(name, date2.getTime() - date1, date1, description, tags);
                 calendarStore.addThing(event);
                 break;
             }
@@ -187,17 +143,10 @@ export default function CreateNewComponent() {
                     setErrorMessage("Tag Block must have a tag.");
                     return;
                 } else if (date2.getTime() - date1 < 30 * 60 * 1000) {
-                    setErrorMessage(
-                        "Tag Block must be at least 30 minutes long."
-                    );
+                    setErrorMessage("Tag Block must be at least 30 minutes long.");
                     return;
                 }
-                const tagBlock = new TagBlock(
-                    date2.getTime() - date1,
-                    date1,
-                    description,
-                    tags
-                );
+                const tagBlock = new TagBlock(date2.getTime() - date1, date1, description, tags);
                 calendarStore.addThing(tagBlock);
                 break;
             }
@@ -224,7 +173,7 @@ export default function CreateNewComponent() {
             const id = setTimeout(() => {
                 if (type) {
                     setType(type); // Set the initial menu type
-                }else {
+                } else {
                     setType(Menu.Task); // Default to Task if type is undefined
                 }
                 backdropAnimation.start({
@@ -252,7 +201,7 @@ export default function CreateNewComponent() {
 
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
-    }, []);
+    }, [type, tagsStore.tags]);
 
     useEffect(() => {
         switch (type) {
@@ -311,15 +260,10 @@ export default function CreateNewComponent() {
         setErrorMessage(""); // Reset error message when changing type
         tagsStore.setTags([]); // Clear tags when changing type
         setTagMenuOpen(false); // Close tag menu if it was open
-    }, [type])
+    }, [type]);
 
     return (
-        <Dialog
-            open={isOpen}
-            onClose={handleClose}
-            className="relative z-10"
-            static
-        >
+        <Dialog open={isOpen} onClose={handleClose} className="relative z-10" static>
             <DialogBackdrop
                 as={motion.div}
                 className="fixed inset-0 backdrop-blur-sm"
@@ -380,9 +324,7 @@ export default function CreateNewComponent() {
                         <div className="h-full max-h-full p-2 flex">
                             {type === Menu.Task && <CreateTaskDialog />}
                             {type === Menu.Event && <CreateEventDialog />}
-                            {type === Menu.TagBlock && (
-                                <CreateTagBlockDialog />
-                            )}
+                            {type === Menu.TagBlock && <CreateTagBlockDialog />}
                         </div>
                         <div className="flex flex-row h-fit p-2 w-full gap-2 justify-end items-center">
                             {errorMessage ? (
@@ -429,6 +371,7 @@ const CreateTaskDialog = () => {
     };
     const { addTag } = useTagsArrayStore();
     const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
+    const now = useNowStore((state) => state.now);
 
     const handleAddTag = (tag: Tag) => {
         addTag(tag);
@@ -438,31 +381,13 @@ const CreateTaskDialog = () => {
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Name
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Duration
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Due Date
-                </div>
-                <div
-                    className={`text-right flex justify-end items-start py-1 h-20`}
-                >
+                <div className={`text-right flex items-center justify-end h-10`}>Name</div>
+                <div className={`text-right flex items-center justify-end h-10`}>Duration</div>
+                <div className={`text-right flex items-center justify-end h-10`}>Due Date</div>
+                <div className={`text-right flex justify-end items-start py-1 h-20`}>
                     Description
                 </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Tags
-                </div>
+                <div className={`text-right flex items-center justify-end h-10`}>Tags</div>
             </div>
             <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Name */}
@@ -484,9 +409,7 @@ const CreateTaskDialog = () => {
                             onChange={numericInputHandler}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
-                        <div className="text-right text-sm flex items-center">
-                            Days
-                        </div>
+                        <div className="text-right text-sm flex items-center">Days</div>
                     </div>
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
                         <input
@@ -496,9 +419,7 @@ const CreateTaskDialog = () => {
                             onChange={numericInputHandler}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
-                        <div className="text-right text-sm flex items-center">
-                            Hours
-                        </div>
+                        <div className="text-right text-sm flex items-center">Hours</div>
                     </div>
 
                     <div className="w-full px-2 gap-2 text-right rounded-md bg-white flex truncate">
@@ -509,13 +430,11 @@ const CreateTaskDialog = () => {
                             onChange={numericInputHandler}
                             className="w-full grow text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm flex"
                         />
-                        <div className="text-right text-sm flex items-center">
-                            Minutes
-                        </div>
+                        <div className="text-right text-sm flex items-center">Minutes</div>
                     </div>
                 </div>
                 {/* Due Date */}
-                <DateField id={"1"} />
+                <DateField id={"1"} defaultValue={new Date(now)} />
                 {/* Description */}
                 <div className="text-right h-20 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
@@ -539,6 +458,10 @@ const CreateTaskDialog = () => {
 const CreateEventDialog = () => {
     const { addTag } = useTagsArrayStore();
     const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
+    const now = useNowStore((state) => state.now);
+    const nowDate = new Date(now);
+    const inHourDate = new Date(now)
+    inHourDate.setHours(nowDate.getHours() + 1);
 
     const handleAddTag = (tag: Tag) => {
         addTag(tag);
@@ -548,31 +471,13 @@ const CreateEventDialog = () => {
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Name
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Start Time
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    End Time
-                </div>
-                <div
-                    className={`text-right flex justify-end items-start py-1 h-20`}
-                >
+                <div className={`text-right flex items-center justify-end h-10`}>Name</div>
+                <div className={`text-right flex items-center justify-end h-10`}>Start Time</div>
+                <div className={`text-right flex items-center justify-end h-10`}>End Time</div>
+                <div className={`text-right flex justify-end items-start py-1 h-20`}>
                     Description
                 </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Tags
-                </div>
+                <div className={`text-right flex items-center justify-end h-10`}>Tags</div>
             </div>
             <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Name */}
@@ -585,9 +490,9 @@ const CreateEventDialog = () => {
                     />
                 </div>
                 {/* Starts */}
-                <DateField id={"1"} />
+                <DateField id={"1"} defaultValue={nowDate} />
                 {/* Ends */}
-                <DateField id={"2"} />
+                <DateField id={"2"} defaultValue={inHourDate} />
                 {/* Description */}
                 <div className="text-right h-20 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
@@ -609,40 +514,35 @@ const CreateEventDialog = () => {
 };
 
 const CreateTagBlockDialog = () => {
-    const { addTag, setTags } = useTagsArrayStore();
+    const { addTag, setTags, tags } = useTagsArrayStore();
     const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
+    const now = useNowStore((state) => state.now);
+    const nowDate = new Date(now);
+    const inHourDate = new Date(now)
+    inHourDate.setHours(nowDate.getHours() + 1);
 
     const handleAddTag = (tag: Tag) => {
         setTags([]); // Clear existing tags to avoid duplicates
         addTag(tag);
         setTagMenuOpen(false);
+        console.log(tags);
     };
 
     return (
         <div className="flex flex-row h-fit w-full gap-2">
             <div className="flex flex-col h-fit w-fit gap-2 justify-start">
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    Start Time
-                </div>
-                <div
-                    className={`text-right flex items-center justify-end h-10`}
-                >
-                    End Time
-                </div>
-                <div
-                    className={`text-right flex justify-end items-start py-1 h-20`}
-                >
+                <div className={`text-right flex items-center justify-end h-10`}>Start Time</div>
+                <div className={`text-right flex items-center justify-end h-10`}>End Time</div>
+                <div className={`text-right flex justify-end items-start py-1 h-20`}>
                     Description
                 </div>
                 <div className={`text-right flex items-center justify-end h-10`}>Tag</div>
             </div>
             <div className="flex flex-col h-full w-full gap-2 overflow-hidden">
                 {/* Starts */}
-                <DateField id={"1"} />
+                <DateField id={"1"} defaultValue={nowDate} />
                 {/* Ends */}
-                <DateField id={"2"} />
+                <DateField id={"2"} defaultValue={inHourDate} />
                 {/* Description */}
                 <div className="text-right h-20 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
@@ -662,4 +562,3 @@ const CreateTagBlockDialog = () => {
         </div>
     );
 };
-
