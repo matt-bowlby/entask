@@ -37,7 +37,6 @@ export default function CreateNewComponent() {
         if (calendarStore === undefined) return;
         if (!isOpen) return;
         if (isCreating) return; // Prevent multiple submissions
-        setIsCreating(true);
         setErrorMessage("");
 
         // Get name, if applicable (Tag Blocks don't have names)
@@ -155,6 +154,7 @@ export default function CreateNewComponent() {
                 break;
             }
         }
+        setIsCreating(true);
         handleClose();
     };
 
