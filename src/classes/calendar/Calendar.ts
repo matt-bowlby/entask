@@ -385,6 +385,24 @@ class Calendar {
         );
     }
 
+    public recursion(event_instance: Event, amount: number, days: Array<boolean>) { //days are ordered Sunday = 0, Monday = 1, ..., Saturday = 6
+        let rec_event;
+        let time = new Date(event_instance.getStartTime());
+        let created = 0;
+    
+        while (created < amount) {
+            time.setDate(time.getDate() + 1);
+            const dayOfWeek = time.getDay(); 
+    
+            if (days[dayOfWeek]) {
+                rec_event = event_instance.duplicate();
+                rec_event.setStartTime(time.getTime());
+                this.addThing(rec_event);
+                created++;
+            }
+        }
+    }
+
     //#endregion
 
     //#region Json

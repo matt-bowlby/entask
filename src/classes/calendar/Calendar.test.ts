@@ -1,5 +1,6 @@
 import Calendar from './Calendar';
 import { Task, Event } from '@classes/thing/Thing';
+import DataManager from '../dataManager/DataManager';
 
 describe('Calendar', () => {
     let calendar: Calendar;
@@ -367,4 +368,11 @@ describe('Calendar', () => {
             expect(prioritized[3]).toBe(event2);
         });
     });
+    
+    // test("recursion", () => {
+    //     let new_event = new Event("pizza", 10000, now);
+    //     calendar.addThing(new_event);
+    //     calendar.recursion(new_event, 10, [false, true, false, true, false, true, false]);
+    //     DataManager.saveCalendar(calendar, "calendar");
+    // })
 });
