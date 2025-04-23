@@ -226,7 +226,7 @@ export default function EditDialog() {
 
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
-    }, [isOpen, editDialogStore.data]);
+    }, [isOpen, editDialogStore.data, tagsStore.tags]);
 
     return (
         <Dialog open={isOpen} onClose={handleClose} className="relative z-10">
