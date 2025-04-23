@@ -219,13 +219,14 @@ export default function EditDialog() {
         const handler = (e: KeyboardEvent) => {
             if (e.ctrlKey && e.key == "Enter") {
                 e.preventDefault();
+                if (!isOpen) return;
                 handleSave();
             }
         };
 
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
-    }, []);
+    }, [isOpen, editDialogStore.data]);
 
     return (
         <Dialog open={isOpen} onClose={handleClose} className="relative z-10">

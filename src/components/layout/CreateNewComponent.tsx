@@ -23,6 +23,7 @@ export default function CreateNewComponent() {
     const { setTagMenuOpen } = useCreateTagMenuStore();
     const tagsStore = useTagsArrayStore();
     const calendarStore = useCalendarStore();
+    const [isCreating, setIsCreating] = useState(false);
 
     const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -34,6 +35,9 @@ export default function CreateNewComponent() {
 
     const handleCreate = () => {
         if (calendarStore === undefined) return;
+        if (!isOpen) return;
+        if (isCreating) return; // Prevent multiple submissions
+        setIsCreating(true);
         setErrorMessage("");
 
         // Get name, if applicable (Tag Blocks don't have names)
@@ -165,6 +169,7 @@ export default function CreateNewComponent() {
             close();
             tagsStore.setTags([]);
             setErrorMessage("");
+            setIsCreating(false);
         }, 300);
     };
 
@@ -195,13 +200,15 @@ export default function CreateNewComponent() {
         const handler = (e: KeyboardEvent) => {
             if (e.ctrlKey && e.key == "Enter") {
                 e.preventDefault();
+                if (isCreating) return;
+                if (!isOpen) return;
                 handleCreate();
             }
         };
 
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
-    }, [type, tagsStore.tags]);
+    }, [type, tagsStore.tags, isOpen, isCreating]);
 
     useEffect(() => {
         switch (type) {
