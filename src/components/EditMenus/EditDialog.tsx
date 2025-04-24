@@ -221,6 +221,12 @@ export default function EditDialog() {
                 e.preventDefault();
                 if (!isOpen) return;
                 handleSave();
+            } else if (e.key === "Delete") {
+                e.preventDefault();
+                if (!isOpen) return;
+                useCalendarStore.getState().removeThing(editDialogStore.data);
+                updateCalendar();
+                handleClose();
             }
         };
 
@@ -258,13 +264,9 @@ export default function EditDialog() {
                         <div className="flex justify-between gap-2 border-t border-gray-200 p-2">
                             <motion.button
                                 onClick={() => {
-                                    if (confirm("Are you sure you want to delete this item?")) {
-                                        useCalendarStore
-                                            .getState()
-                                            .removeThing(editDialogStore.data);
-                                        updateCalendar();
-                                        handleClose();
-                                    }
+                                    useCalendarStore.getState().removeThing(editDialogStore.data);
+                                    updateCalendar();
+                                    handleClose();
                                 }}
                                 title="Delete"
                                 className="p-2 text-red-400 hover:text-white hover:bg-red-400 rounded-md transition-colors text-sm flex items-center gap-2 cursor-pointer"
