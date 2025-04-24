@@ -7,13 +7,12 @@ import { useState, useEffect } from "react";
 import { create, useStore } from "zustand";
 
 const defaultColors = [
-    "#DE6C50",
-    "#fce07b",
-    "#5ED27D",
-    "#a5f2e8",
-    "#7FB4DA",
-    "#474D7A",
-    "#dc9ce8",
+    "#DE6C50", "#E58C76", "#EBA998", "#F2C6BB",
+    "#FAD338", "#FBDC60", "#FCE07B", "#FDECAF",
+    "#5ED27D", "#80DB98", "#A0E4B2", "#BFEDCC",
+    "#4CE6D1", "#70EBDA", "#94F0E3", "#B8F5ED",
+    "#61A2D1", "#81B5DA", "#A0C7E3", "#C0DAEC",
+    "#C55AD8", "#D17BE0", "#DC9CE8", "#E8BDEF",
 ];
 
 type CreateTagMenu = {
@@ -265,7 +264,7 @@ export const ChooseTagField = ({ onAddTag }: ChooseTagFieldProps) => {
                                 <p className="flex w-fit h-10 text-dark items-center justify-end text-right">
                                     Color
                                 </p>
-                                <p className="flex w-fit h-20 text-dark items-center justify-end text-right">
+                                <p className="flex w-fit h-38 text-dark items-center justify-end text-right">
                                     Description
                                 </p>
                             </div>
@@ -288,21 +287,22 @@ export const ChooseTagField = ({ onAddTag }: ChooseTagFieldProps) => {
                                 <div className="flex flex-wrap w-full h-full gap-2 ">
                                     {defaultColors.map((color) => {
                                         return (
-                                            <div
-                                                className="flex bg-white p-2 drop-shadow-md w-10 h-10 rounded-md cursor-pointer"
+                                            <motion.button
+                                                key={color}
+                                                className="flex bg-white p-2 drop-shadow-md w-5 h-5 rounded-md cursor-pointer"
+                                                style={{
+                                                    backgroundColor: color,
+                                                }}
                                                 onClick={() => setColor(color)}
-                                            >
-                                                <div
-                                                    key={color}
-                                                    className="rounded-md w-full h-full cursor-pointer"
-                                                    style={{
-                                                        backgroundColor: color,
-                                                    }}
-                                                />
-                                            </div>
+                                                initial={{ scale: 1 }}
+                                                animate={{ scale: 1 }}
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                transition={{ duration: 0.15 }}
+                                            />
                                         );
                                     })}
-                                    <div className="relative flex bg-white drop-shadow-md w-10 h-10 rounded-md cursor-pointer">
+                                    <div className="relative flex w-5 h-5 cursor-pointer">
                                         <PaletteIcon
                                             size={20}
                                             strokeWidth={1.5}
