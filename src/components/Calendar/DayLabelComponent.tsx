@@ -18,6 +18,9 @@ export default function DayLabel({ date }: Day) {
             }
             return false;
         }) || [];
+    tagBlocks.sort((a, b) => {
+        return a.getStartTime() - b.getStartTime();
+    })
 
     const tagColors = tagBlocks.map((tagBlock) => {
         const colors = tagBlock.getTags().map((tag) => `#${tag.getColor()}`);
