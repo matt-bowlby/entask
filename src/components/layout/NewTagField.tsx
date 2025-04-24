@@ -38,6 +38,15 @@ export const useTagsArray = create<TagsArray>((set) => ({
     setTags: (tags: Tag[]) => set(() => ({ tags })),
 }));
 
+type TagColor = {
+    color: string;
+    setColor: (color: string) => void;
+}
+export const useTagColorStore = create<TagColor>((set) => ({
+    color: "#000000",
+    setColor: (color: string) => set({ color }),
+}));
+
 interface TagBlockTagFieldProps {
     initialTags?: Tag[];
 }
@@ -157,7 +166,7 @@ export const ChooseTagField = ({ onAddTag }: ChooseTagFieldProps) => {
 
     const [useExisting, setUseExisting] = useState(true);
     const [tags, setTags] = useState<Tag[]>([]);
-    const [newColor, setNewColor] = useState("#000000");
+    const {color, setColor} = useTagColorStore();
 
     const handleAddTag = (tag: Tag) => {
         if (tags.find((t) => t === tag)) return;
@@ -169,7 +178,6 @@ export const ChooseTagField = ({ onAddTag }: ChooseTagFieldProps) => {
         if (calendarStore.calendar === undefined) return;
 
         const name = (document.getElementById("tag-name") as HTMLInputElement).value;
-        const color = (document.getElementById("tag-color") as HTMLInputElement).value;
         const description = (document.getElementById("tag-description") as HTMLTextAreaElement)
             .value;
         if (!name) return;
@@ -272,7 +280,7 @@ export const ChooseTagField = ({ onAddTag }: ChooseTagFieldProps) => {
                                     <div
                                         className="rounded-md overflow-hidden w-full h-full"
                                         style={{
-                                            backgroundColor: newColor,
+                                            backgroundColor: color,
                                         }}
                                     >
                                     </div>
@@ -282,7 +290,7 @@ export const ChooseTagField = ({ onAddTag }: ChooseTagFieldProps) => {
                                         return (
                                             <div
                                                 className="flex bg-white p-2 drop-shadow-md w-10 h-10 rounded-md cursor-pointer"
-                                                onClick={() => setNewColor(color)}
+                                                onClick={() => setColor(color)}
                                             >
                                                 <div
                                                     key={color}
@@ -304,7 +312,7 @@ export const ChooseTagField = ({ onAddTag }: ChooseTagFieldProps) => {
                                             id="tag-color"
                                             type="color"
                                             className="w-full h-full rounded-md opacity-0 cursor-pointer"
-                                            onChange={(e) => setNewColor(e.target.value)}
+                                            onChange={(e) => setColor(e.target.value)}
                                         />
                                     </div>
                                 </div>
