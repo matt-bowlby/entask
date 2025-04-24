@@ -1,5 +1,9 @@
 import DateField from "@components/layout/DateField";
-import TagField, { ChooseTagField, TagBlockTagField, useCreateTagMenuStore } from "@components/layout/NewTagField";
+import TagField, {
+    ChooseTagField,
+    TagBlockTagField,
+    useCreateTagMenuStore,
+} from "@components/layout/NewTagField";
 import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 import { Trash2 } from "lucide-react";
 
@@ -8,7 +12,6 @@ import { DialogType } from "@/store/EditDialogStore";
 import useCalendarStore from "@/store/calendarStore";
 
 import { Task } from "@/classes/thing/Thing";
-import { months } from "@/utils/timeString";
 import { useTagsArrayStore } from "@/store/TagsArrayStore";
 
 import { motion, useAnimation } from "framer-motion";
@@ -40,14 +43,7 @@ export default function EditDialog() {
             const description = (document.getElementById("description") as HTMLTextAreaElement)
                 .value;
 
-            // Fix: Use correct date field IDs
-            const year1 = (document.getElementById("date-year-1") as HTMLInputElement).value;
-            const month1 = (
-                months.indexOf(
-                    (document.getElementById("date-month-1") as HTMLInputElement).value
-                ) + 1
-            ).toString();
-            const day1 = (document.getElementById("date-day-1") as HTMLInputElement).value;
+            const date1 = (document.getElementById("date-1") as HTMLInputElement).value;
             const pm1 = (document.getElementById("date-pm-1") as HTMLInputElement).value === "true";
             let hour1 = parseInt(
                 (document.getElementById("date-hour-1") as HTMLInputElement).value
@@ -57,9 +53,7 @@ export default function EditDialog() {
             const minute1 = (document.getElementById("date-minute-1") as HTMLInputElement).value;
 
             const dueDate = new Date(
-                `${year1}-${month1.padStart(2, "0")}-${day1.padStart(2, "0")}T${hour1
-                    .toString()
-                    .padStart(2, "0")}:${minute1.padStart(2, "0")}`
+                `${date1}T${hour1.toString().padStart(2, "0")}:${minute1.padStart(2, "0")}`
             ).getTime();
 
             const duration = (days * 24 * 60 + hours * 60 + minutes) * 60 * 1000;
@@ -76,13 +70,7 @@ export default function EditDialog() {
             ).value;
 
             // Get start time (date1)
-            const year1 = (document.getElementById("date-year-1") as HTMLInputElement).value;
-            const month1 = (
-                months.indexOf(
-                    (document.getElementById("date-month-1") as HTMLInputElement).value
-                ) + 1
-            ).toString();
-            const day1 = (document.getElementById("date-day-1") as HTMLInputElement).value;
+            const date1 = (document.getElementById("date-1") as HTMLInputElement).value;
             const pm1 = (document.getElementById("date-pm-1") as HTMLInputElement).value === "true";
             let hour1 = parseInt(
                 (document.getElementById("date-hour-1") as HTMLInputElement).value
@@ -92,19 +80,11 @@ export default function EditDialog() {
             const minute1 = (document.getElementById("date-minute-1") as HTMLInputElement).value;
 
             const startTime = new Date(
-                `${year1}-${month1.padStart(2, "0")}-${day1.padStart(2, "0")}T${hour1
-                    .toString()
-                    .padStart(2, "0")}:${minute1.padStart(2, "0")}`
+                `${date1}T${hour1.toString().padStart(2, "0")}:${minute1.padStart(2, "0")}`
             ).getTime();
 
             // Get end time (date2)
-            const year2 = (document.getElementById("date-year-2") as HTMLInputElement).value;
-            const month2 = (
-                months.indexOf(
-                    (document.getElementById("date-month-2") as HTMLInputElement).value
-                ) + 1
-            ).toString();
-            const day2 = (document.getElementById("date-day-2") as HTMLInputElement).value;
+            const date2 = (document.getElementById("date-2") as HTMLInputElement).value;
             const pm2 = (document.getElementById("date-pm-2") as HTMLInputElement).value === "true";
             let hour2 = parseInt(
                 (document.getElementById("date-hour-2") as HTMLInputElement).value
@@ -114,9 +94,7 @@ export default function EditDialog() {
             const minute2 = (document.getElementById("date-minute-2") as HTMLInputElement).value;
 
             const endTime = new Date(
-                `${year2}-${month2.padStart(2, "0")}-${day2.padStart(2, "0")}T${hour2
-                    .toString()
-                    .padStart(2, "0")}:${minute2.padStart(2, "0")}`
+                `${date2}T${hour2.toString().padStart(2, "0")}:${minute2.padStart(2, "0")}`
             ).getTime();
 
             data.setName(name);
@@ -130,13 +108,7 @@ export default function EditDialog() {
             ).value;
 
             // Get start time (date1)
-            const year1 = (document.getElementById("date-year-1") as HTMLInputElement).value;
-            const month1 = (
-                months.indexOf(
-                    (document.getElementById("date-month-1") as HTMLInputElement).value
-                ) + 1
-            ).toString();
-            const day1 = (document.getElementById("date-day-1") as HTMLInputElement).value;
+            const date1 = (document.getElementById("date-1") as HTMLInputElement).value;
             const pm1 = (document.getElementById("date-pm-1") as HTMLInputElement).value === "true";
             let hour1 = parseInt(
                 (document.getElementById("date-hour-1") as HTMLInputElement).value
@@ -146,19 +118,11 @@ export default function EditDialog() {
             const minute1 = (document.getElementById("date-minute-1") as HTMLInputElement).value;
 
             const startTime = new Date(
-                `${year1}-${month1.padStart(2, "0")}-${day1.padStart(2, "0")}T${hour1
-                    .toString()
-                    .padStart(2, "0")}:${minute1.padStart(2, "0")}`
+                `${date1}T${hour1.toString().padStart(2, "0")}:${minute1.padStart(2, "0")}`
             ).getTime();
 
             // Get end time (date2)
-            const year2 = (document.getElementById("date-year-2") as HTMLInputElement).value;
-            const month2 = (
-                months.indexOf(
-                    (document.getElementById("date-month-2") as HTMLInputElement).value
-                ) + 1
-            ).toString();
-            const day2 = (document.getElementById("date-day-2") as HTMLInputElement).value;
+            const date2 = (document.getElementById("date-2") as HTMLInputElement).value;
             const pm2 = (document.getElementById("date-pm-2") as HTMLInputElement).value === "true";
             let hour2 = parseInt(
                 (document.getElementById("date-hour-2") as HTMLInputElement).value
@@ -168,9 +132,7 @@ export default function EditDialog() {
             const minute2 = (document.getElementById("date-minute-2") as HTMLInputElement).value;
 
             const endTime = new Date(
-                `${year2}-${month2.padStart(2, "0")}-${day2.padStart(2, "0")}T${hour2
-                    .toString()
-                    .padStart(2, "0")}:${minute2.padStart(2, "0")}`
+                `${date2}T${hour2.toString().padStart(2, "0")}:${minute2.padStart(2, "0")}`
             ).getTime();
 
             data.setDescription(description);
@@ -449,7 +411,7 @@ function EditEvent() {
                 </div>
                 {/* Tag */}
                 <div className="flex flex-col h-fit w-full gap-2">
-                    <TagField initialTags={data.getTags()}/>
+                    <TagField initialTags={data.getTags()} />
                     {isOpen ? <ChooseTagField onAddTag={handleAddTag} /> : null}
                 </div>
             </div>
@@ -463,9 +425,8 @@ function EditTagBlock() {
     const { isOpen, setTagMenuOpen } = useCreateTagMenuStore();
     const { addTag, clear } = useTagsArrayStore((state) => state);
 
-
     const handleAddTag = (tag: Tag) => {
-        clear()
+        clear();
         addTag(tag);
         setTagMenuOpen(false);
     };
@@ -496,7 +457,7 @@ function EditTagBlock() {
                 </div>
                 {/* Tag */}
                 <div className="flex flex-col h-fit w-full gap-2">
-                    <TagBlockTagField initialTags={data.getTags()}/>
+                    <TagBlockTagField initialTags={data.getTags()} />
                     {isOpen ? <ChooseTagField onAddTag={handleAddTag} /> : null}
                 </div>
             </div>

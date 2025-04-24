@@ -10,7 +10,6 @@ import { Task, Event } from "@/classes/thing/Thing";
 import TagBlock from "@/classes/tag/TagBlock";
 import Tag from "@/classes/tag/Tag";
 
-import { months } from "@/utils/timeString";
 import { motion, useAnimation } from "framer-motion";
 import ErrorMessage from "../items/ErrorMessage";
 import { useStore } from "zustand";
@@ -45,37 +44,20 @@ export default function CreateNewComponent() {
             name = (document.getElementById("name") as HTMLInputElement).value;
 
         // Get date1 (All components have a date1)
-        const year1: string = (document.getElementById("date-year-1") as HTMLInputElement).value;
-        const month1: string = (
-            months.indexOf((document.getElementById("date-month-1") as HTMLInputElement).value) + 1
-        ).toString();
-        const day1: string = (document.getElementById("date-day-1") as HTMLInputElement).value;
-        const pm1: boolean =
-            (document.getElementById("date-pm-1") as HTMLInputElement).value === "true";
-        let hour1: number = parseInt(
-            (document.getElementById("date-hour-1") as HTMLInputElement).value
-        );
+        let dateString1 = (document.getElementById("date-1") as HTMLInputElement).value;
+        const pm1 = (document.getElementById("date-pm-1") as HTMLInputElement).value === "true";
+        let hour1 = parseInt((document.getElementById("date-hour-1") as HTMLInputElement).value);
         if (hour1 === 12) hour1 = 0;
         if (pm1) hour1 += 12;
-        const minute1: string = (document.getElementById("date-minute-1") as HTMLInputElement)
-            .value;
-        const date1: number = new Date(
-            `${year1}-${month1.padStart(2, "0")}-${day1.padStart(2, "0")}T${hour1
-                .toString()
-                .padStart(2, "0")}:${minute1.padStart(2, "0")}`
+        const minute1 = (document.getElementById("date-minute-1") as HTMLInputElement).value;
+        const date1 = new Date(
+            `${dateString1}T${hour1.toString().padStart(2, "0")}:${minute1.padStart(2, "0")}`
         ).getTime();
 
         // Get date2 (Only events and tag blocks have date2)
         let date2: Date = new Date();
-        if (document.getElementById("date-year-2")) {
-            const year2: string = (document.getElementById("date-year-2") as HTMLInputElement)
-                .value;
-            const month2: number =
-                months.indexOf(
-                    (document.getElementById("date-month-2") as HTMLInputElement).value
-                ) + 1;
-            const day2: string = (document.getElementById("date-day-2") as HTMLInputElement).value;
-
+        if (document.getElementById("date-2")) {
+            let dateString2 = (document.getElementById("date-2") as HTMLInputElement).value;
             const pm2: boolean =
                 (document.getElementById("date-pm-2") as HTMLInputElement).value === "true";
             let hour2: number = parseInt(
@@ -83,13 +65,13 @@ export default function CreateNewComponent() {
             );
             if (hour2 === 12) hour2 = 0;
             if (pm2) hour2 += 12;
-
             const minute2: string = (document.getElementById("date-minute-2") as HTMLInputElement)
                 .value;
+            console.log(
+                `${dateString2}T${hour2.toString().padStart(2, "0")}:${minute2.padStart(2, "0")}`
+            );
             date2 = new Date(
-                `${year2}-${month2.toString().padStart(2, "0")}-${day2.padStart(2, "0")}T${hour2
-                    .toString()
-                    .padStart(2, "0")}:${minute2.padStart(2, "0")}`
+                `${dateString2}T${hour2.toString().padStart(2, "0")}:${minute2.padStart(2, "0")}`
             );
             // If second date is set to be 12 AM, it can be assumed they mean the end of the day
             // and not the start
@@ -379,6 +361,10 @@ const CreateTaskDialog = () => {
     const { addTag } = useTagsArrayStore();
     const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
     const now = useNowStore((state) => state.now);
+    const nowDate = new Date(now);
+    nowDate.setMinutes(0);
+    nowDate.setSeconds(0);
+    nowDate.setMilliseconds(0);
 
     const handleAddTag = (tag: Tag) => {
         addTag(tag);
@@ -441,7 +427,7 @@ const CreateTaskDialog = () => {
                     </div>
                 </div>
                 {/* Due Date */}
-                <DateField id={"1"} defaultValue={new Date(now)} />
+                <DateField id={"1"} defaultValue={nowDate} />
                 {/* Description */}
                 <div className="text-right h-20 flex flex-row gap-2">
                     <div className="w-full text-right rounded-md bg-white text-wrap">
@@ -467,8 +453,14 @@ const CreateEventDialog = () => {
     const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
     const now = useNowStore((state) => state.now);
     const nowDate = new Date(now);
-    const inHourDate = new Date(now)
+    nowDate.setMinutes(0);
+    nowDate.setSeconds(0);
+    nowDate.setMilliseconds(0);
+    const inHourDate = new Date(now);
     inHourDate.setHours(nowDate.getHours() + 1);
+    inHourDate.setMinutes(0);
+    inHourDate.setSeconds(0);
+    inHourDate.setMilliseconds(0);
 
     const handleAddTag = (tag: Tag) => {
         addTag(tag);
@@ -525,8 +517,14 @@ const CreateTagBlockDialog = () => {
     const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
     const now = useNowStore((state) => state.now);
     const nowDate = new Date(now);
-    const inHourDate = new Date(now)
+    nowDate.setMinutes(0);
+    nowDate.setSeconds(0);
+    nowDate.setMilliseconds(0);
+    const inHourDate = new Date(now);
     inHourDate.setHours(nowDate.getHours() + 1);
+    inHourDate.setMinutes(0);
+    inHourDate.setSeconds(0);
+    inHourDate.setMilliseconds(0);
 
     const handleAddTag = (tag: Tag) => {
         setTags([]); // Clear existing tags to avoid duplicates

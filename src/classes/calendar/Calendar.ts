@@ -389,11 +389,11 @@ class Calendar {
         let rec_event;
         let time = new Date(event_instance.getStartTime());
         let created = 0;
-    
+
         while (created < amount) {
             time.setDate(time.getDate() + 1);
-            const dayOfWeek = time.getDay(); 
-    
+            const dayOfWeek = time.getDay();
+
             if (days[dayOfWeek]) {
                 rec_event = event_instance.duplicate();
                 rec_event.setStartTime(time.getTime());
