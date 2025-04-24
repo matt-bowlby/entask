@@ -2,9 +2,19 @@ import Tag from "@/classes/tag/Tag";
 import useCalendarStore from "@/store/calendarStore";
 import { useTagsArrayStore } from "@/store/TagsArrayStore";
 import { motion } from "framer-motion";
-import { Plus, X } from "lucide-react";
+import { PaletteIcon, Plus, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { create, useStore } from "zustand";
+
+const defaultColors = [
+    "#DE6C50",
+    "#fce07b",
+    "#5ED27D",
+    "#a5f2e8",
+    "#7FB4DA",
+    "#474D7A",
+    "#dc9ce8",
+];
 
 type CreateTagMenu = {
     isOpen: boolean;
@@ -37,7 +47,7 @@ export const TagBlockTagField = ({ initialTags = [] }: TagBlockTagFieldProps) =>
     const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
 
     useEffect(() => {
-        clear()
+        clear();
         initialTags.forEach((tag) => {
             addTag(tag);
         });
@@ -75,12 +85,12 @@ interface TagFieldProps {
     initialTags?: Tag[];
 }
 
-const TagField = ({initialTags = []}: TagFieldProps) => {
+const TagField = ({ initialTags = [] }: TagFieldProps) => {
     const { tags, removeTag, addTag, clear } = useTagsArrayStore();
     const { isOpen, setTagMenuOpen } = useStore(useCreateTagMenuStore);
 
     useEffect(() => {
-        clear()
+        clear();
         initialTags.forEach((tag) => {
             addTag(tag);
         });
@@ -265,10 +275,35 @@ export const ChooseTagField = ({ onAddTag }: ChooseTagFieldProps) => {
                                             backgroundColor: newColor,
                                         }}
                                     >
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap w-full h-full gap-2 ">
+                                    {defaultColors.map((color) => {
+                                        return (
+                                            <div
+                                                className="flex bg-white p-2 drop-shadow-md w-10 h-10 rounded-md cursor-pointer"
+                                                onClick={() => setNewColor(color)}
+                                            >
+                                                <div
+                                                    key={color}
+                                                    className="rounded-md w-full h-full cursor-pointer"
+                                                    style={{
+                                                        backgroundColor: color,
+                                                    }}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                    <div className="relative flex bg-white drop-shadow-md w-10 h-10 rounded-md cursor-pointer">
+                                        <PaletteIcon
+                                            size={20}
+                                            strokeWidth={1.5}
+                                            className="text-dark cursor-pointer absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                                        ></PaletteIcon>
                                         <input
                                             id="tag-color"
                                             type="color"
-                                            className="w-full h-full rounded-md opacity-0"
+                                            className="w-full h-full rounded-md opacity-0 cursor-pointer"
                                             onChange={(e) => setNewColor(e.target.value)}
                                         />
                                     </div>
