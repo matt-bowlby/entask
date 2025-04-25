@@ -1,4 +1,3 @@
-import { CalendarDays } from "lucide-react";
 import { useMemo, useEffect } from "react";
 import useCalendarStore, { useScrollStore } from "@/store/calendarStore";
 import { meridiem } from "@/utils/timeString";
@@ -59,8 +58,8 @@ const CalendarHeader = () => {
             id="calendar-header"
             className="w-full bg-white flex flex-row items-center p-2 gap-2 drop-shadow-md z-10"
         >
-            <div className="flex flex-col gap-2 w-10 h-full items-center justify-center flex-shrink-0">
-                <CalendarDays size={30} strokeWidth={1.25} />
+            <div className="flex flex-col gap-2 w-10 h-full items-center justify-center flex-shrink-0 text-sm text-center">
+                GMT {new Date(now).getTimezoneOffset() / -60}
             </div>
             <div className="flex flex-row gap-2 w-full text-dark">
                 {Array.from({ length: numDaysInView }, (_, i) => {
