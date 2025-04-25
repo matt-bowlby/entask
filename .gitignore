@@ -28,3 +28,4 @@ dist-electron
 # Custom
 .hintrc
 database
+test-results
