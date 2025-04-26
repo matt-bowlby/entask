@@ -1,22 +1,34 @@
 import { test, expect, _electron as electron } from "@playwright/test";
+import eph from 'electron-playwright-helpers';
 
-test("create a new task", async () => {
-    const electronApp = await electron.launch({
-        args: ["dist-electron/main.js"],
-    });
+// E2E create + file-persistence test against the packaged app
+	test("creating a task", async () => {
+  const electronApp = await electron.launch({ args: ["dist-electron/main.js"] });
+  const window = await electronApp.firstWindow();
 
-    const window = await electronApp.firstWindow();
+  // Open and fill the new-task dialog
+  await window.click("#create-new-btn");
+  await window.fill("#name", "Playwright Test Task");
+  await window.fill("#description", "Created by Playwright system test");
 
-    await window.click('#create-new-btn');
-    // Fill in the task title and description using actual input IDs
-    await window.fill('#name', 'Playwright Test Task');
-    await window.fill('#description', 'Created by Playwright E2E test');
+  // Click Create
+  const createBtn = window.getByTestId("create-btn");
+  await expect(createBtn).toBeVisible();
+  await expect(createBtn).toBeEnabled();
+  await createBtn.click({ force: true });
 
-    // Click the 'Save' button (update selector if needed)
-    await window.getByRole('button', { name: /save/i }).click();
+  // Confirm UI
+  await expect(window.locator("text=Playwright Test Task")).toBeVisible();
 
-    // Assert the new task appears in the task list
-    await expect(window.locator('text=Playwright Test Task')).toBeVisible();
+  const calendar = await eph.ipcMainInvokeHandler(electronApp, "loadCalendar", "Calendar");
+    
+  type CalendarShape = {
+    active: Array<{ name: string; description: string }>;
+    completed: Array<{ name: string; description: string }>;
+  };
+  const found = (calendar as CalendarShape).active.concat((calendar as CalendarShape).completed)
+    .find((item) => item.name === "Playwright Test Task" && item.description === "Created by Playwright system test");
+  expect(found).toBeTruthy();
 
-    await electronApp.close();
+  await electronApp.close();
 });

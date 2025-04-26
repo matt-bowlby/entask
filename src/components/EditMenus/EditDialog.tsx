@@ -260,6 +260,7 @@ export default function EditDialog() {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     transition={{ duration: 0.15 }}
+                                    data-testid="save-btn"
                                 >
                                     Save
                                 </motion.button>
