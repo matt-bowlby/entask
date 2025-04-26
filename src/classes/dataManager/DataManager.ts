@@ -9,7 +9,9 @@ import { app } from "electron";
 
 class DataManager {
     //File paths & names
-    private static source_path: string = path.resolve(process.cwd(), "src", "database");
+    private static source_path: string = app.isPackaged
+        ? path.join(process.env.APP_ROOT!, "dist-electron", "src", "database")
+        : "src/database";
     private static event_comp_file_name: string =
         "event-completed-database.json";
     private static event_comp_file_path = path.join(
