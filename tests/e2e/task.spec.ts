@@ -20,7 +20,10 @@ import eph from 'electron-playwright-helpers';
   // Confirm UI
   await expect(window.locator("text=Playwright Test Task")).toBeVisible();
 
-  const calendar = await eph.ipcMainInvokeHandler(electronApp, "loadCalendar", "Calendar");
+  // wait for debounce
+  await window.waitForTimeout(1000);
+
+  const calendar = await eph.ipcMainInvokeHandler(electronApp, "load-calendar", "Calendar");
     
   type CalendarShape = {
     active: Array<{ name: string; description: string }>;

@@ -4,6 +4,8 @@ import electron from "vite-plugin-electron/simple";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import tailwindcss from "@tailwindcss/vite";
+import copy from "rollup-plugin-copy";
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -37,6 +39,12 @@ export default defineConfig({
           ? // https://github.com/electron-vite/vite-plugin-electron-renderer/issues/78#issuecomment-2053600808
             undefined
           : {},
+    }),
+    copy({
+      targets: [
+        { src: "src/database/**/*", dest: "dist-electron/src/database" }
+      ],
+      hook: "writeBundle"
     }),
     tsconfigPaths(),
   ],

@@ -118,7 +118,7 @@ async function triggerSave(calendarState: Calendar | undefined) {
 }
 
 // will only update once a second so rapid changes will not affect performance
-const debouncedSave = debounce(triggerSave, 1000);
+const debouncedSave = debounce(triggerSave, 1000, { leading: true });
 
 // subscription to track if calendar state ever updates
 let previousCalendarVersion = 0;

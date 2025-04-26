@@ -5,10 +5,11 @@ import * as path from "path";
 import { EventType, TaskType, TagType } from "./data-manager-types";
 import Tag from "../tag/Tag";
 import IdHandler from "../calendar/IdHandler";
+import { app } from "electron";
 
 class DataManager {
     //File paths & names
-    private static source_path: string = "src/database";
+    private static source_path: string = path.resolve(process.cwd(), "src", "database");
     private static event_comp_file_name: string =
         "event-completed-database.json";
     private static event_comp_file_path = path.join(
