@@ -280,6 +280,7 @@ export default function CreateNewComponent() {
                                 }
                                 initial={{ backgroundColor: "#ffffff", color: "var(--color-dark)" }}
                                 animate={taskTitleAnimation}
+                                data-testid="task-menu-btn"
                             >
                                 Task
                             </motion.button>
@@ -293,6 +294,7 @@ export default function CreateNewComponent() {
                                 }
                                 initial={{ backgroundColor: "#ffffff", color: "var(--color-dark)" }}
                                 animate={eventTitleAnimation}
+                                data-testid="event-menu-btn"
                             >
                                 Event
                             </motion.button>
@@ -306,6 +308,7 @@ export default function CreateNewComponent() {
                                 }
                                 initial={{ backgroundColor: "#ffffff", color: "var(--color-dark)" }}
                                 animate={tagBlockTitleAnimation}
+                                data-testid="tag-block-menu-btn"
                             >
                                 Tag Block
                             </motion.button>
