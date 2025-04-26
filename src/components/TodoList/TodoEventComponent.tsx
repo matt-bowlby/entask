@@ -1,6 +1,6 @@
 import { Event } from "@/classes/thing/Thing";
 import { msDurationToString } from "@/utils/timeString";
-import { useNowStore } from "../updater/Updater";
+import { useNowStore } from "@/components/Updater/Updater";
 import { motion } from "framer-motion";
 import { useEditDialogStore, DialogType } from "@/store/EditDialogStore";
 

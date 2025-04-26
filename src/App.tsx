@@ -3,7 +3,7 @@ import CalendarComponent from "@/components/Calendar/CalendarComponent";
 import TitleBarComponent from "./components/layout/TitleBarComponent";
 import useCalendarStore from "./store/calendarStore";
 import Calendar from "./classes/calendar/Calendar";
-import Update from "./components/updater/Updater";
+import Update from "@/components/Updater/Updater";
 import { useEffect } from "react";
 import { useCreateDialogStore } from "./store/TitleBarStore";
 

@@ -1,6 +1,5 @@
 import Calendar from './Calendar';
 import { Task, Event } from '@classes/thing/Thing';
-import DataManager from '../dataManager/DataManager';
 
 describe('Calendar', () => {
     let calendar: Calendar;

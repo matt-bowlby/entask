@@ -29,3 +29,5 @@ dist-electron
 .hintrc
 database
 test-results
+release/
+vite.config.ts.timestamp*

@@ -1,7 +1,7 @@
 import TodoTaskComponent from "@/components/TodoList/TodoTaskComponent";
 import { Task, Event } from "@/classes/thing/Thing";
 import useCalendarStore from "@/store/calendarStore";
-import { useNowStore } from "../updater/Updater";
+import { useNowStore } from "@/components/Updater/Updater";
 import { abbreviatedDayNames } from "@/utils/timeString";
 import TodoEvent from "./TodoEventComponent";
 
@@ -111,7 +111,6 @@ const TodoCompletedContent = () => {
 const AllDone = () => {
     const nowStore = useNowStore();
     const calendar = useCalendarStore().calendar;
-    const calendarUpdate = useCalendarStore((state) => state.calendarUpdate);
 
     let title: JSX.Element[] = [
         <span key="default" className="text-dark">

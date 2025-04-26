@@ -15,7 +15,7 @@ import ErrorMessage from "../items/ErrorMessage";
 import { useStore } from "zustand";
 import TagField, { ChooseTagField, TagBlockTagField } from "./NewTagField";
 import { useCreateTagMenuStore } from "./NewTagField";
-import { useNowStore } from "../updater/Updater";
+import { useNowStore } from "@/components/Updater/Updater";
 
 export default function CreateNewComponent() {
     const { isOpen, close, type, setType } = useCreateDialogStore();
@@ -44,7 +44,7 @@ export default function CreateNewComponent() {
             name = (document.getElementById("name") as HTMLInputElement).value;
 
         // Get date1 (All components have a date1)
-        let dateString1 = (document.getElementById("date-1") as HTMLInputElement).value;
+        const dateString1 = (document.getElementById("date-1") as HTMLInputElement).value;
         const pm1 = (document.getElementById("date-pm-1") as HTMLInputElement).value === "true";
         let hour1 = parseInt((document.getElementById("date-hour-1") as HTMLInputElement).value);
         if (hour1 === 12) hour1 = 0;
@@ -57,7 +57,7 @@ export default function CreateNewComponent() {
         // Get date2 (Only events and tag blocks have date2)
         let date2: Date = new Date();
         if (document.getElementById("date-2")) {
-            let dateString2 = (document.getElementById("date-2") as HTMLInputElement).value;
+            const dateString2 = (document.getElementById("date-2") as HTMLInputElement).value;
             const pm2: boolean =
                 (document.getElementById("date-pm-2") as HTMLInputElement).value === "true";
             let hour2: number = parseInt(

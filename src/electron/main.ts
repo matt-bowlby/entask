@@ -1,7 +1,6 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import Calendar from "../classes/calendar/Calendar";
 import DataManager from "../classes/dataManager/DataManager";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -97,7 +96,7 @@ ipcMain.handle(
 
 ipcMain.handle(
     "save-calendar",
-    (_: IpcMainInvokeEvent, calendar_json: any) => {
+    (_: IpcMainInvokeEvent, calendar_json) => {
         DataManager.saveCalendar(calendar_json, calendar_json.name);
     }
 );

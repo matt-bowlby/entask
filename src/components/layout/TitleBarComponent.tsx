@@ -2,7 +2,7 @@ import { Image, Settings, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import CreateNewComponent from "@/components/layout/CreateNewComponent";
 import useCalendarStore, { useScrollStore } from "@/store/calendarStore";
 import { useCreateDialogStore } from "@/store/TitleBarStore";
-import { useNowStore } from "../updater/Updater";
+import { useNowStore } from "@/components/Updater/Updater";
 import { months } from "@/utils/timeString";
 import { motion } from "framer-motion";
 

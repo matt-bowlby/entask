@@ -3,7 +3,7 @@ import useCalendarStore, { useScrollStore } from "@/store/calendarStore";
 import { meridiem } from "@/utils/timeString";
 import DayLabel from "@/components/Calendar/DayLabelComponent";
 import EventComponent from "@/components/Calendar/CalendarEventComponent";
-import { useNowStore } from "../updater/Updater";
+import { useNowStore } from "@components/Updater/Updater";
 import CalendarTagBlock from "./CalendarTagBlock";
 import EditDialog from "../EditMenus/EditDialog";
 

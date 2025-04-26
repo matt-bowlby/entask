@@ -9,6 +9,7 @@ export default {
         "/node_modules/",
         "/tests/e2e/", // Exclude e2e tests from Jest
     ],
+    testMatch: ["*.test.ts"],
     moduleNameMapper: {
         "\\.(css|less|sass|scss)$": "identity-obj-proxy",
         "^.+\\.svg$": "jest-transformer-svg",
